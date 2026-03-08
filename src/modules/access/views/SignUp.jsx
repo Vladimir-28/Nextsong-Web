@@ -1,21 +1,12 @@
 import { Link } from "react-router-dom";
+import Header from "../components/Header";
 
 export default function Register() {
     return (
         <main className="d-flex flex-column align-items-center">
 
             {/* HEADER */}
-            <div className="w-100 bg-white border-bottom py-3">
-                <div className="d-flex justify-content-center align-items-center gap-3">
-                    <i
-                        className="bi bi-apple-music"
-                        style={{ color: "#C58A5C", fontSize: "32px" }}
-                    ></i>
-
-                    <h3 className="fw-bold mb-0">NextSong</h3>
-                </div>
-            </div>
-
+            <Header />
             {/* REGISTER */}
             <div
                 className="d-flex justify-content-center align-items-center w-100"

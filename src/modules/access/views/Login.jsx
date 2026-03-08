@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 export default function Login({ setSession }) {
 
@@ -21,23 +22,7 @@ export default function Login({ setSession }) {
         <main className="d-flex flex-column align-items-center">
 
             {/* HEADER */}
-           <div className="w-100 bg-white border-bottom py-3">
-  <div className="d-flex justify-content-center align-items-center gap-3">
-
-    <div
-      className="d-flex justify-content-center align-items-center"
-      
-    >
-      <i
-        className="bi bi-apple-music"
-        style={{   color: "#C58A5C", fontSize: "40px" }}
-      ></i>
-    </div>
-
-    <h3 className="fw-bold mb-0">NextSong</h3>
-
-  </div>
-</div>
+            <Header />
             {/* LOGIN */}
             <div
                 className="d-flex justify-content-center align-items-center w-100"
@@ -106,7 +91,7 @@ export default function Login({ setSession }) {
                                     className="btn w-100 text-white"
                                     style={{ backgroundColor: "#a56d49" }}
                                 >
-                                    
+
                                     Iniciar sesión
                                 </button>
                             </div>
@@ -132,4 +117,4 @@ export default function Login({ setSession }) {
         </main>
     );
 }
- 
+
