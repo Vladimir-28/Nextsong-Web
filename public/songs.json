@@ -1,0 +1,47 @@
+[
+    {
+        "title": "Imagine",
+        "artist": "John Lennon",
+        "duration": "3:03"
+    },
+    {
+        "title": "Bohemian Rhapsody",
+        "artist": "Queen",
+        "duration": "5:55"
+    },
+    {
+        "title": "Hotel California",
+        "artist": "Eagles",
+        "duration": "6:30"
+    },
+    {
+        "title": "Yesterday",
+        "artist": "The Beatles",
+        "duration": "2:04"
+    },
+    {
+        "title": "Stairway to Heaven",
+        "artist": "Led Zeppelin",
+        "duration": "8:02"
+    },
+    {
+        "title": "Let It Be",
+        "artist": "The Beatles",
+        "duration": "3:50"
+    },
+    {
+        "title": "Someone Like You",
+        "artist": "Adele",
+        "duration": "4:45"
+    },
+    {
+        "title": "Shape of You",
+        "artist": "Ed Sheeran",
+        "duration": "3:53"
+    },
+    {
+        "title": "Hallelujah",
+        "artist": "Jeff Buckley",
+        "duration": "6:53"
+    }
+]
