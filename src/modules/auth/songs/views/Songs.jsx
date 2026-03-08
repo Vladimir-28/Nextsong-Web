@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import SongCard from "../components/SongCard";
 import SongsController from "../controller/songs.controller";
+import CustomNavbar from "../../../../components/CustomNavbar";
+import CustomSidebar from "../../../../components/CustomSidebar";
 
 export default function Songs() {
     const [songs, setSongs] = useState([]);
@@ -10,7 +12,8 @@ export default function Songs() {
         getSongs();
     }, []);
 
-    return (
+    return (<>
+        <CustomNavbar/>
         <div className="container mt-4">
 
             <h4>Canciones Independientes</h4>
@@ -31,5 +34,8 @@ export default function Songs() {
             </div>
 
         </div>
-    );
+
+        {/* Modales */}
+        <CustomSidebar/>
+        </>);
 }

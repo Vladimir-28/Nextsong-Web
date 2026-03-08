@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import Login from './modules/access/views/Login'
 import PublicRouter from './modules/router/PublicRoter'
+import Songs from './modules/auth/songs/views/Songs'
 
 function App() {
 
   return (
     
-      <PublicRouter/>
+      <Songs/>
     
   )
 }
