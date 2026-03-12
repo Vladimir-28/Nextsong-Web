@@ -13,7 +13,6 @@ export default function Songs() {
     }, []);
 
     return (<>
-        <CustomNavbar/>
         <div className="container mt-4">
 
             <h4>Canciones Independientes</h4>
