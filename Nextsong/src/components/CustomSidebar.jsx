@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import '../styles/style.css';
 import { RxExit } from "react-icons/rx";
 
@@ -28,31 +29,31 @@ export default function CustomSidebar() {
 				<ul className="nav flex-column">
 
 					<li className="nav-item">
-						<a className="nav-link active">
+						<NavLink  to="/home" className={({ isActive }) =>isActive ? "nav-link active" : "nav-link"}>
 							<i className="bi bi-house me-2"></i>
 							Inicio
-						</a>
+						</NavLink>
 					</li>
 
 					<li className="nav-item">
-						<a className="nav-link">
+						<NavLink  to="/events" className={({ isActive }) =>isActive ? "nav-link active" : "nav-link"}>
 							<i className="bi bi-calendar-event me-2"></i>
 							Eventos
-						</a>
+						</NavLink>
 					</li>
 
 					<li className="nav-item">
-						<a className="nav-link">
+						<NavLink  to="/songs" className={({ isActive }) =>isActive ? "nav-link active" : "nav-link"}>
 							<i className="bi bi-music-note me-2"></i>
 							Canciones Independientes
-						</a>
+						</NavLink>
 					</li>
 
 					<li className="nav-item">
-						<a className="nav-link">
+						<NavLink  to="" className={({ isActive }) =>isActive ? "nav-link active" : "nav-link"}>
 							<i className="bi bi-person me-2"></i>
 							Mi Perfil
-						</a>
+						</NavLink>
 					</li>
 
 				</ul>
