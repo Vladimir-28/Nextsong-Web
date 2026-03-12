@@ -1,0 +1,50 @@
+[
+    {
+      "id": 1,
+      "type": "Boda",
+      "title": "Boda María & Carlos",
+      "date": "15 de marzo, 2026",
+      "songs": 12,
+      "icon": "people"
+    },
+    {
+      "id": 2,
+      "type": "Misa",
+      "title": "Misa Dominical",
+      "date": "9 de febrero, 2026",
+      "songs": 8,
+      "icon": "church"
+    },
+    {
+      "id": 3,
+      "type": "Concierto",
+      "title": "Concierto de Primavera",
+      "date": "22 de marzo, 2026",
+      "songs": 15,
+      "icon": "music"
+    },
+    {
+      "id": 4,
+      "type": "Ensayo",
+      "title": "Ensayo General Orquesta",
+      "date": "6 de febrero, 2026",
+      "songs": 10,
+      "icon": "calendar"
+    },
+    {
+      "id": 5,
+      "type": "Evento Corporativo",
+      "title": "Cena Anual Empresa",
+      "date": "28 de febrero, 2026",
+      "songs": 9,
+      "icon": "briefcase"
+    },
+    {
+      "id": 6,
+      "type": "Boda",
+      "title": "Boda Ana & Jorge",
+      "date": "5 de abril, 2026",
+      "songs": 14,
+      "icon": "people"
+    }
+  ]
