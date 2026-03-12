@@ -5,8 +5,7 @@ export default function Register() {
     return (
         <main className="d-flex flex-column align-items-center">
 
-            {/* HEADER */}
-            <Header />
+            
             {/* REGISTER */}
             <div
                 className="d-flex justify-content-center align-items-center w-100"

@@ -7,8 +7,10 @@ export default function PublicRouter(){
     return(
     <Routes>
         <Route path="/login" element={ <Login/>} />
+        <Route path="/" element={ <Login/>} />
         <Route path="/recovery" element={ <RecoveryPassword/>} />
         <Route path="/signUp" element={ <SignUp/>} />
+         
         
         
     </Routes>
