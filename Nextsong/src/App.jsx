@@ -1,4 +1,5 @@
 import { useState } from 'react'
+
 import AuthRouter from './modules/router/AuthRouter';
 import PublicRouter from './modules/router/PublicRoter';
 import CustomNavbar from './components/CustomNavbar';
@@ -12,13 +13,11 @@ function App() {
   return (
 
     <>
-
-    
-    {session ?(
+  {session ?(
       <>
       <Header/>
       <PublicRouter/>
-    
+
       </>
      
     ):(
@@ -32,8 +31,8 @@ function App() {
     )}
 
     
-    
-    </>  
+    </>
+
     
   );
 }

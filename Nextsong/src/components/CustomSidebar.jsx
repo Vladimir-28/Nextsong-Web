@@ -55,21 +55,10 @@ export default function CustomSidebar() {
 						</a>
 					</li>
 
-					<li className="nav-item">
-						<a className="nav-link">
-							<i className="bi bi-gear me-2"></i>
-							Configuración
-						</a>
-					</li>
-
-					<li className="nav-item mt-auto">
-
-					</li>
-
 				</ul>
 
 			</div>
-			<div className='border-top'>
+			<div className='border-top p-2'>
 				<button className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-50">
 					<RxExit className='me-1' /> Cerrar sesión
 				</button>
