@@ -6,8 +6,7 @@ export default function Recovery() {
     return (
         <main className="d-flex flex-column align-items-center">
 
-            {/* HEADER */}
-            <Header />
+           
             {/* RECOVERY */}
             <div
                 className="d-flex justify-content-center align-items-center w-100"

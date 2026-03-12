@@ -21,8 +21,7 @@ export default function Login({ setSession }) {
     return (
         <main className="d-flex flex-column align-items-center">
 
-            {/* HEADER */}
-            <Header />
+            
             {/* LOGIN */}
             <div
                 className="d-flex justify-content-center align-items-center w-100"

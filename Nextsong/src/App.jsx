@@ -1,14 +1,41 @@
 import { useState } from 'react'
-import PublicRouter from './modules/router/PublicRoter'
-import Songs from './modules/auth/songs/views/Songs'
+import AuthRouter from './modules/router/AuthRouter';
+import PublicRouter from './modules/router/PublicRoter';
+import CustomNavbar from './components/CustomNavbar';
+import Header from './modules/access/components/Header';
+import CustomSidebar from './components/CustomSidebar';
+
 
 function App() {
+  const[session,setSession]=useState(false);
 
   return (
+
+    <>
+
     
-      <Songs/>
+    {session ?(
+      <>
+      <Header/>
+      <PublicRouter/>
     
-  )
+      </>
+     
+    ):(
+     <>
+     <CustomNavbar/>
+     <CustomSidebar/>
+     <AuthRouter/>
+     
+     </>
+    
+    )}
+
+    
+    
+    </>  
+    
+  );
 }
 
 export default App
