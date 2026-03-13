@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { BsChevronRight, BsPeople, BsMusicNote, BsCalendarEvent, BsBriefcase } from "react-icons/bs";
 import { LuChurch } from "react-icons/lu";
 
@@ -6,13 +7,25 @@ const icons = {
   music: <BsMusicNote size={20} />,
   calendar: <BsCalendarEvent size={20} />,
   briefcase: <BsBriefcase size={20} />,
-  church: <LuChurch  size={20} />
+  church: <LuChurch size={20} />
 };
 
 export default function EventCard({ event }) {
+
+  const navigate = useNavigate();
+
+  const openEvent = () => {
+    navigate(`/events/${event.id}`);
+  };
+
   return (
     <div className="col-md-4 mb-4">
-      <div className="card shadow-sm h-100 p-3">
+
+      <div 
+        className="card shadow-sm h-100 p-3"
+        style={{cursor:"pointer"}}
+        onClick={openEvent}
+      >
 
         <div className="d-flex justify-content-between">
 
@@ -48,10 +61,11 @@ export default function EventCard({ event }) {
 
         <div className="d-flex justify-content-between">
           <small className="text-muted">Canciones</small>
-          <strong>{event.songs}</strong>
+          <strong>{event.songs.length}</strong>
         </div>
 
       </div>
+
     </div>
   );
 }

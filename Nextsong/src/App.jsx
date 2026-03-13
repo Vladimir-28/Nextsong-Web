@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import AuthRouter from './modules/router/AuthRouter';
-import PublicRouter from './modules/router/PublicRoter';
+import PublicRouter from './modules/router/PublicRouter';
 import CustomNavbar from './components/CustomNavbar';
 import Header from './modules/access/components/Header';
 import CustomSidebar from './components/CustomSidebar';
@@ -15,7 +15,7 @@ function App() {
       {session ? (
         <>
           <Header />
-          <PublicRouter />
+          <PublicRouter setSession={setSession}/>
 
         </>
 
