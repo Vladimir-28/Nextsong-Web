@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import EventsController from "../controller/events.controller";
+import SongEventCard from "../components/SongEventCard";
 
-export default function EventDetail(){
+export default function EventDetail() {
 
     const { id } = useParams();
     const [event, setEvent] = useState(null);
@@ -16,11 +17,11 @@ export default function EventDetail(){
         getEvent();
     }, []);
 
-    if(!event){
+    if (!event) {
         return <div className="container mt-4">Cargando evento...</div>
     }
 
-    return(
+    return (
         <div className="container mt-4">
 
             <h4>{event.title}</h4>
@@ -28,21 +29,15 @@ export default function EventDetail(){
 
             <h5 className="mt-4">Canciones</h5>
 
-            {event.songs.map(song => (
-                <div key={song.id} className="card p-3 mb-2">
-
-                    <strong>{song.title}</strong>
-
-                    <small className="text-muted">
-                        {song.artist}
-                    </small>
-
-                    <div>
-                        Tono: {song.tone} | BPM: {song.bpm}
-                    </div>
-
+            {event.songs.length === 0 ? (
+                <div className="alert alert-secondary rounded-4">
+                    <span>Este evento no tiene canciones...</span>
                 </div>
-            ))}
+            ) : (
+                event.songs.map(song => (
+                    <SongEventCard songEvent={song} />
+                ))
+            )}
 
         </div>
     );

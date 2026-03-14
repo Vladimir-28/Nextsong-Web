@@ -3,69 +3,63 @@ import { BsChevronRight, BsPeople, BsMusicNote, BsCalendarEvent, BsBriefcase } f
 import { LuChurch } from "react-icons/lu";
 
 const icons = {
-  people: <BsPeople size={20} />,
-  music: <BsMusicNote size={20} />,
-  calendar: <BsCalendarEvent size={20} />,
-  briefcase: <BsBriefcase size={20} />,
-  church: <LuChurch size={20} />
+	people: <BsPeople size={20} />,
+	music: <BsMusicNote size={20} />,
+	calendar: <BsCalendarEvent size={20} />,
+	briefcase: <BsBriefcase size={20} />,
+	church: <LuChurch size={20} />
 };
 
-export default function EventCard({ event }) {
+export default function EventCard({ event, onClick }) {
 
-  const navigate = useNavigate();
+	return (
+		<div className="col-md-4 mb-4">
 
-  const openEvent = () => {
-    navigate(`/events/${event.id}`);
-  };
+			<div
+				className="card shadow-sm h-100 p-3"
+				style={{ cursor: "pointer" }}
+				onClick={onClick}
+			>
 
-  return (
-    <div className="col-md-4 mb-4">
+				<div className="d-flex justify-content-between">
 
-      <div 
-        className="card shadow-sm h-100 p-3"
-        style={{cursor:"pointer"}}
-        onClick={openEvent}
-      >
+					<div
+						className="d-flex align-items-center justify-content-center"
+						style={{
+							width: "45px",
+							height: "45px",
+							background: "#f3f4f6",
+							borderRadius: "10px"
+						}}
+					>
+						{icons[event.icon]}
+					</div>
 
-        <div className="d-flex justify-content-between">
+					<button className="btn p-0 border-0 bg-transparent">
+						<BsChevronRight />
+					</button>
 
-          <div
-            className="d-flex align-items-center justify-content-center"
-            style={{
-              width: "45px",
-              height: "45px",
-              background: "#f3f4f6",
-              borderRadius: "10px"
-            }}
-          >
-            {icons[event.icon]}
-          </div>
+				</div>
 
-          <button className="btn p-0 border-0 bg-transparent">
-            <BsChevronRight />
-          </button>
+				<span className="badge bg-light text-dark mt-3">
+					{event.type}
+				</span>
 
-        </div>
+				<h6 className="mt-2">{event.title}</h6>
 
-        <span className="badge bg-light text-dark mt-3">
-          {event.type}
-        </span>
+				<small className="text-muted">
+					{event.date}
+				</small>
 
-        <h6 className="mt-2">{event.title}</h6>
+				<hr />
 
-        <small className="text-muted">
-          {event.date}
-        </small>
+				<div className="d-flex justify-content-between">
+					<small className="text-muted">Canciones</small>
+					<strong>{event.songs?.length || 0}</strong>
+				</div>
 
-        <hr />
+			</div>
 
-        <div className="d-flex justify-content-between">
-          <small className="text-muted">Canciones</small>
-          <strong>{event.songs.length}</strong>
-        </div>
-
-      </div>
-
-    </div>
-  );
+		</div>
+	);
 }
