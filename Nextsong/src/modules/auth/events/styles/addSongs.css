@@ -1,0 +1,51 @@
+.selected-songs-box {
+    border: 2px dashed #d9d9d9;
+    border-radius: 12px;
+    padding: 40px;
+    min-height: 150px;
+    background: #fafafa;
+}
+
+.available-song-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    cursor: grab;
+    background: white;
+    transition: 0.2s;
+}
+
+.available-song-card:hover {
+    border-color: #c6a188;
+    background: #fcf7f3;
+}
+
+.song-item {
+    padding: 12px 16px;
+    border: 1px solid #ececec;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    background: white;
+}
+
+.drop-zone {
+    border: 2px dashed #d1c3b7;
+    background: #faf7f4;
+    transition: 0.2s;
+}
+
+.drop-zone:hover {
+    background: #f4ede8;
+}
+
+.song-card {
+    transition: 0.15s;
+}
+
+.song-card:hover {
+    background: #f8f4f1;
+}
