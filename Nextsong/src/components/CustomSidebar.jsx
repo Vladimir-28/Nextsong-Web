@@ -4,9 +4,12 @@ import { RxExit } from "react-icons/rx";
 import { FaPlus } from "react-icons/fa";
 import CreateIndepiendentSong from '../modules/auth/songs/views/CreateIndepiendentSong';
 import { useState } from 'react';
+import CreateEventModal from '../modules/auth/events/components/CreateEventModal';
 
 export default function CustomSidebar() {
-	const [showModal, setShowModal] = useState(false);
+	const [showModalSong, setShowModalSong] = useState(false);
+	const [showModalEvent, setShowModalEvent] = useState(false);
+
 	return (
 		<div
 			className="offcanvas offcanvas-start sidebar p-3 shadow"
@@ -33,63 +36,67 @@ export default function CustomSidebar() {
 				<ul className="nav flex-column">
 
 					<li className="nav-item">
-						<NavLink  to="/home" className={({ isActive }) =>isActive ? "nav-link active" : "nav-link"}>
+						<NavLink to="/home" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
 							<i className="bi bi-house me-2"></i>
 							Inicio
 						</NavLink>
 					</li>
 
 					<li className="nav-item">
-						<NavLink  to="/events" className={({ isActive }) =>isActive ? "nav-link active" : "nav-link"}>
+						<NavLink to="/events" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
 							<i className="bi bi-calendar-event me-2"></i>
 							Eventos
 						</NavLink>
 					</li>
 
 					<li className="nav-item">
-						<NavLink  to="/songs" className={({ isActive }) =>isActive ? "nav-link active" : "nav-link"}>
+						<NavLink to="/songs" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
 							<i className="bi bi-music-note me-2"></i>
 							Canciones Independientes
 						</NavLink>
 					</li>
 
 					<li className="nav-item">
-						<NavLink  to="users" className={({ isActive }) =>isActive ? "nav-link active" : "nav-link"}>
+						<NavLink to="users" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
 							<i className="bi bi-person me-2"></i>
 							Mi Perfil
 						</NavLink>
 					</li>
 
 				</ul>
-               <div className="mt-5">
-                 <button
-				    className="btn text-white d-flex justify-content-start align-items-center  w-100 mb-2"
-				    style={{ backgroundColor: "#a56d49" }}
-				>
-					<FaPlus className="me-1"/> Crear Evento
-				</button>
-				<button
-				    className="btn text-white d-flex justify-content-start align-items-center w-100"
-				    style={{ backgroundColor: "#a56d49" }}
-					onClick={() => setShowModal(true)}
-				>
-					<FaPlus className="me-1"/> Agregar Canción Independiente
-				</button>
+				<div className="mt-5">
+					<button
+						className="btn text-white d-flex justify-content-start align-items-center  w-100 mb-2"
+						style={{ backgroundColor: "#a56d49" }}
+						onClick={() => setShowModalEvent(true)}
+					>
+						<FaPlus className="me-1" /> Crear Evento
+					</button>
+					<button
+						className="btn text-white d-flex justify-content-start align-items-center w-100"
+						style={{ backgroundColor: "#a56d49" }}
+						onClick={() => setShowModalSong(true)}
+					>
+						<FaPlus className="me-1" /> Agregar Canción Independiente
+					</button>
 				</div>
-			
-			</div>
-			
 
-			
+			</div>
+
+
+
 			<div className='border-top p-2'>
 				<button className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-50">
 					<RxExit className='me-1' /> Cerrar sesión
 				</button>
 			</div>
-			 {/* MODAL DE CREAR CANCION  INDEPENDIENTE*/}
-			
-						<CreateIndepiendentSong show={showModal}
-						onClose={() => setShowModal(false)}/>
+			{/* MODAL DE CREAR CANCION  INDEPENDIENTE*/}
+
+			<CreateIndepiendentSong show={showModalSong}
+				onClose={() => setShowModalSong(false)} />
+
+			<CreateEventModal show={showModalEvent}
+				onClose={() => setShowModalEvent(false)} />
 		</div>
 	);
 }
