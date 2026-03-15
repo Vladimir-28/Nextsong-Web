@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import '../styles/style.css';
 import { RxExit } from "react-icons/rx";
+import { FaPlus } from "react-icons/fa";
 
 export default function CustomSidebar() {
 	return (
@@ -57,8 +58,25 @@ export default function CustomSidebar() {
 					</li>
 
 				</ul>
-
+               <div className="mt-5">
+                 <button
+				    className="btn text-white d-flex justify-content-start align-items-center  w-100 mb-2"
+				    style={{ backgroundColor: "#a56d49" }}
+				>
+					<FaPlus className="me-1"/> Crear Evento
+				</button>
+				<button
+				    className="btn text-white d-flex justify-content-start align-items-center w-100"
+				    style={{ backgroundColor: "#a56d49" }}
+				>
+					<FaPlus className="me-1"/> Agregar Canción Independiente
+				</button>
+				</div>
+			
 			</div>
+			
+
+			
 			<div className='border-top p-2'>
 				<button className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-50">
 					<RxExit className='me-1' /> Cerrar sesión
