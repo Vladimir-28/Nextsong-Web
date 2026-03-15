@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import EventCard from "../components/EventCard";
 import EventsController from "../controller/events.controller";
+import CreateEventModal from "../components/CreateEventModal";
 
 export default function Events() {
 
     const [events, setEvents] = useState([]);
     const [alert, setAlert] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
     const navigate = useNavigate();
 
 
@@ -45,6 +48,7 @@ export default function Events() {
                 <button
                     className="btn text-white d-flex justify-content-center align-items-center"
                     style={{ backgroundColor: "#a56d49" }}
+                    onClick={() => setShowModal(true)}
                 >
                     <FaPlus className="me-1"/> Crear Evento
                 </button>
@@ -68,6 +72,12 @@ export default function Events() {
                 ))}
 
             </div>
+
+            {/* Modal */}
+            <CreateEventModal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+            />
 
         </div>
     );
