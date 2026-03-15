@@ -1,0 +1,44 @@
+
+  /* NAVBAR */
+  .top-navbar{
+    height:80px;
+    background:white;
+    border-bottom:1px solid #e5e7eb;
+  }
+  
+  /* SIDEBAR */
+  .sidebar{
+    width:260px;
+  }
+  
+  .sidebar .nav-link{
+    color:#4b5563;
+    padding:10px 14px;
+    border-radius:8px;
+    font-size:14px;
+  }
+  
+  .sidebar .nav-link:hover{
+    background:#f3f4f6;
+  }
+  
+  .sidebar .nav-link.active{
+    background:#e7ded6;
+    color:#6b4a32;
+    font-weight:500;
+  }
+  
+  /* logo */
+  .sidebar-logo{
+    font-weight:600;
+  }
+  
+  /* botón café */
+  .btn-primary-custom{
+    background:#8b5e3c;
+    border:none;
+  }
+  
+  .btn-primary-custom:hover{
+    background:#744c30;
+  }

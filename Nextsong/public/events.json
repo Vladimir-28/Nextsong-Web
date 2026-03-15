@@ -1,0 +1,126 @@
+[
+  {
+    "id": 1,
+    "type": "Boda",
+    "title": "Boda María & Carlos",
+    "date": "15 de marzo, 2026",
+    "icon": "people",
+    "songs": [
+      {
+        "id": 1,
+        "title": "Canon in D",
+        "artist": "Johann Pachelbel",
+        "tone": "D",
+        "bpm": 90
+      },
+      {
+        "id": 2,
+        "title": "Ave María",
+        "artist": "Schubert",
+        "tone": "C",
+        "bpm": 70
+      },
+      {
+        "id": 3,
+        "title": "Marcha Nupcial",
+        "artist": "Mendelssohn",
+        "tone": "C",
+        "bpm": 110
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "type": "Misa",
+    "title": "Misa Dominical",
+    "date": "9 de febrero, 2026",
+    "icon": "church",
+    "songs": [
+      {
+        "id": 1,
+        "title": "Santo",
+        "artist": "Tradicional",
+        "tone": "G",
+        "bpm": 95
+      },
+      {
+        "id": 2,
+        "title": "Cordero de Dios",
+        "artist": "Tradicional",
+        "tone": "F",
+        "bpm": 80
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "type": "Concierto",
+    "title": "Concierto de Primavera",
+    "date": "22 de marzo, 2026",
+    "icon": "music",
+    "songs": [
+      {
+        "id": 1,
+        "title": "Primavera",
+        "artist": "Vivaldi",
+        "tone": "E",
+        "bpm": 120
+      },
+      {
+        "id": 2,
+        "title": "La Cumparsita",
+        "artist": "Gerardo Matos",
+        "tone": "Dm",
+        "bpm": 100
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "type": "Ensayo",
+    "title": "Ensayo General Orquesta",
+    "date": "6 de febrero, 2026",
+    "icon": "calendar",
+    "songs": [
+      {
+        "id": 1,
+        "title": "Obertura 1812",
+        "artist": "Tchaikovsky",
+        "tone": "Eb",
+        "bpm": 105
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "type": "Evento Corporativo",
+    "title": "Cena Anual Empresa",
+    "date": "28 de febrero, 2026",
+    "icon": "briefcase",
+    "songs": [
+      {
+        "id": 1,
+        "title": "Fly Me to the Moon",
+        "artist": "Frank Sinatra",
+        "tone": "C",
+        "bpm": 120
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "type": "Boda",
+    "title": "Boda Ana & Jorge",
+    "date": "5 de abril, 2026",
+    "icon": "people",
+    "songs": [
+      {
+        "id": 1,
+        "title": "Perfect",
+        "artist": "Ed Sheeran",
+        "tone": "G",
+        "bpm": 95
+      }
+    ]
+  }
+]
