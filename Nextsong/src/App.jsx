@@ -8,7 +8,7 @@ import CustomSidebar from './components/CustomSidebar';
 
 
 function App() {
-  const [session, setSession] = useState(false);
+  const [session, setSession] = useState(true);
 
   return (
     <>

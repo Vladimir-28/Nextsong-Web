@@ -37,9 +37,7 @@ export default function Login({ setSession }) {
                             </p>
                             
                         </div>
-                        <p className="text-muted small mb-4">
-                          Los campos con <span className="text-danger">*</span> son obligatorios
-                       </p>
+                        
                         <form className="row g-3">
 
                             {/* EMAIL */}

@@ -31,9 +31,7 @@ export default function Recovery() {
                                 para restablecer su contraseña
                             </p>
                         </div>
-                        <p className="text-muted small mb-4">
-                          Los campos con <span className="text-danger">*</span> son obligatorios
-                       </p>
+                        
 
                         <form className="row g-3">
 
