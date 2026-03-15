@@ -51,7 +51,7 @@ export default function CustomSidebar() {
 					</li>
 
 					<li className="nav-item">
-						<NavLink  to="" className={({ isActive }) =>isActive ? "nav-link active" : "nav-link"}>
+						<NavLink  to="users" className={({ isActive }) =>isActive ? "nav-link active" : "nav-link"}>
 							<i className="bi bi-person me-2"></i>
 							Mi Perfil
 						</NavLink>

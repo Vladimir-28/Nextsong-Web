@@ -31,13 +31,16 @@ export default function Recovery() {
                                 para restablecer su contraseña
                             </p>
                         </div>
+                        <p className="text-muted small mb-4">
+                          Los campos con <span className="text-danger">*</span> son obligatorios
+                       </p>
 
                         <form className="row g-3">
 
                             {/* EMAIL */}
                             <div className="col-12">
                                 <label className="form-label">
-                                    Correo electrónico
+                                    Correo electrónico *
                                 </label>
 
                                 <div className="input-group">

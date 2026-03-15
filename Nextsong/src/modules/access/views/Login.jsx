@@ -35,14 +35,17 @@ export default function Login({ setSession }) {
                             <p className="text-muted">
                                 Accede a tus partituras digitales
                             </p>
+                            
                         </div>
-
+                        <p className="text-muted small mb-4">
+                          Los campos con <span className="text-danger">*</span> son obligatorios
+                       </p>
                         <form className="row g-3">
 
                             {/* EMAIL */}
                             <div className="col-12">
                                 <label className="form-label">
-                                    Correo electrónico
+                                    Correo electrónico *
                                 </label>
 
                                 <div className="input-group">
@@ -61,7 +64,7 @@ export default function Login({ setSession }) {
                             {/* PASSWORD */}
                             <div className="col-12">
                                 <label className="form-label">
-                                    Contraseña
+                                    Contraseña *
                                 </label>
 
                                 <div className="input-group">

@@ -28,11 +28,14 @@ export default function Register() {
                                 Comience a gestionar sus partituras hoy
                             </p>
                         </div>
+                        <p className="text-muted small mb-4">
+                          Los campos con <span className="text-danger">*</span> son obligatorios
+                       </p>
 
                         <form className="row g-3">
 
                             <div className="col-12">
-                                <label className="form-label">Nombre completo</label>
+                                <label className="form-label">Nombre completo *</label>
                                 <div className="input-group">
                                     <span className="input-group-text">
                                         <i className="bi bi-person"></i>
@@ -46,7 +49,7 @@ export default function Register() {
                             </div>
 
                             <div className="col-12">
-                                <label className="form-label">Correo electrónico</label>
+                                <label className="form-label">Correo electrónico *</label>
                                 <div className="input-group">
                                     <span className="input-group-text">
                                         <i className="bi bi-envelope"></i>
@@ -60,7 +63,7 @@ export default function Register() {
                             </div>
 
                             <div className="col-12">
-                                <label className="form-label">Contraseña</label>
+                                <label className="form-label">Contraseña *</label>
                                 <div className="input-group">
                                     <span className="input-group-text">
                                         <i className="bi bi-lock"></i>
@@ -74,7 +77,7 @@ export default function Register() {
                             </div>
 
                             <div className="col-12">
-                                <label className="form-label">Confirmar contraseña</label>
+                                <label className="form-label">Confirmar contraseña *</label>
                                 <div className="input-group">
                                     <span className="input-group-text">
                                         <i className="bi bi-lock"></i>
