@@ -1,17 +1,45 @@
-import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Header from "../components/Header";
+
+import { useState, useEffect } from "react";
 
 export default function Login({ setSession }) {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
 
-    const changeSession = () => {
-        sessionStorage.setItem("token", "test.token.nextsong");
-        setSession(true);
-        navigate("/");
-    };
 
+   const changeSession = async (e) => {
+    e.preventDefault();
+
+    const response = await fetch("http://localhost:8080/auth/login",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            email:email,
+            password:password
+        })
+    });
+
+    if(response.ok){
+
+        const data = await response.json();
+
+        alert("Inicio de sesión correcto");
+
+        sessionStorage.setItem("user", JSON.stringify(data));
+
+        setSession(true);
+        
+
+    }else{
+
+        alert("Correo o contraseña incorrectos");
+
+    }
+};
     useEffect(() => {
         if (sessionStorage.getItem("token")) {
             navigate("/");
@@ -38,7 +66,7 @@ export default function Login({ setSession }) {
                             
                         </div>
                         
-                        <form className="row g-3">
+                        <form className="row g-3" onSubmit={changeSession}>
 
                             {/* EMAIL */}
                             <div className="col-12">
@@ -55,6 +83,8 @@ export default function Login({ setSession }) {
                                         type="email"
                                         className="form-control"
                                         placeholder="tu@email.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -74,6 +104,8 @@ export default function Login({ setSession }) {
                                         type="password"
                                         className="form-control"
                                         placeholder="••••••••"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -87,7 +119,8 @@ export default function Login({ setSession }) {
                             {/* BOTON */}
                             <div className="col-12">
                                 <button
-                                    onClick={() => changeSession()}
+                                onClick={changeSession}
+                                    type="submit"
                                     className="btn w-100 text-white"
                                     style={{ backgroundColor: "#a56d49" }}
                                 >

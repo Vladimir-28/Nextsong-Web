@@ -1,7 +1,47 @@
+import { useState } from "react";
 import { BsChevronRight } from "react-icons/bs";
-import { FaCheck } from "react-icons/fa6";
+
 
 export default function CreateIndepiendentSong({ show, onClose }) {
+  const [title,setTitle] =  useState("")
+const [artist,setArtist] = useState("")
+const [duration,setDuration] = useState("")
+const [bpm,setBpm] = useState("")
+const [keyTone,setKeyTone] = useState("")
+
+const createSong = async () => {
+
+    const response = await fetch("http://localhost:8080/songs",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            title:title,
+            author:artist,
+            duration:duration,
+            bpm:bpm,
+            keyTone:keyTone,
+            status:"ACTIVE"
+        })
+    })
+
+    if(response.ok){
+
+        alert("Canción creada")
+
+        setTitle("")
+        setArtist("")
+        setDuration("")
+        setBpm("")
+        setKeyTone("")
+        onClose()   // ← cerrar modal
+
+    }else{
+        alert("Error al crear canción")
+    }
+
+}
 
   if (!show) return null;
 
@@ -42,6 +82,8 @@ export default function CreateIndepiendentSong({ show, onClose }) {
                     <input
                       className="form-control"
                       placeholder="Nombre de la canción"
+                      value={title}
+                      onChange={(e)=>setTitle(e.target.value)}
                     />
                   </div>
 
@@ -50,22 +92,35 @@ export default function CreateIndepiendentSong({ show, onClose }) {
                     <input
                       className="form-control"
                       placeholder="Nombre del artista"
+                      value={artist}
+                     onChange={(e)=>setArtist(e.target.value)}
                     />
                   </div>
 
                   <div className="col-md-6">
                     <label className="form-label">Duración *</label>
-                    <input className="form-control" placeholder="3:30" />
+                    <input className="form-control"
+                     placeholder="3:30" 
+                    value={duration}
+                     onChange={(e)=>setDuration(e.target.value)}/>
                   </div>
 
                   <div className="col-md-6">
                     <label className="form-label">Tempo (BPM) *</label>
-                    <input className="form-control" placeholder="120" />
+                    <input 
+                    className="form-control" 
+                    placeholder="120" 
+                    value={bpm}
+                     onChange={(e)=>setBpm(e.target.value)}
+                    />
                   </div>
 
                   <div className="col-md-6">
                     <label className="form-label">Tonalidad *</label>
-                    <input className="form-control" />
+                    <input className="form-control"
+                    value={keyTone}
+                     onChange={(e)=>setKeyTone(e.target.value)}
+                     />
                   </div>
 
                 </div>
@@ -87,6 +142,7 @@ export default function CreateIndepiendentSong({ show, onClose }) {
 
             <button
                className="btn text-white"
+               onClick={createSong}
                 style={{ backgroundColor: "#cbb2a1" }}
             >
              Agregar<BsChevronRight className="me-1"/>
