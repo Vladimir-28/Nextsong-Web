@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import EventCard from "../components/EventCard";
 import EventsController from "../controller/events.controller";
+import CreateSongEvent from "./CreateSongEvent";
 
 export default function Events() {
 
     const [events, setEvents] = useState([]);
     const [alert, setAlert] = useState(null);
     const navigate = useNavigate();
+    const [showModal, setShowModal] = useState(false);
 
 
     const getEvents = async () => {
@@ -41,13 +43,15 @@ export default function Events() {
                         Selecciona un evento para ver sus canciones
                     </p>
                 </div>
-
                 <button
-                    className="btn text-white d-flex justify-content-center align-items-center"
-                    style={{ backgroundColor: "#a56d49" }}
+                   className="btn text-white d-flex justify-content-center align-items-center"
+                   style={{ backgroundColor: "#a56d49" }}
+                   
                 >
-                    <FaPlus className="me-1"/> Crear Evento
+                   <FaPlus className="me-1" /> Crear Evento
                 </button>
+
+                
 
             </div>
 
@@ -68,7 +72,17 @@ export default function Events() {
                 ))}
 
             </div>
+            {/* MODAL DE CREAR CANCION */}
+
+            <CreateSongEvent show={showModal}
+            onClose={() => setShowModal(false)}/>
+            
 
         </div>
+
+        
+
+         
+            
     );
 }
