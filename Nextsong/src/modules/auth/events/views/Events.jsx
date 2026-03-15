@@ -46,7 +46,7 @@ export default function Events() {
                 <button
                    className="btn text-white d-flex justify-content-center align-items-center"
                    style={{ backgroundColor: "#a56d49" }}
-                   
+                   onClick={() => setShowModal(true)}
                 >
                    <FaPlus className="me-1" /> Crear Evento
                 </button>

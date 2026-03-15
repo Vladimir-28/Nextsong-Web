@@ -1,6 +1,7 @@
+import { BsChevronRight } from "react-icons/bs";
 import { FaCheck } from "react-icons/fa6";
 
-export default function CreateSongEvent({ show, onClose }) {
+export default function CreateIndepiendentSong({ show, onClose }) {
 
   if (!show) return null;
 
@@ -13,10 +14,7 @@ export default function CreateSongEvent({ show, onClose }) {
             {/* Header */}
             <div className="modal-header">
               <div>
-                <h5 className="fw-bold mb-0">Crear Nuevo Evento</h5>
-                <small className="text-muted">
-                  Paso 2: Agregar canciones
-                </small>
+                <h5 className="fw-bold mb-0">Crear Canción Independiente</h5>
               </div>
 
               <button className="btn-close" onClick={onClose}></button>
@@ -72,23 +70,7 @@ export default function CreateSongEvent({ show, onClose }) {
 
                 </div>
 
-                <div className="mt-4 d-flex gap-2">
-
-                  <button
-                    className="btn text-white"
-                    style={{ backgroundColor: "#5a4636" }}
-                  >
-                    <FaCheck className="me-1"/> Agregar canción
-                  </button>
-
-                  <button
-                    className="btn btn-secondary"
-                    onClick={onClose}
-                  >
-                    Cancelar
-                  </button>
-
-                </div>
+                
 
               </div>
 
@@ -107,7 +89,7 @@ export default function CreateSongEvent({ show, onClose }) {
                className="btn text-white"
                 style={{ backgroundColor: "#cbb2a1" }}
             >
-             <FaCheck className="me-1"/>Crear evento
+             Agregar<BsChevronRight className="me-1"/>
             </button>
 
 </div>
