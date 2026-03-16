@@ -31,3 +31,23 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Oracle Wallet
+Wallet_*
+*.sso
+*.p12
+*.jks
+
+# Configuración sensible
+application.properties
+
+# Compilación
+/target/
+
+# IntelliJ
+.idea/
+*.iml
+
+# logs
+*.log
+
