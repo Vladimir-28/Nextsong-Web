@@ -1,0 +1,12 @@
+nextsong_high = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=ga564008406a21e_nextsong_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+nextsong_medium = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=ga564008406a21e_nextsong_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+nextsong_low = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=ga564008406a21e_nextsong_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+nextsong_tp = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=ga564008406a21e_nextsong_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+nextsong_tpurgent = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=ga564008406a21e_nextsong_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+
+

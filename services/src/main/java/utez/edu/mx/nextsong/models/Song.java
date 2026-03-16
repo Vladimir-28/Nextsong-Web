@@ -5,17 +5,20 @@ import jakarta.persistence.*;
 @Entity
 @Table(name="songs")
 public class Song {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
 
-    @Column(columnDefinition="TEXT")
+    @Lob
     private String lyrics;
+
     private String duration;
 
     private String chords;
+
     @Column(name = "key_tone")
     private String keyTone;
 
@@ -26,6 +29,8 @@ public class Song {
     private String notes;
 
     private String status;
+
+    // getters y setters
 
     public Long getId() {
         return id;

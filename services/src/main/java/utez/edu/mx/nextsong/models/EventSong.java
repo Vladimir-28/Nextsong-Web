@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 public class EventSong {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_song_seq")
+    @SequenceGenerator(name = "event_song_seq", sequenceName = "event_song_seq", allocationSize = 1)
     private Long id;
 
     @ManyToOne
@@ -19,5 +20,4 @@ public class EventSong {
     private Song song;
 
     private Integer songOrder;
-
 }
