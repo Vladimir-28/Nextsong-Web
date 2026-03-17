@@ -17,9 +17,9 @@ function App() {
       {session ? (
 
         <>
-          <CustomNavbar />
-          <CustomSidebar />
-          <AuthRouter />
+          <CustomNavbar   />
+          <CustomSidebar   setSession={setSession}/>
+          <AuthRouter  />
         </>
 
       ) : (
@@ -27,6 +27,7 @@ function App() {
         <>
           <Header />
           <PublicRouter setSession={setSession} />
+          
         </>
 
       )}
