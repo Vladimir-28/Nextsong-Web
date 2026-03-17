@@ -7,9 +7,9 @@ import utez.edu.mx.nextsong.services.EventSongService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/event-songs")
-@CrossOrigin(origins ="http://localhost:5173")
 public class EventSongController {
 
     private final EventSongService service;

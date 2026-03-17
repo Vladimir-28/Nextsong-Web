@@ -3,7 +3,8 @@ import { Modal } from "react-bootstrap";
 import CreateEventStep1 from "./CreateEventStep1";
 import CreateEventStep2 from "./CreateEventStep2";
 import EventsController from "../controller/events.controller";
-import '../styles/createEvent.css'
+import '../styles/createEvent.css';
+import EventSongsController from "../controller/eventsongs.controller";
 
 export default function CreateEventModal({ show, onClose, onCreated }) {
 
@@ -20,42 +21,40 @@ export default function CreateEventModal({ show, onClose, onCreated }) {
   const prevStep = () => setStep(1);
 
   const updateEvent = (data) => {
-    setEventData({ ...eventData, ...data });
+    setEventData(prev => ({ ...prev, ...data }));
   };
 
   const createEvent = async () => {
 
     try {
 
-      // 1️ crear evento
+      // ✅ 1. Crear evento
       const newEvent = await EventsController.create({
         name: eventData.name,
-        eventDate: eventData.date, 
+        eventDate: new Date(eventData.date).toISOString().split("T")[0],
         location: "",
         description: "",
         status: "ACTIVE",
         category: eventData.type
-    });
-
-      // 2️ preparar canciones
-      const songsPayload = eventData.songs.map((song, index) => ({
-        songId: song.id,
-        songOrder: index + 1
-      }));
-
-      // 3️ guardar canciones
-      await fetch(`http://localhost:8080/event-songs/event/${newEvent.id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(songsPayload)
       });
 
-      // 4️ refrescar lista
+      if (!newEvent || !newEvent.id) {
+        console.error("No se creó el evento correctamente");
+        return;
+      }
+
+      // ✅ 2. Agregar canciones (solo si hay)
+      if (eventData.songs.length > 0) {
+        await EventSongsController.addSongsToEvent(
+          newEvent.id,
+          eventData.songs
+        );
+      }
+
+      // ✅ 3. refrescar
       if (onCreated) onCreated();
 
-      // 5️ reset
+      // ✅ 4. reset
       setEventData({
         name: "",
         type: "",

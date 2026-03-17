@@ -6,20 +6,29 @@ import SongsController from "../../songs/controller/songs.controller";
 import CreateSongModal from "./CreateSongModal";
 import '../styles/addSongs.css'
 
-export default function CreateEventStep2({ eventData, updateEvent, prevStep, createEvent }) {
+export default function CreateEventStep2({
+    eventData,
+    updateEvent,
+    prevStep,
+    createEvent
+}) {
 
     const [availableSongs, setAvailableSongs] = useState([]);
-    const [selectedSongs, setSelectedSongs] = useState(eventData.songs || []);
+    const [selectedSongs, setSelectedSongs] = useState([]);
     const [showSongModal, setShowSongModal] = useState(false);
 
-    const getSongs = async () => {
-        const data = await SongsController.findAll();
-        setAvailableSongs(data);
-    };
+    useEffect(() => {
+        loadSongs();
+    }, []);
 
     useEffect(() => {
-        getSongs();
+        setSelectedSongs(eventData.songs || []);
     }, []);
+
+    const loadSongs = async () => {
+        const data = await SongsController.findAll();
+        setAvailableSongs(data || []);
+    };
 
     /* ---------------------------
        DRAG & DROP
@@ -29,53 +38,67 @@ export default function CreateEventStep2({ eventData, updateEvent, prevStep, cre
         event.dataTransfer.setData("song", JSON.stringify(song));
     };
 
-    const allowDrop = (event) => {
-        event.preventDefault();
-    };
-
     const handleDrop = (event) => {
         event.preventDefault();
-    
         const song = JSON.parse(event.dataTransfer.getData("song"));
-    
+
         if (!selectedSongs.find(s => s.id === song.id)) {
-            setSelectedSongs([...selectedSongs, song]);
+            const updated = [...selectedSongs, song];
+
+            setSelectedSongs(updated);
+
+            updateEvent({
+                songs: updated
+            });
         }
     };
 
     /* ---------------------------
-       AGREGAR / REMOVER
+       ACCIONES
     --------------------------- */
 
     const addSong = (song) => {
+
         if (!selectedSongs.find(s => s.id === song.id)) {
-            setSelectedSongs([...selectedSongs, song]);
+
+            const updated = [...selectedSongs, song];
+
+            setSelectedSongs(updated);
+
+            updateEvent({
+                songs: updated
+            });
         }
     };
 
     const removeSong = (index) => {
 
-        const updated = [...selectedSongs];
-        updated.splice(index, 1);
+        const updated = selectedSongs.filter((_, i) => i !== index);
 
         setSelectedSongs(updated);
-    };
 
-    const finish = () => {
-
-        updateEvent({ songs: selectedSongs });
-        createEvent();
+        updateEvent({
+            songs: updated
+        });
     };
 
     const handleNewSong = (song) => {
 
-        setAvailableSongs([...availableSongs, song]);
-        setSelectedSongs([...selectedSongs, song]);
+        if (!song.id) return;
+
+        const updated = [...selectedSongs, song];
+
+        setAvailableSongs(prev => [...prev, song]);
+        setSelectedSongs(updated);
+
+        updateEvent({
+            songs: updated
+        });
     };
 
-    /* ---------------------------
-       FILTRAR DISPONIBLES
-    --------------------------- */
+    const finish = () => {
+        createEvent(); 
+    };
 
     const filteredSongs = availableSongs.filter(
         song => !selectedSongs.find(s => s.id === song.id)
@@ -84,7 +107,6 @@ export default function CreateEventStep2({ eventData, updateEvent, prevStep, cre
     return (
         <>
 
-            {/* HEADER */}
             <div className="d-flex justify-content-between align-items-center mb-3">
 
                 <h6 className="m-0">
@@ -92,7 +114,6 @@ export default function CreateEventStep2({ eventData, updateEvent, prevStep, cre
                 </h6>
 
                 <Button
-                    className="d-flex align-items-center justify-content-center"
                     style={{ backgroundColor: "#c6a188", border: "none" }}
                     onClick={() => setShowSongModal(true)}
                 >
@@ -101,64 +122,43 @@ export default function CreateEventStep2({ eventData, updateEvent, prevStep, cre
 
             </div>
 
-            {/* CANCIONES AGREGADAS */}
             <div
                 className="mb-4 p-3 border rounded drop-zone"
                 onDrop={handleDrop}
-                onDragOver={allowDrop}
+                onDragOver={(e) => e.preventDefault()}
             >
 
                 {selectedSongs.length === 0 ? (
-
                     <div className="text-center text-muted">
-
                         <FiMusic size={40} />
-
-                        <p className="mt-2">
-                            Arrastra canciones aquí
-                        </p>
-
+                        <p className="mt-2">Arrastra canciones aquí</p>
                     </div>
-
                 ) : (
-
                     selectedSongs.map((song, index) => (
-
                         <div
                             key={index}
                             className="d-flex justify-content-between align-items-center border p-2 mb-2 rounded"
                         >
-
                             <div>
-
                                 <strong>{song.title}</strong>
-
                                 <br />
-
                                 <small className="text-muted">
-                                    {song.artist}
+                                    {song.artist || song.author}
                                 </small>
-
                             </div>
-
                             <FaTrash
                                 style={{ cursor: "pointer" }}
                                 onClick={() => removeSong(index)}
                             />
-
                         </div>
-
                     ))
-
                 )}
 
             </div>
 
-            {/* CANCIONES DISPONIBLES */}
             <h6 className="mb-3">Canciones disponibles</h6>
 
             {filteredSongs.map((song, index) => (
-
                 <div
                     key={index}
                     draggable
@@ -167,26 +167,16 @@ export default function CreateEventStep2({ eventData, updateEvent, prevStep, cre
                     style={{ cursor: "grab" }}
                     onClick={() => addSong(song)}
                 >
-
                     <div>
-
                         <strong>{song.title}</strong>
-
                         <br />
-
-                        <small className="text-muted">
-                            {song.artist}
-                        </small>
-
+                        <small className="text-muted">{song.artist}</small>
                     </div>
 
                     <small>{song.duration}</small>
-
                 </div>
-
             ))}
 
-            {/* FOOTER */}
             <div className="d-flex justify-content-between mt-4">
 
                 <Button variant="light" onClick={prevStep}>
@@ -202,7 +192,6 @@ export default function CreateEventStep2({ eventData, updateEvent, prevStep, cre
 
             </div>
 
-            {/* MODAL CREAR CANCIÓN */}
             <CreateSongModal
                 show={showSongModal}
                 onClose={() => setShowSongModal(false)}

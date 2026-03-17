@@ -1,7 +1,7 @@
 import { BsChevronRight, BsPeople, BsMusicNote, BsCalendarEvent, BsBriefcase } from "react-icons/bs";
 import { LuChurch } from "react-icons/lu";
 
-// 🔥 mapear categorías a iconos
+// mapear categorías a iconos
 const icons = {
 	boda: <BsPeople size={20} />,
 	misa: <LuChurch size={20} />,
@@ -57,9 +57,8 @@ export default function EventCard({ event, onClick }) {
 
 				<div className="d-flex justify-content-between">
 					<small className="text-muted">Canciones</small>
-					<strong>{event.songs?.length || 0}</strong>
+					<strong>{event.songsCount || 0}</strong>
 				</div>
-
 			</div>
 
 		</div>
