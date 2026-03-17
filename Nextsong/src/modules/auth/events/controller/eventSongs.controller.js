@@ -24,6 +24,19 @@ const EventSongsController = {
         }
 
         return text ? JSON.parse(text) : {};
+    },
+
+    getSongsByEvent: async (eventId) => {
+
+        const response = await fetch(`${API_URL}/event/${eventId}`);
+    
+        const text = await response.text();
+    
+        if (!response.ok) {
+            throw new Error(text);
+        }
+    
+        return text ? JSON.parse(text) : [];
     }
 
 };
