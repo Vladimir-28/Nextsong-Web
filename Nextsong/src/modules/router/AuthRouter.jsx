@@ -4,6 +4,9 @@ import Events from "../auth/events/views/Events";
 import Home from "../auth/home/Home";
 import EventDetail from "../auth/events/views/EventDetail";
 import User from "../auth/user/view/User";
+import SongDetail from "../auth/songs/views/SongDetail";
+import Login from "../access/views/Login";
+
 
 export default function AuthRouter(){
     return(
@@ -14,9 +17,11 @@ export default function AuthRouter(){
         <Route path="/songs" element={<Songs/>} />
         <Route path="/events" element={<Events/>} />
         <Route path="/users" element={<User/>} />
+        
 
         {/* NUEVA RUTA */}
         <Route path="/events/:id" element={<EventDetail/>} />
+        <Route path="/songs/:id" element={<SongDetail/>} />
 
     </Routes>
     );

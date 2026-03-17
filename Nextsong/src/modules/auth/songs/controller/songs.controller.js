@@ -5,22 +5,7 @@ const headers = {
     "Accept": "application/json"
 };
 
-const SongsController = {};
 
-// obtener todas las canciones
-SongsController.findAll = async () => {
-    try {
-        const response = await fetch(API_URL, {
-            method: "GET",
-            headers
-        });
-
-        return await response.json();
-    } catch (error) {
-        console.error("Error obteniendo canciones:", error);
-        return [];
-    }
-};
 
 // crear canción
 SongsController.create = async (song) => {
@@ -44,5 +29,17 @@ SongsController.create = async (song) => {
         return null;
     }
 };
+
+SongsController.findAll = async () => {
+    const response = await fetch(API_URL);
+
+    const text = await response.text();
+
+    if (!response.ok) {
+        throw new Error(text);
+    }
+
+    return text ? JSON.parse(text) : [];
+}
 
 export default SongsController;

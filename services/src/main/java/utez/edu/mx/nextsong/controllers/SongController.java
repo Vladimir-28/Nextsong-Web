@@ -25,4 +25,8 @@ public class SongController {
     public Song createSong(@RequestBody Song song){
         return songService.save(song);
     }
+    @GetMapping("/{id}")
+    public Song getSongById(@PathVariable Long id){
+        return songService.findById(id);
+    }
 }
