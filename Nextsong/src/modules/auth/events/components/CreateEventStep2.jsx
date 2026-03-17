@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { FiMusic } from "react-icons/fi";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaPlus } from "react-icons/fa";
 import SongsController from "../../songs/controller/songs.controller";
 import CreateSongModal from "./CreateSongModal";
 import '../styles/addSongs.css'
@@ -92,10 +92,11 @@ export default function CreateEventStep2({ eventData, updateEvent, prevStep, cre
                 </h6>
 
                 <Button
+                    className="d-flex align-items-center justify-content-center"
                     style={{ backgroundColor: "#c6a188", border: "none" }}
                     onClick={() => setShowSongModal(true)}
                 >
-                    + Crear canción
+                    <FaPlus className="me-1" /> Crear canción
                 </Button>
 
             </div>
