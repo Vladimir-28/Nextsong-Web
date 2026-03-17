@@ -8,6 +8,7 @@ import java.util.List;
 public interface EventSongRepository extends JpaRepository<EventSong, Long> {
 
     List<EventSong> findByEventIdOrderBySongOrder(Long eventId);
+    int countByEventId(Long eventId);
 
     void deleteByEventId(Long eventId);
 }

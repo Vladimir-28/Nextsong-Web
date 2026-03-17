@@ -1,26 +1,50 @@
 import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { createSong } from "../../songs/controller/SongIndependientController";
 
 export default function CreateSongModal({ show, onClose, onCreate }) {
 
-  const [title, setTitle] = useState("");
-  const [artist, setArtist] = useState("");
-  const [duration, setDuration] = useState("");
-  const [bpm, setBpm] = useState("");
-  const [key, setKey] = useState("");
+  const [form, setForm] = useState({
+    title: "",
+    artist: "",
+    duration: "",
+    bpm: "",
+    keyTone: ""
+  });
 
-  const handleCreate = () => {
+  const handleChange = (field, value) => {
+    setForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
-    const newSong = {
-      title,
-      artist,
-      duration,
-      bpm,
-      key
-    };
+  const handleCreate = async () => {
 
-    onCreate(newSong);
-    onClose();
+    try {
+
+      const newSong = await createSong(form);
+
+      if (!newSong || !newSong.id) {
+        alert("Error al crear canción");
+        return;
+      }
+
+      onCreate(newSong);
+
+      setForm({
+        title: "",
+        artist: "",
+        duration: "",
+        bpm: "",
+        keyTone: ""
+      });
+
+      onClose();
+
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -36,16 +60,18 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
         <Form.Group className="mb-3">
           <Form.Label>Título *</Form.Label>
           <Form.Control
+            value={form.title}
             placeholder="Nombre de la canción"
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => handleChange("title", e.target.value)}
           />
         </Form.Group>
 
         <Form.Group className="mb-3">
           <Form.Label>Artista *</Form.Label>
           <Form.Control
+            value={form.artist}
             placeholder="Nombre del artista"
-            onChange={(e) => setArtist(e.target.value)}
+            onChange={(e) => handleChange("artist", e.target.value)}
           />
         </Form.Group>
 
@@ -54,16 +80,18 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
           <div className="col-6">
             <Form.Label>Duración</Form.Label>
             <Form.Control
+              value={form.duration}
               placeholder="3:30"
-              onChange={(e) => setDuration(e.target.value)}
+              onChange={(e) => handleChange("duration", e.target.value)}
             />
           </div>
 
           <div className="col-6">
             <Form.Label>Tempo (BPM)</Form.Label>
             <Form.Control
+              value={form.bpm}
               placeholder="120"
-              onChange={(e) => setBpm(e.target.value)}
+              onChange={(e) => handleChange("bpm", e.target.value)}
             />
           </div>
 
@@ -72,7 +100,8 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
         <Form.Group className="mt-3">
           <Form.Label>Tonalidad</Form.Label>
           <Form.Control
-            onChange={(e) => setKey(e.target.value)}
+            value={form.keyTone}
+            onChange={(e) => handleChange("keyTone", e.target.value)}
           />
         </Form.Group>
 

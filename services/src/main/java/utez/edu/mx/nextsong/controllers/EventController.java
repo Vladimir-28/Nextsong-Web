@@ -22,6 +22,7 @@ public class EventController {
         return eventService.findAll();
     }
 
+
     @PostMapping
     public Event createEvent(@RequestBody Event event){
         return eventService.save(event);

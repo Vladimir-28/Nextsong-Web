@@ -1,95 +1,62 @@
 package utez.edu.mx.nextsong.models;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name="events")
 public class Event {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_seq")
-    @SequenceGenerator(name = "event_seq", sequenceName = "event_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String category;
 
     private String name;
 
-    private LocalDate eventDate;
-
-    private String location;
-
-    private String description;
+    private String category;
 
     private String status;
 
-    public Event(Long id, String name, LocalDate eventDate, String location, String description, String status, String category) {
-        this.id = id;
-        this.name = name;
-        this.eventDate = eventDate;
-        this.location = location;
-        this.description = description;
-        this.status = status;
-        this.category = category;
-    }
+    private String description;
 
-    public Event() {
-    }
+    private String location;
 
-    public Long getId() {
-        return id;
-    }
+    private String eventDate;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // 🔥 NO afecta BD
+    @Transient
+    private Integer songsCount;
 
-    public String getName() {
-        return name;
-    }
+    public Event(){}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public Long getId() { return id; }
 
-    public LocalDate getEventDate() {
-        return eventDate;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public void setEventDate(LocalDate eventDate) {
-        this.eventDate = eventDate;
-    }
+    public String getName() { return name; }
 
-    public String getLocation() {
-        return location;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+    public String getCategory() { return category; }
 
-    public String getDescription() {
-        return description;
-    }
+    public void setCategory(String category) { this.category = category; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getStatus() { return status; }
 
-    public String getStatus() {
-        return status;
-    }
+    public void setStatus(String status) { this.status = status; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public String getDescription() { return description; }
 
-    public String getCategory() {
-        return category;
-    }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    public String getLocation() { return location; }
+
+    public void setLocation(String location) { this.location = location; }
+
+    public String getEventDate() { return eventDate; }
+
+    public void setEventDate(String eventDate) { this.eventDate = eventDate; }
+
+    public Integer getSongsCount() { return songsCount; }
+
+    public void setSongsCount(Integer songsCount) { this.songsCount = songsCount; }
 }
