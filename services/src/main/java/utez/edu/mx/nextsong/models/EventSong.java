@@ -20,4 +20,29 @@ public class EventSong {
     private Song song;
 
     private Integer songOrder;
+
+    public EventSong(){}
+
+    public EventSong(Long id, Event event, Song song, Integer songOrder) {
+        this.id = id;
+        this.event = event;
+        this.song = song;
+        this.songOrder = songOrder;
+    }
+
+    public Long getId() { return id; }
+
+    public void setId(Long id) { this.id = id; }
+
+    public Event getEvent() { return event; }
+
+    public void setEvent(Event event) { this.event = event; }
+
+    public Song getSong() { return song; }
+
+    public void setSong(Song song) { this.song = song; }
+
+    public Integer getSongOrder() { return songOrder; }
+
+    public void setSongOrder(Integer songOrder) { this.songOrder = songOrder; }
 }

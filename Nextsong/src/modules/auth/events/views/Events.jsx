@@ -45,15 +45,15 @@ export default function Events() {
                     </p>
                 </div>
                 <button
-                   className="btn text-white d-flex justify-content-center align-items-center"
-                   style={{ backgroundColor: "#a56d49" }}
-                   onClick={() => setShowModal(true)}
+                    className="btn text-white d-flex justify-content-center align-items-center"
+                    style={{ backgroundColor: "#a56d49" }}
+                    onClick={() => setShowModal(true)}
 
                 >
-                   <FaPlus className="me-1" /> Crear Evento
+                    <FaPlus className="me-1" /> Crear Evento
                 </button>
 
-                
+
 
             </div>
 
@@ -65,13 +65,42 @@ export default function Events() {
 
             <div className="row">
 
-                {events.map((event) => (
-                    <EventCard
-                        key={event.id}
-                        event={event}
-                        onClick={() => openEvent(event)}
-                    />
-                ))}
+                {events.length === 0 ? (
+
+                    <div className="col-12 text-center py-5">
+
+                        <div className="text-muted">
+
+                            <h5 className="mb-2">Aún no hay eventos</h5>
+
+                            <p className="mb-3">
+                                Crea tu primer evento para comenzar a organizar canciones.
+                            </p>
+
+                            <button
+                                className="btn text-white"
+                                style={{ backgroundColor: "#a56d49" }}
+                                onClick={() => setShowModal(true)}
+                            >
+                                <FaPlus className="me-2" />
+                                Crear primer evento
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                ) : (
+
+                    events.map((event) => (
+                        <EventCard
+                            key={event.id}
+                            event={event}
+                            onClick={() => openEvent(event)}
+                        />
+                    ))
+
+                )}
 
             </div>
 
@@ -79,13 +108,14 @@ export default function Events() {
             <CreateEventModal
                 show={showModal}
                 onClose={() => setShowModal(false)}
+                onCreated={getEvents}
             />
 
         </div>
 
-        
 
-         
-            
+
+
+
     );
 }

@@ -1,13 +1,13 @@
-import { useNavigate } from "react-router-dom";
 import { BsChevronRight, BsPeople, BsMusicNote, BsCalendarEvent, BsBriefcase } from "react-icons/bs";
 import { LuChurch } from "react-icons/lu";
 
+// 🔥 mapear categorías a iconos
 const icons = {
-	people: <BsPeople size={20} />,
-	music: <BsMusicNote size={20} />,
-	calendar: <BsCalendarEvent size={20} />,
-	briefcase: <BsBriefcase size={20} />,
-	church: <LuChurch size={20} />
+	boda: <BsPeople size={20} />,
+	misa: <LuChurch size={20} />,
+	concierto: <BsMusicNote size={20} />,
+	ensayo: <BsCalendarEvent size={20} />,
+	corporativo: <BsBriefcase size={20} />
 };
 
 export default function EventCard({ event, onClick }) {
@@ -32,7 +32,7 @@ export default function EventCard({ event, onClick }) {
 							borderRadius: "10px"
 						}}
 					>
-						{icons[event.icon]}
+						{icons[event.category] || <BsCalendarEvent size={20} />}
 					</div>
 
 					<button className="btn p-0 border-0 bg-transparent">
@@ -41,14 +41,16 @@ export default function EventCard({ event, onClick }) {
 
 				</div>
 
-				<span className="badge bg-light text-dark mt-3">
-					{event.type}
+				<span className="badge bg-light text-dark mt-3 text-capitalize">
+					{event.category}
 				</span>
 
-				<h6 className="mt-2">{event.title}</h6>
+				<h6 className="mt-2">{event.name}</h6>
 
 				<small className="text-muted">
-					{event.date}
+					{event.eventDate
+						? new Date(event.eventDate).toLocaleDateString()
+						: "Sin fecha"}
 				</small>
 
 				<hr />

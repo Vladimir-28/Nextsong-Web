@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5173/events.json";
+const API_URL = "http://localhost:8080/events";
 
 const headers = {
     "Content-Type": "application/json",
@@ -11,18 +11,31 @@ const EventsController = {};
 EventsController.findAll = async () => {
     const response = await fetch(API_URL, {
         method: "GET",
-        headers: headers
+        headers
     });
 
     return await response.json();
 };
 
-// obtener un evento por id
+// obtener por id
 EventsController.findById = async (id) => {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: "GET",
+        headers
+    });
 
-    const events = await EventsController.findAll();
+    return await response.json();
+};
 
-    return events.find(e => e.id === parseInt(id));
+// crear evento
+EventsController.create = async (event) => {
+    const response = await fetch(API_URL, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(event)
+    });
+
+    return await response.json();
 };
 
 export default EventsController;
