@@ -1,15 +1,16 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import '../styles/style.css';
 import { RxExit } from "react-icons/rx";
 import { FaPlus } from "react-icons/fa";
-import CreateIndepiendentSong from '../modules/auth/songs/views/CreateIndepiendentSong';
+import CreateIndependentSong from '../modules/auth/songs/views/CreateIndependentSong';
 import { useState } from 'react';
 import CreateEventModal from '../modules/auth/events/components/CreateEventModal';
+
 
 export default function CustomSidebar() {
 	const [showModalSong, setShowModalSong] = useState(false);
 	const [showModalEvent, setShowModalEvent] = useState(false);
-
+	
 	return (
 		<div
 			className="offcanvas offcanvas-start sidebar p-3 shadow"
@@ -86,15 +87,18 @@ export default function CustomSidebar() {
 
 
 			<div className='border-top p-2'>
+				
 				<button className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-50"
 				
 				>
 					<RxExit className='me-1' /> Cerrar sesión
 				</button>
+				
+				
 			</div>
 			{/* MODAL DE CREAR CANCION  INDEPENDIENTE*/}
 
-			<CreateIndepiendentSong show={showModalSong}
+			<CreateIndependentSong show={showModalSong}
 				onClose={() => setShowModalSong(false)} />
 
 			<CreateEventModal show={showModalEvent}

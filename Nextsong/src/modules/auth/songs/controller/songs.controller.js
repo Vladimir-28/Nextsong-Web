@@ -1,15 +1,19 @@
-export default function SongsController () {}
+const API_URL = "http://localhost:8080/songs";
 
-const API_URL = "http://localhost:5173/songs.json";
-const headers = {
-    ContentType: "application/json",
-    Accept: "application/json"
-}
+const SongsController = {
 
-SongsController.findAll = async () => await fetch(API_URL, {
-    method: 'GET',
-    headers: headers
-})
-.then(response => response.json())
-.then(result => result)
-.catch(console.log);
+    findAll: async () => {
+        const response = await fetch(API_URL);
+
+        const text = await response.text();
+
+        if (!response.ok) {
+            throw new Error(text);
+        }
+
+        return text ? JSON.parse(text) : [];
+    }
+
+};
+
+export default SongsController;

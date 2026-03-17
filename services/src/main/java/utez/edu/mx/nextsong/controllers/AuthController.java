@@ -1,4 +1,5 @@
 package utez.edu.mx.nextsong.controllers;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import utez.edu.mx.nextsong.repositories.UserRepository;
 import utez.edu.mx.nextsong.models.User;
@@ -26,4 +27,22 @@ public class AuthController {
 
         throw new RuntimeException("Credenciales incorrectas");
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody User user){
+
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
+
+        if(existingUser.isPresent()){
+            return ResponseEntity.badRequest().body("El correo ya está registrado");
+        }
+
+        user.setStatus("ACTIVE");
+        User savedUser = userRepository.save(user);
+
+        return ResponseEntity.ok(savedUser);
+    }
+
+
+
 }
