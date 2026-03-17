@@ -34,12 +34,11 @@ export default function CreateEventStep2({ eventData, updateEvent, prevStep, cre
     };
 
     const handleDrop = (event) => {
-
         event.preventDefault();
-
+    
         const song = JSON.parse(event.dataTransfer.getData("song"));
-
-        if (!selectedSongs.find(s => s.title === song.title)) {
+    
+        if (!selectedSongs.find(s => s.id === song.id)) {
             setSelectedSongs([...selectedSongs, song]);
         }
     };
@@ -49,11 +48,9 @@ export default function CreateEventStep2({ eventData, updateEvent, prevStep, cre
     --------------------------- */
 
     const addSong = (song) => {
-
-        if (!selectedSongs.find(s => s.title === song.title)) {
+        if (!selectedSongs.find(s => s.id === song.id)) {
             setSelectedSongs([...selectedSongs, song]);
         }
-
     };
 
     const removeSong = (index) => {
@@ -81,7 +78,7 @@ export default function CreateEventStep2({ eventData, updateEvent, prevStep, cre
     --------------------------- */
 
     const filteredSongs = availableSongs.filter(
-        song => !selectedSongs.find(s => s.title === song.title)
+        song => !selectedSongs.find(s => s.id === song.id)
     );
 
     return (
