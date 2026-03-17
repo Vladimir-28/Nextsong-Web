@@ -86,7 +86,9 @@ export default function CustomSidebar() {
 
 
 			<div className='border-top p-2'>
-				<button className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-50">
+				<button className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-50"
+				
+				>
 					<RxExit className='me-1' /> Cerrar sesión
 				</button>
 			</div>
