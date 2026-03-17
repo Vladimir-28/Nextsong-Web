@@ -7,7 +7,7 @@ export default function PublicRouter({setSession}){
     return(
     <Routes>
         <Route path="/login" element={ <Login setSession={setSession}/>} />
-        <Route path="/" element={ <Login/>} />
+        <Route path="/" element={ <Login setSession={setSession}/>} />
         <Route path="/recovery" element={ <RecoveryPassword/>} />
         <Route path="/signUp" element={ <SignUp/>} />
          
