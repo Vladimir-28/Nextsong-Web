@@ -7,7 +7,12 @@ import jakarta.persistence.*;
 public class Event {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "events_seq_gen")
+    @SequenceGenerator(
+            name = "events_seq_gen",
+            sequenceName = "EVENTS_SEQ",
+            allocationSize = 1
+    )
     private Long id;
 
     private String name;
@@ -22,7 +27,7 @@ public class Event {
 
     private String eventDate;
 
-    // 🔥 NO afecta BD
+
     @Transient
     private Integer songsCount;
 
