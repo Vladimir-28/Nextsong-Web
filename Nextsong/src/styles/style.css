@@ -42,3 +42,15 @@
   .btn-primary-custom:hover{
     background:#744c30;
   }
+
+  .top-navbar {
+    height: 70px;
+    z-index: 1050;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .main-content {
+    margin-top: 70px;
+    padding: 15px; 
+  }

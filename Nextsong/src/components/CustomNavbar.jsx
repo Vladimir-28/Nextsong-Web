@@ -10,7 +10,7 @@ export default function CustomNavbar({setSession}) {
         navigate("/");
     }
 	return (
-		<nav className="navbar top-navbar px-3 d-flex align-items-center">
+		<nav className="navbar top-navbar px-3 d-flex align-items-center fixed-top">
 
 			<button
 				className="btn d-flex align-items-center"
