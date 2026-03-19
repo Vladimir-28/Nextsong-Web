@@ -55,7 +55,7 @@ export default function User() {
 
       alert("Datos actualizados");
 
-      // actualizar vista (arriba)
+      // actualizar vista 
       setUser(prev => ({
         ...prev,
         fullName: form.fullName
@@ -83,7 +83,7 @@ export default function User() {
         </p>
       </div>
 
-      {/* Card (MISMO DISEÑO) */}
+      {/* Card */}
       <div className="card shadow-sm border-0 mb-4 p-3">
         <div className="d-flex align-items-center">
 
@@ -108,7 +108,7 @@ export default function User() {
                 {user.fullName}
               </h5>
 
-              {/* tus badges intactos */}
+              
               <span className="badge bg-secondary-subtle text-dark border">
                 Administrador
               </span>
@@ -129,7 +129,7 @@ export default function User() {
         </div>
       </div>
 
-      {/* Form (MISMO DISEÑO) */}
+      {/* Form */}
       <div className="card shadow-sm border-0 p-4">
 
         <div className="d-flex justify-content-between align-items-center mb-3">
