@@ -7,9 +7,15 @@ import { useState } from 'react';
 import CreateEventModal from '../modules/auth/events/components/CreateEventModal';
 
 
-export default function CustomSidebar() {
+export default function CustomSidebar({setSession}) {
 	const [showModalSong, setShowModalSong] = useState(false);
 	const [showModalEvent, setShowModalEvent] = useState(false);
+	const navigate = useNavigate();
+    const closeSession = () => {
+        sessionStorage.removeItem("user");
+        setSession(false);
+        navigate("/");
+    }
 	
 	return (
 		<div
@@ -84,22 +90,22 @@ export default function CustomSidebar() {
 
 			</div>
 
-
-
 			<div className='border-top p-2'>
 				
 				<button className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-50"
-				
+					onClick={() => closeSession()}
 				>
 					<RxExit className='me-1' /> Cerrar sesión
-				</button>
-				
+				</button>	
 				
 			</div>
+
 			{/* MODAL DE CREAR CANCION  INDEPENDIENTE*/}
 
 			<CreateIndependentSong show={showModalSong}
 				onClose={() => setShowModalSong(false)} />
+			
+			{/* MODAL DE CREAR EVENTO*/}
 
 			<CreateEventModal show={showModalEvent}
 				onClose={() => setShowModalEvent(false)} />
