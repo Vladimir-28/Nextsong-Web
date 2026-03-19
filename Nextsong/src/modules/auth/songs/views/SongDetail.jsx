@@ -63,6 +63,12 @@ export default function SongDetail() {
                         {song.status}
                     </span>
                 </div>
+                <div className="d-flex justify-content-between mb-2">
+                    <span className="text-muted">Letra</span>
+                    <strong>{song.lyrics}</strong>
+                </div>
+
+                
 
             </div>
         </div>

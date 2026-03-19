@@ -4,12 +4,14 @@ import { FaPlus } from "react-icons/fa";
 import EventCard from "../components/EventCard";
 import EventsController from "../controller/events.controller";
 import CreateEventModal from "../components/CreateEventModal";
+import { FaSearch } from "react-icons/fa";
 
 export default function Events() {
 
     const [events, setEvents] = useState([]);
     const [alert, setAlert] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [search, setSearch] = useState("");
 
     const navigate = useNavigate();
 
@@ -33,10 +35,17 @@ export default function Events() {
         getEvents();
     }, []);
 
+
+    const filteredEvents = events.filter((event) =>
+    event.name?.toLowerCase().includes(search.toLowerCase()) ||
+    event.eventDate?.toLowerCase().includes(search.toLowerCase())
+);
+
     return (
         <div className="container mt-4">
 
             <div className="d-flex justify-content-between align-items-center mb-4">
+                
 
                 <div>
                     <h4 className="fw-semibold">Mis Eventos</h4>
@@ -44,6 +53,9 @@ export default function Events() {
                         Selecciona un evento para ver sus canciones
                     </p>
                 </div>
+                <div className="mb-3">
+  
+        </div>
                 <button
                     className="btn text-white d-flex justify-content-center align-items-center"
                     style={{ backgroundColor: "#a56d49" }}
@@ -52,9 +64,23 @@ export default function Events() {
                 >
                     <FaPlus className="me-1" /> Crear Evento
                 </button>
-
-
-
+            
+           
+            </div>
+              {/* 🔍 BUSCADOR */}
+            <div className="mb-3">
+                <div className="input-group">
+                    <span className="input-group-text">
+                        <FaSearch color="#6c757d" />
+                    </span>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Buscar canción..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
             </div>
 
             {alert && (
@@ -65,7 +91,7 @@ export default function Events() {
 
             <div className="row">
 
-                {events.length === 0 ? (
+                {filteredEvents.length === 0 ? (
 
                     <div className="col-12 text-center py-5">
 
@@ -92,7 +118,7 @@ export default function Events() {
 
                 ) : (
 
-                    events.map((event) => (
+                   filteredEvents.map((event) => (
                         <EventCard
                             key={event.id}
                             event={event}

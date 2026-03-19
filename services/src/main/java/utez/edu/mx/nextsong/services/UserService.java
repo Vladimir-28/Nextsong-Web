@@ -11,11 +11,22 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User register(User user) {
+    public User getCurrentUser() {
+        return userRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
 
-        // Validación correcta
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("El correo ya existe");
+    public User updateUser(User updatedUser) {
+
+        User user = userRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+
+        user.setFullName(updatedUser.getFullName());
+
+
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            user.setPassword(updatedUser.getPassword());
         }
 
         return userRepository.save(user);
