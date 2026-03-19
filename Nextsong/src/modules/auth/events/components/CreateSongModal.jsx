@@ -9,7 +9,9 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
     artist: "",
     duration: "",
     bpm: "",
-    keyTone: ""
+    keyTone: "",
+    lyrics: ""
+
   });
 
   const handleChange = (field, value) => {
@@ -37,7 +39,8 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
         artist: "",
         duration: "",
         bpm: "",
-        keyTone: ""
+        keyTone: "",
+        lyrics:""
       });
 
       onClose();
@@ -104,6 +107,17 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
             onChange={(e) => handleChange("keyTone", e.target.value)}
           />
         </Form.Group>
+
+        <Form.Group className="mt-3">
+          <Form.Label>Letra</Form.Label>
+            <Form.Control
+                 as="textarea"
+                 rows={4}
+                 placeholder="Escribe la letra de la canción..."
+                 value={form.lyrics}
+                onChange={(e) => handleChange("lyrics", e.target.value)}
+               />
+             </Form.Group>
 
       </Modal.Body>
 

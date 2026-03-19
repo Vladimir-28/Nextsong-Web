@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import SongCard from "../components/SongCard";
 import SongsController from "../controller/songs.controller";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import CreateIndependentSong from "./CreateIndependentSong";
 
 export default function Songs() {
 
     const [songs, setSongs] = useState([]);
     const [showModalSong, setShowModalSong] = useState(false);
+    const [search, setSearch] = useState(""); // 🔍 NUEVO
 
     const getSongs = async () => {
         try {
@@ -22,6 +23,14 @@ export default function Songs() {
     useEffect(() => {
         getSongs();
     }, []);
+
+    // 🔍 FILTRO
+    const filteredSongs = search
+        ? songs.filter((song) =>
+            song.title?.toLowerCase().includes(search.toLowerCase()) ||
+            song.author?.toLowerCase().includes(search.toLowerCase())
+        )
+        : songs;
 
     return (
         <div className="container mt-4">
@@ -45,15 +54,35 @@ export default function Songs() {
 
             </div>
 
+            {/* 🔍 BUSCADOR */}
+            <div className="mb-3">
+                <div className="input-group">
+                    <span className="input-group-text">
+                        <FaSearch color="#6c757d" />
+                    </span>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Buscar canción..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
+            </div>
+
             <div className="row">
-                {songs.length === 0 ? (
+                {filteredSongs.length === 0 ? (
                     <div className="alert alert-secondary rounded-4">
-                        <span>De momento, no hay registros...</span>
+                        <span>
+                            {search
+                                ? "No se encontraron canciones"
+                                : "De momento, no hay registros..."}
+                        </span>
                     </div>
                 ) : (
-           songs.map((song, index) => (
-    <SongCard key={index} item={song} />
-))
+                    filteredSongs.map((song, index) => (
+                        <SongCard key={index} item={song} />
+                    ))
                 )}
             </div>
 
@@ -62,7 +91,7 @@ export default function Songs() {
                 show={showModalSong}
                 onClose={() => {
                     setShowModalSong(false);
-                    getSongs(); // 🔥 recarga automática
+                    getSongs();
                 }}
             />
 

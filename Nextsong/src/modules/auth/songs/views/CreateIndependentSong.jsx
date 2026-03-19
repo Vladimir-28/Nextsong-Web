@@ -10,6 +10,7 @@ export default function CreateIndependentSong({ show, onClose }) {
   const [duration, setDuration] = useState("");
   const [bpm, setBpm] = useState("");
   const [keyTone, setKeyTone] = useState("");
+  const [lyrics, setLyrics] = useState("");
 
   const handleCreateSong = async () => {
     try {
@@ -18,7 +19,8 @@ export default function CreateIndependentSong({ show, onClose }) {
         artist,
         duration,
         bpm,
-        keyTone
+        keyTone,
+        lyrics
       });
 
       alert("Canción creada");
@@ -29,6 +31,7 @@ export default function CreateIndependentSong({ show, onClose }) {
       setDuration("");
       setBpm("");
       setKeyTone("");
+      setLyrics("");
 
       onClose();
 
@@ -57,8 +60,8 @@ export default function CreateIndependentSong({ show, onClose }) {
               <div
                 className="p-4 rounded"
                 style={{
-                  backgroundColor: "#d7c8bd",
-                  border: "1px solid #b89e8c"
+                  backgroundColor: "#ffff",
+                  border: "1px solid #fff"
                 }}
               >
                 <h6 className="fw-bold mb-3">
@@ -115,6 +118,16 @@ export default function CreateIndependentSong({ show, onClose }) {
                       onChange={(e) => setKeyTone(e.target.value)}
                     />
                   </div>
+                  <div className="col-12">
+                   <label className="form-label">Letra *</label>
+                <textarea
+                 className="form-control"
+                 placeholder="Escribe la letra de la canción..."
+                 rows={4}
+                 value={lyrics}
+                onChange={(e) => setLyrics(e.target.value)}
+                />
+               </div>
 
                 </div>
               </div>
