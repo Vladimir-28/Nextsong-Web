@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { FiClock, FiMusic, FiActivity } from "react-icons/fi";
 
 export default function SongDetail() {
 
@@ -23,52 +24,97 @@ export default function SongDetail() {
     if (!song) {
         return (
             <div className="d-flex justify-content-center align-items-center" style={{ height: "80vh" }}>
-                <p>Cargando...</p>
+                <p className="text-muted">Cargando...</p>
             </div>
         );
     }
 
-    return (
-        <div 
-            className="d-flex justify-content-center align-items-center"
-            style={{ minHeight: "80vh" }}
-        >
-            <div className="card shadow-lg p-4" style={{ width: "400px" }}>
+    const statusColor = song.status === "ACTIVE" ? "success" : "secondary";
 
-                <div className="text-center mb-3">
-                    <h4 className="fw-bold">{song.title}</h4>
-                    <p className="text-muted mb-0">{song.author}</p>
+    return (
+        <div
+            className="d-flex justify-content-center align-items-center p-4"
+            style={{
+                minHeight: "100vh",
+                background: "#f5f7fb"
+            }}
+        >
+            <div
+                className="card border-0 shadow-lg p-4"
+                style={{
+                    width: "500px",
+                    borderRadius: "20px"
+                }}
+            >
+
+                {/* HEADER */}
+                <div className="text-center mb-4">
+                    <div
+                        className="d-inline-flex align-items-center justify-content-center mb-2"
+                        style={{
+                            width: "60px",
+                            height: "60px",
+                            borderRadius: "15px",
+                            background: "#e9ecef"
+                        }}
+                    >
+                        <FiMusic size={28} />
+                    </div>
+
+                    <h3 className="fw-bold mb-1">{song.title}</h3>
+                    <p className="text-muted">{song.author}</p>
+                </div>
+
+                {/* INFO */}
+                <div className="mb-3">
+
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span className="text-muted">
+                            <FiClock className="me-1" /> Duración
+                        </span>
+                        <strong>{song.duration}</strong>
+                    </div>
+
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span className="text-muted">
+                            <FiActivity className="me-1" /> BPM
+                        </span>
+                        <strong>{song.bpm}</strong>
+                    </div>
+
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span className="text-muted">🎼 Tonalidad</span>
+                        <strong>{song.keyTone}</strong>
+                    </div>
+
+                    <div className="d-flex justify-content-between align-items-center">
+                        <span className="text-muted">Estado</span>
+                        <span className={`badge bg-${statusColor} px-3 py-2`}>
+                            {song.status}
+                        </span>
+                    </div>
                 </div>
 
                 <hr />
 
-                <div className="d-flex justify-content-between mb-2">
-                    <span className="text-muted">Duración</span>
-                    <strong>{song.duration}</strong>
-                </div>
+                {/* LETRA */}
+                <div>
+                    <p className="text-muted fw-semibold mb-2">Letra</p>
 
-                <div className="d-flex justify-content-between mb-2">
-                    <span className="text-muted">BPM</span>
-                    <strong>{song.bpm}</strong>
+                    <div
+                        style={{
+                            maxHeight: "200px",
+                            overflowY: "auto",
+                            background: "#f8f9fa",
+                            padding: "12px",
+                            borderRadius: "10px",
+                            lineHeight: "1.6",
+                            fontSize: "14px"
+                        }}
+                    >
+                        {song.lyrics}
+                    </div>
                 </div>
-
-                <div className="d-flex justify-content-between mb-2">
-                    <span className="text-muted">Tonalidad</span>
-                    <strong>{song.keyTone}</strong>
-                </div>
-
-                <div className="d-flex justify-content-between">
-                    <span className="text-muted">Estado</span>
-                    <span className="badge bg-success">
-                        {song.status}
-                    </span>
-                </div>
-                <div className="d-flex justify-content-between mb-2">
-                    <span className="text-muted">Letra</span>
-                    <strong>{song.lyrics}</strong>
-                </div>
-
-                
 
             </div>
         </div>
