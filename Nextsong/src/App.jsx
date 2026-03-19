@@ -5,7 +5,7 @@ import PublicRouter from "./modules/router/PublicRouter";
 import CustomNavbar from "./components/CustomNavbar";
 import Header from "./modules/access/components/Header";
 import CustomSidebar from "./components/CustomSidebar";
-
+import './styles/style.css'
 function App() {
 
   const [session, setSession] = useState(
@@ -15,21 +15,19 @@ function App() {
   return (
     <>
       {session ? (
-
         <>
           <CustomNavbar setSession={setSession} />
-          <CustomSidebar setSession={setSession}/>
-          <AuthRouter  />
+          <CustomSidebar setSession={setSession} />
+
+          <div className="main-content">
+            <AuthRouter />
+          </div>
         </>
-
       ) : (
-
         <>
           <Header />
           <PublicRouter setSession={setSession} />
-          
         </>
-
       )}
     </>
   );
