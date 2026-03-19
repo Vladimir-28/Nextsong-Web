@@ -28,7 +28,7 @@ export default function CreateEventModal({ show, onClose, onCreated }) {
 
     try {
 
-      // ✅ 1. Crear evento
+      //  1. Crear evento
       const newEvent = await EventsController.create({
         name: eventData.name,
         eventDate: new Date(eventData.date).toISOString().split("T")[0],
@@ -43,7 +43,7 @@ export default function CreateEventModal({ show, onClose, onCreated }) {
         return;
       }
 
-      // ✅ 2. Agregar canciones (solo si hay)
+      //  2. Agregar canciones (solo si hay)
       if (eventData.songs.length > 0) {
         await EventSongsController.addSongsToEvent(
           newEvent.id,
@@ -51,10 +51,10 @@ export default function CreateEventModal({ show, onClose, onCreated }) {
         );
       }
 
-      // ✅ 3. refrescar
+      //  3. refrescar
       if (onCreated) onCreated();
 
-      // ✅ 4. reset
+      //  4. reset
       setEventData({
         name: "",
         type: "",

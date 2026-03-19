@@ -17,8 +17,8 @@ function App() {
       {session ? (
 
         <>
-          <CustomNavbar   />
-          <CustomSidebar   setSession={setSession}/>
+          <CustomNavbar setSession={setSession} />
+          <CustomSidebar setSession={setSession}/>
           <AuthRouter  />
         </>
 

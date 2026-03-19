@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 Nextsong/node_modules
+services/Wallet_NextSong
 dist
 dist-ssr
 *.local

@@ -1,7 +1,14 @@
+import { useNavigate } from 'react-router';
 import '../styles/style.css';
 import { RxExit } from "react-icons/rx";
 
-export default function CustomNavbar() {
+export default function CustomNavbar({setSession}) {
+	const navigate = useNavigate();
+    const closeSession = () => {
+        sessionStorage.removeItem("user");
+        setSession(false);
+        navigate("/");
+    }
 	return (
 		<nav className="navbar top-navbar px-3 d-flex align-items-center">
 
@@ -21,7 +28,7 @@ export default function CustomNavbar() {
 				<span className="fw-semibold">NextSong</span>
 			</div>
 
-			<button className="btn btn-outline-danger btn-sm border-0 d-flex justify-content-center align-items-center">
+			<button onClick={() => closeSession()} className="btn btn-outline-danger btn-sm border-0 d-flex justify-content-center align-items-center">
 				<RxExit className='me-1' /> Cerrar sesión
 			</button>
 
