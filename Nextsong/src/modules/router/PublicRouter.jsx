@@ -11,7 +11,8 @@ export default function PublicRouter({setSession}){
         <Route path="/" element={ <Navigate to="/login" /> } />
         <Route path="/recovery" element={ <RecoveryPassword/>} />
         <Route path="/signUp" element={ <SignUp/>} />
-        
+        <Route path="/*" element={ <Navigate to="/" /> } />
+
          
         
         

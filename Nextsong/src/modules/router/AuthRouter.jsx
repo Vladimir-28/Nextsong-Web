@@ -16,6 +16,8 @@ export default function AuthRouter(){
         <Route path="/songs" element={<Songs/>} />
         <Route path="/events" element={<Events/>} />
         <Route path="/users" element={<User/>} />
+        <Route path="/*" element={ <Navigate to="/" /> } />
+
         
 
         {/* Rutas dinámicas */}

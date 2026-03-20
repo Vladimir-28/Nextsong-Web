@@ -12,7 +12,7 @@ export default function SongCard({ item }) {
             onClick={() => navigate(`/songs/${item.id}`)}
             style={{ cursor: "pointer" }}
         >
-            <div className="card shadow-sm h-100">
+            <div className="card h-100">
 
                 <div className="card-body">
 
