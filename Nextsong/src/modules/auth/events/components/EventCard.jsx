@@ -16,7 +16,7 @@ export default function EventCard({ event, onClick }) {
 		<div className="col-md-4 mb-4">
 
 			<div
-				className="card shadow-sm h-100 p-3"
+				className="card h-100 p-3"
 				style={{ cursor: "pointer" }}
 				onClick={onClick}
 			>
