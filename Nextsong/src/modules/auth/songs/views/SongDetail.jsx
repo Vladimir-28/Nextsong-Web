@@ -36,86 +36,91 @@ export default function SongDetail() {
             className="d-flex justify-content-center align-items-center p-4"
             style={{
                 minHeight: "100vh",
-                background: "#f5f7fb"
+                background: "#ffff"
             }}
         >
             <div
                 className="card border-0 shadow-lg p-4"
                 style={{
-                    width: "500px",
-                    borderRadius: "20px"
+                    width: "100%", 
+                    maxWidth: "900px", 
+                    borderRadius: "20px", 
+                    padding: "30px",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start"
                 }}
             >
+                {/* INFO COLUMN */}
+                <div style={{ flex: 1, marginRight: "20px" }}>
+                    <div className="text-center mb-4">
+                        <div
+                            className="d-inline-flex align-items-center justify-content-center mb-2"
+                            style={{
+                                width: "70px",
+                                height: "70px",
+                                borderRadius: "15px",
+                                background: "#e9ecef"
+                            }}
+                        >
+                            <FiMusic size={30} />
+                        </div>
 
-                {/* HEADER */}
-                <div className="text-center mb-4">
-                    <div
-                        className="d-inline-flex align-items-center justify-content-center mb-2"
-                        style={{
-                            width: "60px",
-                            height: "60px",
-                            borderRadius: "15px",
-                            background: "#e9ecef"
-                        }}
-                    >
-                        <FiMusic size={28} />
+                        <h3 className="fw-bold mb-1">{song.title}</h3>
+                        <p className="text-muted">{song.author}</p>
                     </div>
 
-                    <h3 className="fw-bold mb-1">{song.title}</h3>
-                    <p className="text-muted">{song.author}</p>
-                </div>
+                    {/* INFO */}
+                    <div className="mb-4">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <span className="text-muted">
+                                <FiClock className="me-1" /> Duración
+                            </span>
+                            <strong>{song.duration}</strong>
+                        </div>
 
-                {/* INFO */}
-                <div className="mb-3">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <span className="text-muted">
+                                <FiActivity className="me-1" /> BPM
+                            </span>
+                            <strong>{song.bpm}</strong>
+                        </div>
 
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                        <span className="text-muted">
-                            <FiClock className="me-1" /> Duración
-                        </span>
-                        <strong>{song.duration}</strong>
-                    </div>
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <span className="text-muted">🎼 Tonalidad</span>
+                            <strong>{song.keyTone}</strong>
+                        </div>
 
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                        <span className="text-muted">
-                            <FiActivity className="me-1" /> BPM
-                        </span>
-                        <strong>{song.bpm}</strong>
-                    </div>
-
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                        <span className="text-muted">🎼 Tonalidad</span>
-                        <strong>{song.keyTone}</strong>
-                    </div>
-
-                    <div className="d-flex justify-content-between align-items-center">
-                        <span className="text-muted">Estado</span>
-                        <span className={`badge bg-${statusColor} px-3 py-2`}>
-                            {song.status}
-                        </span>
-                    </div>
-                </div>
-
-                <hr />
-
-                {/* LETRA */}
-                <div>
-                    <p className="text-muted fw-semibold mb-2">Letra</p>
-
-                    <div
-                        style={{
-                            maxHeight: "200px",
-                            overflowY: "auto",
-                            background: "#f8f9fa",
-                            padding: "12px",
-                            borderRadius: "10px",
-                            lineHeight: "1.6",
-                            fontSize: "14px"
-                        }}
-                    >
-                        {song.lyrics}
+                        <div className="d-flex justify-content-between align-items-center">
+                            <span className="text-muted">Estado</span>
+                            <span className={`badge bg-${statusColor} px-3 py-2`}>
+                                {song.status}
+                            </span>
+                        </div>
                     </div>
                 </div>
 
+                {/* LETRA COLUMN */}
+                <div style={{ flex: 1 }}>
+                    <div>
+                        <p className="text-muted fw-semibold mb-2">Letra</p>
+
+                        <div
+                            style={{
+                                maxHeight: "300px",
+                                overflowY: "auto",
+                                background: "#f8f9fa",
+                                padding: "12px",
+                                borderRadius: "10px",
+                                lineHeight: "1.6",
+                                fontSize: "14px"
+                            }}
+                        >
+                            {song.lyrics}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

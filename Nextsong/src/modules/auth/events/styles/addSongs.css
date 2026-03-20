@@ -33,13 +33,13 @@
 }
 
 .drop-zone {
-    border: 2px dashed #d1c3b7;
-    background: #faf7f4;
+    border: 2px dashed #ffff;
+    background: #ffff;
     transition: 0.2s;
 }
 
 .drop-zone:hover {
-    background: #f4ede8;
+    background: #ffff;
 }
 
 .song-card {

@@ -92,7 +92,7 @@ export default function CustomSidebar({setSession}) {
 
 			<div className='border-top p-2'>
 				
-				<button className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-50"
+				<button className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-100"
 					onClick={() => closeSession()}
 				>
 					<RxExit className='me-1' /> Cerrar sesión
