@@ -5,6 +5,7 @@ import Home from "../auth/home/Home";
 import EventDetail from "../auth/events/views/EventDetail";
 import User from "../auth/user/view/User";
 import SongDetail from "../auth/songs/views/SongDetail";
+import Error404 from "../errors/Error404";
 
 
 export default function AuthRouter(){
@@ -16,7 +17,7 @@ export default function AuthRouter(){
         <Route path="/songs" element={<Songs/>} />
         <Route path="/events" element={<Events/>} />
         <Route path="/users" element={<User/>} />
-        
+        <Route path="*" element={<Error404/>} />
 
         {/* Rutas dinámicas */}
         <Route path="/events/:id" element={<EventDetail/>} />
