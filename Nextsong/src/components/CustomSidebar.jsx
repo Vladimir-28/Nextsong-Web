@@ -6,17 +6,23 @@ import CreateIndependentSong from '../modules/auth/songs/views/CreateIndependent
 import { useState } from 'react';
 import CreateEventModal from '../modules/auth/events/components/CreateEventModal';
 
+export default function CustomSidebar({ setSession }) {
 
-export default function CustomSidebar({setSession}) {
 	const [showModalSong, setShowModalSong] = useState(false);
 	const [showModalEvent, setShowModalEvent] = useState(false);
+
 	const navigate = useNavigate();
-    const closeSession = () => {
-        sessionStorage.removeItem("user");
-        setSession(false);
-        navigate("/");
-    }
-	
+
+	// Obtener usuario y validar admin
+	const user = JSON.parse(sessionStorage.getItem("user"));
+	const isAdmin = user?.role === "ADMIN";
+
+	const closeSession = () => {
+		sessionStorage.removeItem("user");
+		setSession(false);
+		navigate("/");
+	}
+
 	return (
 		<div
 			className="offcanvas offcanvas-start sidebar p-3 shadow"
@@ -71,44 +77,61 @@ export default function CustomSidebar({setSession}) {
 					</li>
 
 				</ul>
-				<div className="mt-5">
-					<button
-						className="btn text-white d-flex justify-content-start align-items-center  w-100 mb-2"
-						style={{ backgroundColor: "#a56d49" }}
-						onClick={() => setShowModalEvent(true)}
-					>
-						<FaPlus className="me-1" /> Crear Evento
-					</button>
-					<button
-						className="btn text-white d-flex justify-content-start align-items-center w-100"
-						style={{ backgroundColor: "#a56d49" }}
-						onClick={() => setShowModalSong(true)}
-					>
-						<FaPlus className="me-1" /> Agregar Canción Independiente
-					</button>
-				</div>
+
+				{isAdmin && (
+					<div className="mt-5">
+						<button
+							className="btn text-white d-flex justify-content-start align-items-center w-100 mb-2"
+							style={{ backgroundColor: "#a56d49" }}
+							onClick={() => setShowModalEvent(true)}
+						>
+							<FaPlus className="me-1" /> Crear Evento
+						</button>
+
+						<button
+							className="btn text-white d-flex justify-content-start align-items-center w-100"
+							style={{ backgroundColor: "#a56d49" }}
+							onClick={() => setShowModalSong(true)}
+						>
+							<FaPlus className="me-1" /> Agregar Canción Independiente
+						</button>
+					</div>
+				)}
 
 			</div>
 
 			<div className='border-top p-2'>
+<<<<<<< HEAD
 				
 				<button className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-100"
 					onClick={() => closeSession()}
+=======
+
+				<button
+					className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-50"
+					onClick={closeSession}
+>>>>>>> develop
 				>
 					<RxExit className='me-1' /> Cerrar sesión
-				</button>	
-				
+				</button>
+
 			</div>
 
-			{/* MODAL DE CREAR CANCION  INDEPENDIENTE*/}
+			{/* MODALES SOLO EXISTEN SI ES ADMIN */}
+			{isAdmin && (
+				<>
+					<CreateIndependentSong
+						show={showModalSong}
+						onClose={() => setShowModalSong(false)}
+					/>
 
-			<CreateIndependentSong show={showModalSong}
-				onClose={() => setShowModalSong(false)} />
-			
-			{/* MODAL DE CREAR EVENTO*/}
+					<CreateEventModal
+						show={showModalEvent}
+						onClose={() => setShowModalEvent(false)}
+					/>
+				</>
+			)}
 
-			<CreateEventModal show={showModalEvent}
-				onClose={() => setShowModalEvent(false)} />
 		</div>
 	);
 }
