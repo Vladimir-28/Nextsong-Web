@@ -1,4 +1,5 @@
 package utez.edu.mx.nextsong.controllers;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import utez.edu.mx.nextsong.dto.UserDTO;
@@ -9,12 +10,13 @@ import utez.edu.mx.nextsong.models.User;
 import utez.edu.mx.nextsong.dto.LoginRequest;
 
 import java.util.Optional;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
-    private final UserRepository userRepository;
 
+    private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
     public AuthController(UserRepository userRepository, RoleRepository roleRepository){
@@ -31,12 +33,20 @@ public class AuthController {
 
             User user = userOpt.get();
 
+            // 🔴 VALIDACIÓN AGREGADA
+            String roleName;
+            if (user.getRole() != null) {
+                roleName = user.getRole().getName();
+            } else {
+                return ResponseEntity.status(500).body("El usuario no tiene rol asignado");
+            }
+
             UserDTO dto = new UserDTO(
                     user.getId(),
                     user.getFullName(),
                     user.getEmail(),
                     user.getStatus(),
-                    user.getRole().getName()
+                    roleName
             );
 
             return ResponseEntity.ok(dto);
@@ -64,7 +74,4 @@ public class AuthController {
 
         return ResponseEntity.ok(savedUser);
     }
-
-
-
 }

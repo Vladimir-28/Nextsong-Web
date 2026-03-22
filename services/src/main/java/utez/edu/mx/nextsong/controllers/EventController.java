@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/events")
-@CrossOrigin(origins ="http://localhost:5173")
+@CrossOrigin(origins = "*") // Permitimos acceso desde cualquier origen (móvil y web)
 public class EventController {
 
     private final EventService eventService;
@@ -17,15 +17,16 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    @GetMapping
-    public List<Event> getEvents(){
-        return eventService.findAll();
+    // Obtener eventos filtrados por el ID del usuario solicitante
+    @GetMapping("/user/{userId}")
+    public List<Event> getEvents(@PathVariable Long userId){
+        return eventService.findByUserId(userId);
     }
 
-
-    @PostMapping
-    public Event createEvent(@RequestBody Event event){
-        return eventService.save(event);
+    // Crear un evento asignándolo al creador
+    @PostMapping("/creator/{userId}")
+    public Event createEvent(@RequestBody Event event, @PathVariable Long userId){
+        return eventService.save(event, userId);
     }
 
     @DeleteMapping("/{id}")
