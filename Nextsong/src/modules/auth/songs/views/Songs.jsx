@@ -8,7 +8,11 @@ export default function Songs() {
 
     const [songs, setSongs] = useState([]);
     const [showModalSong, setShowModalSong] = useState(false);
-    const [search, setSearch] = useState(""); // 🔍 NUEVO
+    const [search, setSearch] = useState("");
+
+    // VALIDACIÓN ADMIN
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    const isAdmin = user?.role === "ADMIN";
 
     const getSongs = async () => {
         try {
@@ -24,7 +28,7 @@ export default function Songs() {
         getSongs();
     }, []);
 
-    // 🔍 FILTRO
+    // FILTRO
     const filteredSongs = search
         ? songs.filter((song) =>
             song.title?.toLowerCase().includes(search.toLowerCase()) ||
@@ -44,17 +48,20 @@ export default function Songs() {
                     </p>
                 </div>
 
-                <button
-                    className="btn text-white d-flex align-items-center"
-                    style={{ backgroundColor: "#a56d49" }}
-                    onClick={() => setShowModalSong(true)}
-                >
-                    <FaPlus className="me-1" /> Crear Canción
-                </button>
+                {/* SOLO ADMIN */}
+                {isAdmin && (
+                    <button
+                        className="btn text-white d-flex align-items-center"
+                        style={{ backgroundColor: "#a56d49" }}
+                        onClick={() => setShowModalSong(true)}
+                    >
+                        <FaPlus className="me-1" /> Crear Canción
+                    </button>
+                )}
 
             </div>
 
-            {/* 🔍 BUSCADOR */}
+            {/* BUSCADOR */}
             <div className="mb-3">
                 <div className="input-group">
                     <span className="input-group-text">
@@ -86,14 +93,16 @@ export default function Songs() {
                 )}
             </div>
 
-            {/* MODAL */}
-            <CreateIndependentSong
-                show={showModalSong}
-                onClose={() => {
-                    setShowModalSong(false);
-                    getSongs();
-                }}
-            />
+            {/* MODAL SOLO ADMIN */}
+            {isAdmin && (
+                <CreateIndependentSong
+                    show={showModalSong}
+                    onClose={() => {
+                        setShowModalSong(false);
+                        getSongs();
+                    }}
+                />
+            )}
 
         </div>
     );

@@ -12,9 +12,14 @@ export default function PublicRouter({setSession}){
         <Route path="/" element={ <Navigate to="/login" /> } />
         <Route path="/recovery" element={ <RecoveryPassword/>} />
         <Route path="/signUp" element={ <SignUp/>} />
+<<<<<<< HEAD
 
         <Route path="*" element={<Error404/>} />
         
+=======
+        <Route path="/*" element={ <Navigate to="/" /> } />
+
+>>>>>>> develop
          
         
         

@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import EventCard from "../components/EventCard";
 import EventsController from "../controller/events.controller";
 import CreateEventModal from "../components/CreateEventModal";
-import { FaSearch } from "react-icons/fa";
 
 export default function Events() {
 
@@ -15,6 +14,9 @@ export default function Events() {
 
     const navigate = useNavigate();
 
+    // VALIDACIÓN ADMIN
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    const isAdmin = user?.role === "ADMIN";
 
     const getEvents = async () => {
         const data = await EventsController.findAll();
@@ -22,12 +24,10 @@ export default function Events() {
     };
 
     const openEvent = (event) => {
-
         if (!event || !event.id) {
             setAlert("⚠️ Este evento ya no existe.");
             return;
         }
-
         navigate(`/events/${event.id}`);
     };
 
@@ -35,17 +35,15 @@ export default function Events() {
         getEvents();
     }, []);
 
-
     const filteredEvents = events.filter((event) =>
-    event.name?.toLowerCase().includes(search.toLowerCase()) ||
-    event.eventDate?.toLowerCase().includes(search.toLowerCase())
-);
+        event.name?.toLowerCase().includes(search.toLowerCase()) ||
+        event.eventDate?.toLowerCase().includes(search.toLowerCase())
+    );
 
     return (
         <div className="container mt-4">
 
             <div className="d-flex justify-content-between align-items-center mb-4">
-                
 
                 <div>
                     <h4 className="fw-semibold">Mis Eventos</h4>
@@ -53,21 +51,21 @@ export default function Events() {
                         Selecciona un evento para ver sus canciones
                     </p>
                 </div>
-                <div className="mb-3">
-  
-        </div>
-                <button
-                    className="btn text-white d-flex justify-content-center align-items-center"
-                    style={{ backgroundColor: "#a56d49" }}
-                    onClick={() => setShowModal(true)}
 
-                >
-                    <FaPlus className="me-1" /> Crear Evento
-                </button>
-            
-           
+                {/* BOTÓN SOLO ADMIN */}
+                {isAdmin && (
+                    <button
+                        className="btn text-white d-flex justify-content-center align-items-center"
+                        style={{ backgroundColor: "#a56d49" }}
+                        onClick={() => setShowModal(true)}
+                    >
+                        <FaPlus className="me-1" /> Crear Evento
+                    </button>
+                )}
+
             </div>
-              {/* 🔍 BUSCADOR */}
+
+            {/* BUSCADOR */}
             <div className="mb-3">
                 <div className="input-group">
                     <span className="input-group-text">
@@ -76,7 +74,7 @@ export default function Events() {
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="Buscar canción..."
+                        placeholder="Buscar evento..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
@@ -103,14 +101,17 @@ export default function Events() {
                                 Crea tu primer evento para comenzar a organizar canciones.
                             </p>
 
-                            <button
-                                className="btn text-white"
-                                style={{ backgroundColor: "#a56d49" }}
-                                onClick={() => setShowModal(true)}
-                            >
-                                <FaPlus className="me-2" />
-                                Crear primer evento
-                            </button>
+                            {/* BOTÓN SOLO ADMIN */}
+                            {isAdmin && (
+                                <button
+                                    className="btn text-white"
+                                    style={{ backgroundColor: "#a56d49" }}
+                                    onClick={() => setShowModal(true)}
+                                >
+                                    <FaPlus className="me-2" />
+                                    Crear primer evento
+                                </button>
+                            )}
 
                         </div>
 
@@ -118,7 +119,7 @@ export default function Events() {
 
                 ) : (
 
-                   filteredEvents.map((event) => (
+                    filteredEvents.map((event) => (
                         <EventCard
                             key={event.id}
                             event={event}
@@ -130,18 +131,15 @@ export default function Events() {
 
             </div>
 
-            {/* Modal */}
-            <CreateEventModal
-                show={showModal}
-                onClose={() => setShowModal(false)}
-                onCreated={getEvents}
-            />
+            {/* MODAL SOLO ADMIN */}
+            {isAdmin && (
+                <CreateEventModal
+                    show={showModal}
+                    onClose={() => setShowModal(false)}
+                    onCreated={getEvents}
+                />
+            )}
 
         </div>
-
-
-
-
-
     );
 }

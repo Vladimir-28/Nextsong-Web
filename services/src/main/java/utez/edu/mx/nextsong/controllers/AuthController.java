@@ -1,6 +1,9 @@
 package utez.edu.mx.nextsong.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import utez.edu.mx.nextsong.dto.UserDTO;
+import utez.edu.mx.nextsong.models.Role;
+import utez.edu.mx.nextsong.repositories.RoleRepository;
 import utez.edu.mx.nextsong.repositories.UserRepository;
 import utez.edu.mx.nextsong.models.User;
 import utez.edu.mx.nextsong.dto.LoginRequest;
@@ -12,20 +15,34 @@ import java.util.Optional;
 public class AuthController {
     private final UserRepository userRepository;
 
-    public AuthController(UserRepository userRepository){
+    private final RoleRepository roleRepository;
+
+    public AuthController(UserRepository userRepository, RoleRepository roleRepository){
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody LoginRequest request){
+    public ResponseEntity<?> login(@RequestBody LoginRequest request){
 
-        Optional<User> user = userRepository.findByEmail(request.getEmail());
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
 
-        if(user.isPresent() && user.get().getPassword().equals(request.getPassword())){
-            return user.get();
+        if(userOpt.isPresent() && userOpt.get().getPassword().equals(request.getPassword())){
+
+            User user = userOpt.get();
+
+            UserDTO dto = new UserDTO(
+                    user.getId(),
+                    user.getFullName(),
+                    user.getEmail(),
+                    user.getStatus(),
+                    user.getRole().getName()
+            );
+
+            return ResponseEntity.ok(dto);
         }
 
-        throw new RuntimeException("Credenciales incorrectas");
+        return ResponseEntity.status(401).body("Credenciales incorrectas");
     }
 
     @PostMapping("/register")
@@ -37,7 +54,12 @@ public class AuthController {
             return ResponseEntity.badRequest().body("El correo ya está registrado");
         }
 
+        Role userRole = roleRepository.findById(2L)
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        user.setRole(userRole);
         user.setStatus("ACTIVE");
+
         User savedUser = userRepository.save(user);
 
         return ResponseEntity.ok(savedUser);
