@@ -17,13 +17,11 @@ export default function AuthRouter(){
         <Route path="/songs" element={<Songs/>} />
         <Route path="/events" element={<Events/>} />
         <Route path="/users" element={<User/>} />
-<<<<<<< HEAD
-        <Route path="*" element={<Error404/>} />
-=======
+
         <Route path="/*" element={ <Navigate to="/" /> } />
 
         
->>>>>>> develop
+
 
         {/* Rutas dinámicas */}
         <Route path="/events/:id" element={<EventDetail/>} />
