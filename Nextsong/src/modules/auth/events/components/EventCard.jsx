@@ -1,4 +1,4 @@
-import { BsChevronRight, BsPeople, BsMusicNote, BsCalendarEvent, BsBriefcase } from "react-icons/bs";
+import { BsChevronRight, BsPeople, BsMusicNote, BsCalendarEvent, BsBriefcase, BsTrash } from "react-icons/bs";
 import { LuChurch } from "react-icons/lu";
 
 // mapear categorías a iconos
@@ -10,7 +10,10 @@ const icons = {
 	corporativo: <BsBriefcase size={20} />
 };
 
-export default function EventCard({ event, onClick }) {
+export default function EventCard({ event, onClick, onDelete, user }) {
+
+	// validación de admin 
+	const isAdmin = user?.role === 'ADMIN';
 
 	return (
 		<div className="col-md-4 mb-4">
@@ -35,9 +38,26 @@ export default function EventCard({ event, onClick }) {
 						{icons[event.category] || <BsCalendarEvent size={20} />}
 					</div>
 
-					<button className="btn p-0 border-0 bg-transparent">
-						<BsChevronRight />
-					</button>
+					<div className="d-flex align-items-center gap-2">
+
+						{/* Botón eliminar SOLO ADMIN */}
+						{isAdmin && (
+							<button
+								className="btn p-0 border-0 bg-transparent text-danger"
+								onClick={(e) => {
+									e.stopPropagation(); 
+									onDelete && onDelete(event.id);
+								}}
+							>
+								<BsTrash />
+							</button>
+						)}
+
+						<button className="btn p-0 border-0 bg-transparent">
+							<BsChevronRight />
+						</button>
+
+					</div>
 
 				</div>
 

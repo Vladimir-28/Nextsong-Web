@@ -14,12 +14,13 @@ export default function Events() {
 
     const navigate = useNavigate();
 
-    // VALIDACIÓN ADMIN
+    // usuario
     const user = JSON.parse(sessionStorage.getItem("user"));
-    const isAdmin = user?.role === "ADMIN";
+
+    const isAdmin = user?.role === 'ADMIN';
 
     const getEvents = async () => {
-        const data = await EventsController.findAll();
+        const data = await EventsController.findByUser(user.id);
         setEvents(data);
     };
 
@@ -34,6 +35,24 @@ export default function Events() {
     useEffect(() => {
         getEvents();
     }, []);
+
+    // ELIMINAR EVENTO
+    const handleDelete = async (id) => {
+
+        const confirmDelete = window.confirm("¿Seguro que quieres eliminar este evento?");
+        if (!confirmDelete) return;
+
+        try {
+            await EventsController.delete(id);
+
+            // actualizar lista sin recargar
+            setEvents(prev => prev.filter(e => e.id !== id));
+
+        } catch (error) {
+            console.error(error);
+            setAlert("❌ Error al eliminar el evento");
+        }
+    };
 
     const filteredEvents = events.filter((event) =>
         event.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -101,7 +120,6 @@ export default function Events() {
                                 Crea tu primer evento para comenzar a organizar canciones.
                             </p>
 
-                            {/* BOTÓN SOLO ADMIN */}
                             {isAdmin && (
                                 <button
                                     className="btn text-white"
@@ -123,7 +141,9 @@ export default function Events() {
                         <EventCard
                             key={event.id}
                             event={event}
+                            user={user} 
                             onClick={() => openEvent(event)}
+                            onDelete={handleDelete} 
                         />
                     ))
 

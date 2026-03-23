@@ -30,7 +30,7 @@ public class EventService {
 
         List<Event> events;
 
-        // 🛡️ LÓGICA DE ROLES: Si el ID de rol es 1 (ADMIN), devolvemos todo
+        //  LÓGICA DE ROLES: Si el ID de rol es 1 (ADMIN), devolvemos todo
         if (user.getRole() != null && user.getRole().getId() == 1L) {
             events = eventRepository.findAll();
         } else {
@@ -55,6 +55,7 @@ public class EventService {
     }
 
     public void delete(Long id) {
+        eventSongRepository.deleteByEvent_Id(id);
         eventRepository.deleteById(id);
     }
 

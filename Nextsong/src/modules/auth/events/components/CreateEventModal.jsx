@@ -8,6 +8,7 @@ import EventSongsController from "../controller/eventsongs.controller";
 
 export default function CreateEventModal({ show, onClose, onCreated }) {
 
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const [step, setStep] = useState(1);
 
   const [eventData, setEventData] = useState({
@@ -29,14 +30,17 @@ export default function CreateEventModal({ show, onClose, onCreated }) {
     try {
 
       //  1. Crear evento
-      const newEvent = await EventsController.create({
-        name: eventData.name,
-        eventDate: new Date(eventData.date).toISOString().split("T")[0],
-        location: "",
-        description: "",
-        status: "ACTIVE",
-        category: eventData.type
-      });
+      const newEvent = await EventsController.create(
+        {
+          name: eventData.name,
+          eventDate: new Date(eventData.date).toISOString().split("T")[0],
+          location: "",
+          description: "",
+          status: "ACTIVE",
+          category: eventData.type
+        },
+        user.id 
+      );
 
       if (!newEvent || !newEvent.id) {
         console.error("No se creó el evento correctamente");

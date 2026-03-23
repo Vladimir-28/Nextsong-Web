@@ -28,12 +28,44 @@ EventsController.findById = async (id) => {
 };
 
 // crear evento
-EventsController.create = async (event) => {
-    const response = await fetch(API_URL, {
+EventsController.create = async (event, userId) => {
+    const response = await fetch(`${API_URL}/creator/${userId}`, {
         method: "POST",
         headers,
         body: JSON.stringify(event)
     });
+
+    if (!response.ok) {
+        throw new Error("Error al crear evento");
+    }
+
+    return await response.json();
+};
+
+// eliminar evento
+EventsController.delete = async (id) => {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+        headers
+    });
+
+    if (!response.ok) {
+        throw new Error("Error al eliminar el evento");
+    }
+
+    return true;
+};
+
+// obtener eventos por usuario
+EventsController.findByUser = async (userId) => {
+    const response = await fetch(`${API_URL}/user/${userId}`, {
+        method: "GET",
+        headers
+    });
+
+    if (!response.ok) {
+        throw new Error("Error al obtener eventos");
+    }
 
     return await response.json();
 };
