@@ -34,8 +34,7 @@ public class EventSongService {
 
         Event event = eventRepository.findById(eventId).orElseThrow();
 
-        // borrar canciones actuales
-        eventSongRepository.deleteByEventId(eventId);
+        eventSongRepository.deleteByEvent_Id(eventId);
 
         for(EventSongDTO dto : songs){
 
@@ -48,5 +47,4 @@ public class EventSongService {
 
             eventSongRepository.save(eventSong);
         }
-    }
-}
+    }}
