@@ -13,6 +13,20 @@ const SongsController = {
         }
 
         return text ? JSON.parse(text) : [];
+    },
+
+    delete: async (id) => {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: "DELETE"
+        });
+    
+        const text = await response.text();
+    
+        if (!response.ok) {
+            throw new Error(text);
+        }
+    
+        return text;
     }
 
 };

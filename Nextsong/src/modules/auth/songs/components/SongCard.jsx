@@ -1,8 +1,9 @@
-import { FaAngleRight } from "react-icons/fa6";
+import { FaAngleRight } from "react-icons/fa";
+import { BsTrash } from "react-icons/bs";
 import { SlMusicToneAlt } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
 
-export default function SongCard({ item }) {
+export default function SongCard({ item, onDelete, isAdmin }) {
 
     const navigate = useNavigate();
 
@@ -17,6 +18,8 @@ export default function SongCard({ item }) {
                 <div className="card-body">
 
                     <div className="d-flex justify-content-between">
+
+                        {/* ICONO */}
                         <div
                             className="d-flex align-items-center justify-content-center"
                             style={{
@@ -29,15 +32,34 @@ export default function SongCard({ item }) {
                             <SlMusicToneAlt size={24} />
                         </div>
 
-                        <button 
-                            className="btn btn-light btn-sm bg-transparent border-0"
-                            onClick={(e) => {
-                                e.stopPropagation(); 
-                                navigate(`/songs/${item.id}`);
-                            }}
-                        >
-                            <FaAngleRight />
-                        </button>
+                        {/* BOTONES */}
+                        <div className="d-flex gap-2">
+
+                            {/* DELETE SOLO ADMIN */}
+                            {isAdmin && (
+                                <button 
+                                className="btn p-0 border-0 bg-transparent text-danger"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onDelete(item.id);
+                                    }}
+                                >
+                                    <BsTrash />
+                                </button>
+                            )}
+
+                            {/* VER DETALLE */}
+                            <button 
+                                className="btn btn-light btn-sm bg-transparent border-0"
+                                onClick={(e) => {
+                                    e.stopPropagation(); 
+                                    navigate(`/songs/${item.id}`);
+                                }}
+                            >
+                                <FaAngleRight />
+                            </button>
+
+                        </div>
                     </div>
 
                     <span className="badge bg-light text-dark mt-3">Canción</span>

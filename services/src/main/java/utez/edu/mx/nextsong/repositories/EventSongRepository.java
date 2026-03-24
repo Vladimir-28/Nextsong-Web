@@ -16,4 +16,10 @@ public interface EventSongRepository extends JpaRepository<EventSong, Long> {
     @Modifying
     @Transactional
     void deleteByEvent_Id(Long eventId);
+
+    @Modifying
+    @Transactional
+    void deleteBySong_Id(Long songId);
+
+    List<EventSong> findByEvent_IdOrderBySongOrder(Long eventId);
 }

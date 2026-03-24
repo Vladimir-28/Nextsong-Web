@@ -25,8 +25,20 @@ public class SongController {
     public Song createSong(@RequestBody Song song){
         return songService.save(song);
     }
+
     @GetMapping("/{id}")
     public Song getSongById(@PathVariable Long id){
         return songService.findById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteSong(@PathVariable Long id){
+        boolean deleted = songService.deleteById(id);
+
+        if(deleted){
+            return "Canción eliminada correctamente";
+        } else {
+            return "Canción no encontrada";
+        }
     }
 }

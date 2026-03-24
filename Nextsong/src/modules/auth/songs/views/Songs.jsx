@@ -36,6 +36,20 @@ export default function Songs() {
         )
         : songs;
 
+    const handleDelete = async (id) => {
+        const confirmDelete = window.confirm("¿Seguro que quieres eliminar esta canción?");
+
+        if (!confirmDelete) return;
+
+        try {
+            await SongsController.delete(id);
+            getSongs(); // refresca lista
+        } catch (error) {
+            console.error(error);
+            alert("Error al eliminar canción");
+        }
+    };
+
     return (
         <div className="container mt-4">
 
@@ -88,7 +102,12 @@ export default function Songs() {
                     </div>
                 ) : (
                     filteredSongs.map((song, index) => (
-                        <SongCard key={index} item={song} />
+                        <SongCard 
+                            key={index} 
+                            item={song} 
+                            onDelete={handleDelete}
+                            isAdmin={isAdmin}
+                        />
                     ))
                 )}
             </div>
