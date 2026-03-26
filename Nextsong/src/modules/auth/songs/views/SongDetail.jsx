@@ -40,7 +40,7 @@ export default function SongDetail() {
             }}
         >
             <div
-                className="card border-0 shadow-lg p-4"
+                className="card border  p-4"
                 style={{
                     width: "100%", 
                     maxWidth: "900px", 

@@ -92,8 +92,8 @@ const formatDate = (date) => {
 
 				<small className="text-muted">
 					{event.eventDate
-    ? formatDate(event.eventDate)
-    : "Sin fecha"}
+					? formatDate(event.eventDate)
+					: "Sin fecha"}
 				</small>
 
 				<hr />
