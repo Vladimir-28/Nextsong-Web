@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/events")
-@CrossOrigin(origins = "*") // Permitimos acceso desde cualquier origen (móvil y web)
+@CrossOrigin(origins = "*")
 public class EventController {
 
     private final EventService eventService;
@@ -17,16 +17,20 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    // Obtener eventos filtrados por el ID del usuario solicitante
     @GetMapping("/user/{userId}")
     public List<Event> getEvents(@PathVariable Long userId){
         return eventService.findByUserId(userId);
     }
 
-    // Crear un evento asignándolo al creador
     @PostMapping("/creator/{userId}")
     public Event createEvent(@RequestBody Event event, @PathVariable Long userId){
         return eventService.save(event, userId);
+    }
+
+    @PutMapping("/{id}") // 🔥 ESTE ES EL NUEVO
+    public Event updateEvent(@PathVariable Long id, @RequestBody Event event) {
+        event.setId(id);
+        return eventService.update(event);
     }
 
     @DeleteMapping("/{id}")
@@ -38,4 +42,5 @@ public class EventController {
     public Event getEventById(@PathVariable Long id){
         return eventService.findById(id);
     }
+
 }

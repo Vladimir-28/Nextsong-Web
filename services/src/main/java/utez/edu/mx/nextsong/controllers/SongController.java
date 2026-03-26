@@ -8,8 +8,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/songs")
-@CrossOrigin(origins ="http://localhost:5173" )
+@CrossOrigin(origins ="http://localhost:5173")
 public class SongController {
+
     private final SongService songService;
 
     public SongController(SongService songService){
@@ -29,6 +30,12 @@ public class SongController {
     @GetMapping("/{id}")
     public Song getSongById(@PathVariable Long id){
         return songService.findById(id);
+    }
+
+    @PutMapping("/{id}") // 🔥 ESTE TE FALTABA
+    public Song updateSong(@PathVariable Long id, @RequestBody Song song) {
+        song.setId(id);
+        return songService.save(song);
     }
 
     @DeleteMapping("/{id}")

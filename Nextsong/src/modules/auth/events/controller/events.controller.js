@@ -70,4 +70,22 @@ EventsController.findByUser = async (userId) => {
     return await response.json();
 };
 
+EventsController.update = async (id, event) => {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify(event)
+    });
+
+    if (!response.ok) {
+        throw new Error("Error al actualizar evento");
+    }
+
+    return await response.json();
+};
+EventsController.getSongsByEvent = async (eventId) => {
+    const response = await fetch(`${API_URL}/${eventId}/songs`);
+    return await response.json();
+};
+
 export default EventsController;

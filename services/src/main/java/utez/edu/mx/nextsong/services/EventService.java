@@ -62,4 +62,21 @@ public class EventService {
     public Event findById(Long id) {
         return eventRepository.findById(id).orElse(null);
     }
+    public Event update(Event updatedEvent) {
+
+        Event event = eventRepository.findById(updatedEvent.getId())
+                .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+
+        event.setName(updatedEvent.getName());
+        event.setEventDate(updatedEvent.getEventDate());
+        event.setCategory(updatedEvent.getCategory());
+        event.setLocation(updatedEvent.getLocation());
+        event.setDescription(updatedEvent.getDescription());
+        event.setStatus(updatedEvent.getStatus());
+
+        // 🔥 limpiar canciones anteriores
+        eventSongRepository.deleteByEvent_Id(event.getId());
+
+        return eventRepository.save(event);
+    }
 }

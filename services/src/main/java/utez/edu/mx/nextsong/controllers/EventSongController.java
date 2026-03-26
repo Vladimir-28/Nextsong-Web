@@ -7,7 +7,7 @@ import utez.edu.mx.nextsong.services.EventSongService;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*") // 🔥 mejor así
 @RestController
 @RequestMapping("/event-songs")
 public class EventSongController {
@@ -26,7 +26,12 @@ public class EventSongController {
     @PostMapping("/event/{eventId}")
     public void saveEventSongs(@PathVariable Long eventId,
                                @RequestBody List<EventSongDTO> songs){
-
         service.saveEventSongs(eventId, songs);
+    }
+
+    // 🔥 ESTE ES EL QUE TE FALTA
+    @DeleteMapping("/event/{eventId}")
+    public void deleteSongsByEvent(@PathVariable Long eventId){
+        service.deleteByEvent(eventId);
     }
 }

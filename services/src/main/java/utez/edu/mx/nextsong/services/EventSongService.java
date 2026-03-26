@@ -32,19 +32,24 @@ public class EventSongService {
 
     public void saveEventSongs(Long eventId, List<EventSongDTO> songs){
 
-        Event event = eventRepository.findById(eventId).orElseThrow();
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
 
-        eventSongRepository.deleteByEvent_Id(eventId);
+        for (EventSongDTO dto : songs){
 
-        for(EventSongDTO dto : songs){
+            Song song = songRepository.findById(dto.getSongId())
+                    .orElseThrow(() -> new RuntimeException("Canción no encontrada"));
 
-            Song song = songRepository.findById(dto.getSongId()).orElseThrow();
+            EventSong es = new EventSong();
+            es.setEvent(event);
+            es.setSong(song);
+            es.setSongOrder(dto.getSongOrder());
 
-            EventSong eventSong = new EventSong();
-            eventSong.setEvent(event);
-            eventSong.setSong(song);
-            eventSong.setSongOrder(dto.getSongOrder());
-
-            eventSongRepository.save(eventSong);
+            eventSongRepository.save(es);
         }
-    }}
+    }
+
+    public void deleteByEvent(Long eventId) {
+        eventSongRepository.deleteByEvent_Id(eventId);
+    }
+}

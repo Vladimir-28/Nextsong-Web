@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import SongCard from "../components/SongCard";
 import SongsController from "../controller/songs.controller";
-import { FaPlus, FaSearch } from "react-icons/fa";
 import CreateIndependentSong from "./CreateIndependentSong";
+import { FaPlus, FaSearch, FaEdit } from "react-icons/fa";
 
 export default function Songs() {
 
     const [songs, setSongs] = useState([]);
     const [showModalSong, setShowModalSong] = useState(false);
     const [search, setSearch] = useState("");
+    const [selectedSong, setSelectedSong] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     // VALIDACIÓN ADMIN
     const user = JSON.parse(sessionStorage.getItem("user"));
@@ -49,6 +51,10 @@ export default function Songs() {
             alert("Error al eliminar canción");
         }
     };
+    const handleEdit = (song) => {
+      setSelectedSong(song);
+      setShowEditModal(true);
+     };
 
     return (
         <div className="container mt-4">
@@ -106,23 +112,35 @@ export default function Songs() {
                             key={index} 
                             item={song} 
                             onDelete={handleDelete}
+                            onEdit={handleEdit} 
                             isAdmin={isAdmin}
                         />
                     ))
                 )}
             </div>
 
-            {/* MODAL SOLO ADMIN */}
             {isAdmin && (
-                <CreateIndependentSong
-                    show={showModalSong}
-                    onClose={() => {
-                        setShowModalSong(false);
-                        getSongs();
-                    }}
-                />
-            )}
+        <CreateIndependentSong
+        show={showModalSong}   // 🔥 CORRECTO
+        onClose={() => {
+            setShowModalSong(false);
+            getSongs();
+        }}
+            />
+        )}
 
+        {isAdmin && showEditModal && (
+        <CreateIndependentSong
+        show={showEditModal}
+        onClose={() => {
+            setShowEditModal(false);
+            setSelectedSong(null);
+            getSongs();
+        }}
+        song={selectedSong}
+        isEdit={true}
+    />
+)}
         </div>
     );
 }

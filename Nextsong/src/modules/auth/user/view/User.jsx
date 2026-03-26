@@ -1,33 +1,31 @@
 import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { getUser, updateUser } from "../controller/UserController";
+import { useNavigate } from "react-router-dom";
 
 export default function User() {
+  const navigate = useNavigate();
 
-  
   const [user, setUser] = useState({
     id: null,
     fullName: "",
-    email: ""
+    email: "",
+    role: ""
   });
 
-  
   const [form, setForm] = useState({
     fullName: "",
     password: ""
   });
 
-  
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const data = await getUser();
 
-        setUser({
-          id: data.id,
-          fullName: data.fullName,
-          email: data.email
-        });
+        setUser(data);
 
         setForm({
           fullName: data.fullName,
@@ -36,42 +34,55 @@ export default function User() {
 
       } catch (error) {
         console.error(error);
+        alert("Sesión expirada");
+        navigate("/login");
+        
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUser();
   }, []);
 
- 
   const handleUpdate = async (e) => {
     e.preventDefault();
 
+    if (!form.fullName.trim()) {
+      return alert("El nombre es obligatorio");
+    }
+
     try {
-      await updateUser({
+      const updatedUser = await updateUser({
         id: user.id,
         fullName: form.fullName,
         password: form.password
       });
 
-      alert("Datos actualizados");
+      setUser(updatedUser);
 
-      // actualizar vista 
-      setUser(prev => ({
-        ...prev,
-        fullName: form.fullName
-      }));
-
-      // limpiar password
-      setForm(prev => ({
-        ...prev,
+      setForm({
+        fullName: updatedUser.fullName,
         password: ""
+      });
+
+      // 🔥 FIX AQUÍ TAMBIÉN
+      const current = JSON.parse(sessionStorage.getItem("user")) || {};
+
+      sessionStorage.setItem("user", JSON.stringify({
+        ...current,
+        fullName: updatedUser.fullName
       }));
+
+      alert("Datos actualizados correctamente");
 
     } catch (error) {
       console.error(error);
       alert("Error al actualizar");
     }
   };
+
+  if (loading) return <p className="text-center">Cargando...</p>;
 
   return (
     <div className="container py-4">
@@ -83,7 +94,6 @@ export default function User() {
         </p>
       </div>
 
-      {/* Card */}
       <div className="card shadow-sm border-0 mb-4 p-3">
         <div className="d-flex align-items-center">
 
@@ -99,7 +109,7 @@ export default function User() {
           >
             {user.fullName
               ? user.fullName.substring(0, 2).toUpperCase()
-              : "JR"}
+              : "NA"}
           </div>
 
           <div>
@@ -108,9 +118,8 @@ export default function User() {
                 {user.fullName}
               </h5>
 
-              
               <span className="badge bg-secondary-subtle text-dark border">
-                Administrador
+                {user.role?.name || "Sin rol"}
               </span>
 
               <span className="badge bg-success-subtle text-success border">
@@ -129,7 +138,6 @@ export default function User() {
         </div>
       </div>
 
-      {/* Form */}
       <div className="card shadow-sm border-0 p-4">
 
         <div className="d-flex justify-content-between align-items-center mb-3">
@@ -143,7 +151,6 @@ export default function User() {
 
         <form onSubmit={handleUpdate}>
 
-          {/* Nombre */}
           <div className="mb-3">
             <label className="form-label">
               Nombre completo *
@@ -151,7 +158,6 @@ export default function User() {
             <input
               type="text"
               className="form-control"
-              placeholder="Ingresa tu nombre completo"
               value={form.fullName}
               onChange={(e) =>
                 setForm(prev => ({
@@ -162,7 +168,6 @@ export default function User() {
             />
           </div>
 
-          {/* Email */}
           <div className="mb-3">
             <label className="form-label">
               Correo electrónico *
@@ -175,7 +180,6 @@ export default function User() {
             />
           </div>
 
-          {/* Password */}
           <div className="mb-3">
             <label className="form-label">
               Nueva contraseña
@@ -183,7 +187,6 @@ export default function User() {
             <input
               type="password"
               className="form-control"
-              placeholder="********"
               value={form.password}
               onChange={(e) =>
                 setForm(prev => ({
@@ -194,14 +197,13 @@ export default function User() {
             />
           </div>
 
-          {/* Botón */}
           <div className="mb-3 d-flex justify-content-end">
             <button
               type="submit"
-              className="btn text-white d-flex justify-content-center align-items-center"
+              className="btn text-white d-flex align-items-center"
               style={{ backgroundColor: "#a56d49" }}
             >
-              <FaEdit className="me-1" /> Editar Información
+              <FaEdit className="me-1" /> Guardar cambios
             </button>
           </div>
 

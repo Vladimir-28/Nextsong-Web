@@ -10,7 +10,7 @@ export const loginRequest = async (credentials) => {
     });
 
     const text = await response.text();
-
+    
     if (!response.ok) {
         throw new Error(text || "Credenciales incorrectas");
     }

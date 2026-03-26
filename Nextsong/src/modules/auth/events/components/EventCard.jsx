@@ -1,5 +1,6 @@
 import { BsChevronRight, BsPeople, BsMusicNote, BsCalendarEvent, BsBriefcase, BsTrash } from "react-icons/bs";
 import { LuChurch } from "react-icons/lu";
+import { FaEdit } from "react-icons/fa";
 
 // mapear categorías a iconos
 const icons = {
@@ -10,10 +11,19 @@ const icons = {
 	corporativo: <BsBriefcase size={20} />
 };
 
-export default function EventCard({ event, onClick, onDelete, user }) {
+export default function EventCard({ event, onClick, onDelete, onEdit, user }) {
 
 	// validación de admin 
 	const isAdmin = user?.role === 'ADMIN';
+	// 🔥 función arriba
+const formatDate = (date) => {
+  if (!date) return "";
+
+  const clean = date.includes("T") ? date.split("T")[0] : date;
+  const [year, month, day] = clean.split("-");
+
+  return `${day}/${month}/${year}`;
+};
 
 	return (
 		<div className="col-md-4 mb-4">
@@ -52,10 +62,23 @@ export default function EventCard({ event, onClick, onDelete, user }) {
 								<BsTrash />
 							</button>
 						)}
+						{/* EDITAR SOLO ADMIN */}
+                        {isAdmin && (
+						<button
+							className="btn p-0 border-0 bg-transparent text-warning"
+							onClick={(e) => {
+								e.stopPropagation();
+								onEdit && onEdit(event);
+							}}
+						>
+							<FaEdit />
+						</button>
+						)} 
 
 						<button className="btn p-0 border-0 bg-transparent">
 							<BsChevronRight />
 						</button>
+						
 
 					</div>
 
@@ -69,8 +92,8 @@ export default function EventCard({ event, onClick, onDelete, user }) {
 
 				<small className="text-muted">
 					{event.eventDate
-						? new Date(event.eventDate).toLocaleDateString()
-						: "Sin fecha"}
+    ? formatDate(event.eventDate)
+    : "Sin fecha"}
 				</small>
 
 				<hr />

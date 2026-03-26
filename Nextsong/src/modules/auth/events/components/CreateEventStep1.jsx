@@ -1,15 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { FiMusic } from "react-icons/fi";
 import { FaRegCalendarAlt, FaUserFriends, FaChurch, FaBriefcase, FaChevronRight } from "react-icons/fa";
 import '../styles/addSongs.css';
 
-
 export default function CreateEventStep1({ eventData, updateEvent, nextStep, onClose }) {
 
-  const [name, setName] = useState(eventData.name);
-  const [type, setType] = useState(eventData.type);
-  const [date, setDate] = useState(eventData.date);
+  const [name, setName] = useState("");
+  const [type, setType] = useState("");
+  const [date, setDate] = useState("");
+
+  // 🔥 SINCRONIZA DATOS (CLAVE PARA EDITAR)
+useEffect(() => {
+
+  if (!eventData) return;
+
+  setName(eventData.name || "");
+  setType(eventData.type || "");
+
+  const cleanDate = eventData.date?.includes("T")
+    ? eventData.date.split("T")[0]
+    : eventData.date || "";
+
+  setDate(cleanDate);
+
+}, [eventData]); // 🔥 volver a usar eventData completo
 
   const eventTypes = [
     { id: "boda", label: "Boda", icon: <FaUserFriends />, color: "#ff2d55" },
@@ -22,7 +37,6 @@ export default function CreateEventStep1({ eventData, updateEvent, nextStep, onC
   const isValid = name && type && date;
 
   const handleNext = () => {
-
     updateEvent({
       name,
       type,
@@ -34,6 +48,7 @@ export default function CreateEventStep1({ eventData, updateEvent, nextStep, onC
 
   return (
     <>
+      {/* NOMBRE */}
       <Form.Group className="mb-4">
         <Form.Label>Nombre del evento *</Form.Label>
         <Form.Control
@@ -42,6 +57,7 @@ export default function CreateEventStep1({ eventData, updateEvent, nextStep, onC
         />
       </Form.Group>
 
+      {/* TIPO */}
       <Form.Label>Tipo de evento *</Form.Label>
 
       <div className="row g-3 mb-4 d-flex justify-content-center">
@@ -82,15 +98,23 @@ export default function CreateEventStep1({ eventData, updateEvent, nextStep, onC
 
       </div>
 
+      {/* FECHA */}
       <Form.Group>
         <Form.Label>Fecha *</Form.Label>
         <Form.Control
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
+  type="date"
+  value={date}
+  onChange={(e) => {
+    setDate(e.target.value);
+
+    updateEvent({
+      date: e.target.value // 🔥 ESTA ES LA CLAVE
+    });
+  }}
+/>
       </Form.Group>
 
+      {/* BOTONES */}
       <div className="d-flex justify-content-end mt-4">
 
         <Button

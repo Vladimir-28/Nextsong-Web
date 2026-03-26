@@ -2,6 +2,7 @@ const API_URL = "http://localhost:8080/event-songs";
 
 const EventSongsController = {
 
+    // 🔥 AGREGAR canciones a evento
     addSongsToEvent: async (eventId, songs) => {
 
         const payload = songs.map((song, index) => ({
@@ -12,7 +13,8 @@ const EventSongsController = {
         const response = await fetch(`${API_URL}/event/${eventId}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             },
             body: JSON.stringify(payload)
         });
@@ -20,24 +22,32 @@ const EventSongsController = {
         const text = await response.text();
 
         if (!response.ok) {
-            throw new Error(text);
+            throw new Error(text || "Error al agregar canciones al evento");
         }
 
         return text ? JSON.parse(text) : {};
     },
 
+    // 🔥 OBTENER canciones del evento
     getSongsByEvent: async (eventId) => {
 
-        const response = await fetch(`${API_URL}/event/${eventId}`);
-    
+        const response = await fetch(`${API_URL}/event/${eventId}`, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
         const text = await response.text();
-    
+
         if (!response.ok) {
-            throw new Error(text);
+            throw new Error(text || "Error al obtener canciones del evento");
         }
-    
+
         return text ? JSON.parse(text) : [];
-    }
+    },
+
+    
 
 };
 
