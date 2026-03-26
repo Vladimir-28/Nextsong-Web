@@ -94,7 +94,7 @@ export default function User() {
         </p>
       </div>
 
-      <div className="card shadow-sm border-0 mb-4 p-3">
+      <div className="card border mb-4 p-3">
         <div className="d-flex align-items-center">
 
           <div
@@ -138,7 +138,7 @@ export default function User() {
         </div>
       </div>
 
-      <div className="card shadow-sm border-0 p-4">
+      <div className="card  border p-4">
 
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5 className="fw-semibold mb-0">Información Personal</h5>
