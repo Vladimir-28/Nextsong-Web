@@ -11,6 +11,8 @@ export default function Events() {
     const [alert, setAlert] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [search, setSearch] = useState("");
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     const navigate = useNavigate();
 
@@ -58,6 +60,11 @@ export default function Events() {
         event.name?.toLowerCase().includes(search.toLowerCase()) ||
         event.eventDate?.toLowerCase().includes(search.toLowerCase())
     );
+
+    const handleEdit = (event) => {
+    setSelectedEvent(event);
+    setShowEditModal(true);
+};
 
     return (
         <div className="container mt-4">
@@ -143,22 +150,36 @@ export default function Events() {
                             event={event}
                             user={user} 
                             onClick={() => openEvent(event)}
-                            onDelete={handleDelete} 
+                            onDelete={handleDelete}
+                            onEdit={handleEdit}   // 🔥 ESTE ES NUEVO
                         />
                     ))
 
                 )}
 
             </div>
-
-            {/* MODAL SOLO ADMIN */}
             {isAdmin && (
                 <CreateEventModal
-                    show={showModal}
-                    onClose={() => setShowModal(false)}
-                    onCreated={getEvents}
-                />
+                show={showModal}   // 🔥 ESTE ES EL CORRECTO
+                onClose={() => {
+                setShowModal(false);
+             getEvents();
+              }}
+                 />
             )}
+
+           {isAdmin && showEditModal && (
+        <CreateEventModal
+        show={showEditModal}
+        onClose={() => {
+            setShowEditModal(false);
+            setSelectedEvent(null);
+            getEvents();
+        }}
+        event={selectedEvent}
+        isEdit={true}
+    />
+)}
 
         </div>
     );

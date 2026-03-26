@@ -16,12 +16,14 @@ export default function Login({ setSession }) {
 
         try {
             const data = await handleLogin(email, password);
+            console.log("LOGIN DATA:", data);
 
             if (data) {
                 alert("Inicio de sesión correcto");
 
                 // Guardar los datos del usuario en sessionStorage
                 sessionStorage.setItem("user", JSON.stringify(data));
+                console.log("GUARDADO:", sessionStorage.getItem("user"));
 
                 setSession(true);  // Aquí cambiamos el estado global de la sesión
 

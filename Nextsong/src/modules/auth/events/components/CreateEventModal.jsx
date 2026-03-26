@@ -1,65 +1,113 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import CreateEventStep1 from "./CreateEventStep1";
 import CreateEventStep2 from "./CreateEventStep2";
 import EventsController from "../controller/events.controller";
 import '../styles/createEvent.css';
-import EventSongsController from "../controller/eventsongs.controller";
+import EventSongsController from "../controller/eventSongs.controller";
 
-export default function CreateEventModal({ show, onClose, onCreated }) {
+export default function CreateEventModal({ show, onClose, onUpdated, event }) {
 
   const user = JSON.parse(sessionStorage.getItem("user"));
+
   const [step, setStep] = useState(1);
 
   const [eventData, setEventData] = useState({
+    id: null,
     name: "",
     type: "",
     date: "",
     songs: []
   });
 
+  // 🔥 CARGAR DATOS (CREATE vs EDIT)
+  useEffect(() => {
+
+    if (event) {
+      // 🔥 EDITAR
+      setEventData({
+        id: event.id, // CLAVE
+        name: event.name || "",
+        type: event.category || "",
+        date: event.eventDate
+  ? event.eventDate.split("T")[0]
+  : "",
+        songs: []
+      });
+    } else {
+      // 🔥 CREAR
+      setEventData({
+        id: null,
+        name: "",
+        type: "",
+        date: "",
+        songs: []
+      });
+    }
+
+    setStep(1);
+
+  }, [event, show]);
+
   const nextStep = () => setStep(2);
   const prevStep = () => setStep(1);
 
-  const updateEvent = (data) => {
+  const updateEventData = (data) => {
     setEventData(prev => ({ ...prev, ...data }));
   };
 
-  const createEvent = async () => {
+  // 🔥 CREATE + UPDATE EN UNA SOLA FUNCIÓN
+  const saveEvent = async () => {
 
     try {
 
-      //  1. Crear evento
-      const newEvent = await EventsController.create(
-        {
+      let savedEvent;
+
+      if (eventData.id) {
+        // 🔥 UPDATE
+        savedEvent = await EventsController.update(eventData.id, {
           name: eventData.name,
-          eventDate: new Date(eventData.date).toISOString().split("T")[0],
+          eventDate: eventData.date,
           location: "",
           description: "",
           status: "ACTIVE",
           category: eventData.type
-        },
-        user.id 
-      );
+        });
 
-      if (!newEvent || !newEvent.id) {
-        console.error("No se creó el evento correctamente");
-        return;
+        
+
+        alert("Evento actualizado correctamente");
+
+      } else {
+        // 🔥 CREATE
+        savedEvent = await EventsController.create(
+          {
+            name: eventData.name,
+             eventDate: eventData.date,
+            location: "",
+            description: "",
+            status: "ACTIVE",
+            category: eventData.type
+          },
+          user.id
+        );
+
+        alert("Evento creado correctamente");
       }
 
-      //  2. Agregar canciones (solo si hay)
+      // 🔥 GUARDAR canciones (ambos casos)
       if (eventData.songs.length > 0) {
         await EventSongsController.addSongsToEvent(
-          newEvent.id,
+          savedEvent.id,
           eventData.songs
         );
       }
 
-      //  3. refrescar
-      if (onCreated) onCreated();
+      if (onUpdated) onUpdated();
 
-      //  4. reset
+      // 🔥 RESET
       setEventData({
+        id: null,
         name: "",
         type: "",
         date: "",
@@ -70,7 +118,8 @@ export default function CreateEventModal({ show, onClose, onCreated }) {
       onClose();
 
     } catch (error) {
-      console.error("Error creando evento:", error);
+      console.error("Error guardando evento:", error);
+      alert("Error al guardar evento");
     }
   };
 
@@ -79,7 +128,7 @@ export default function CreateEventModal({ show, onClose, onCreated }) {
 
       <Modal.Header closeButton>
         <Modal.Title>
-          Crear Nuevo Evento
+          {eventData.id ? "Editar Evento" : "Crear Evento"}
           <div className="text-muted small">
             {step === 1 && "Paso 1: Información del evento"}
             {step === 2 && "Paso 2: Agregar canciones"}
@@ -92,7 +141,7 @@ export default function CreateEventModal({ show, onClose, onCreated }) {
         {step === 1 && (
           <CreateEventStep1
             eventData={eventData}
-            updateEvent={updateEvent}
+            updateEvent={updateEventData}
             nextStep={nextStep}
             onClose={onClose}
           />
@@ -101,9 +150,9 @@ export default function CreateEventModal({ show, onClose, onCreated }) {
         {step === 2 && (
           <CreateEventStep2
             eventData={eventData}
-            updateEvent={updateEvent}
+            updateEvent={updateEventData}
             prevStep={prevStep}
-            createEvent={createEvent}
+            createEvent={saveEvent} // 🔥 ahora sí correcto
           />
         )}
 

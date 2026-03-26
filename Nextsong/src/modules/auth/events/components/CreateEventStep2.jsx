@@ -3,6 +3,7 @@ import { Button } from "react-bootstrap";
 import { FiMusic } from "react-icons/fi";
 import { FaTrash, FaPlus } from "react-icons/fa";
 import SongsController from "../../songs/controller/songs.controller";
+import EventSongsController from "../controller/eventSongs.controller";
 import CreateSongModal from "./CreateSongModal";
 import '../styles/addSongs.css'
 
@@ -17,13 +18,36 @@ export default function CreateEventStep2({
     const [selectedSongs, setSelectedSongs] = useState([]);
     const [showSongModal, setShowSongModal] = useState(false);
 
+    // 🔥 cargar canciones disponibles (solo una vez)
     useEffect(() => {
         loadSongs();
     }, []);
 
+    // 🔥 cargar canciones del evento SOLO UNA VEZ (no en cada cambio)
     useEffect(() => {
-        setSelectedSongs(eventData.songs || []);
-    }, []);
+
+        const loadEventSongs = async () => {
+
+            if (eventData?.id) {
+                try {
+                    const eventSongs = await EventSongsController.getSongsByEvent(eventData.id);
+                    const songs = eventSongs.map(es => es.song);
+                    setSelectedSongs(songs);
+
+                    // 🔥 sincronizar con el modal padre
+                    updateEvent({ songs });
+
+                } catch (error) {
+                    console.error("Error cargando canciones del evento", error);
+                }
+            } else {
+                setSelectedSongs(eventData?.songs || []);
+            }
+        };
+
+        loadEventSongs();
+
+    }, [eventData?.id]); // 🔥 SOLO CUANDO CAMBIA EL ID
 
     const loadSongs = async () => {
         const data = await SongsController.findAll();
@@ -43,13 +67,11 @@ export default function CreateEventStep2({
         const song = JSON.parse(event.dataTransfer.getData("song"));
 
         if (!selectedSongs.find(s => s.id === song.id)) {
+
             const updated = [...selectedSongs, song];
 
             setSelectedSongs(updated);
-
-            updateEvent({
-                songs: updated
-            });
+            updateEvent({ songs: updated });
         }
     };
 
@@ -64,10 +86,7 @@ export default function CreateEventStep2({
             const updated = [...selectedSongs, song];
 
             setSelectedSongs(updated);
-
-            updateEvent({
-                songs: updated
-            });
+            updateEvent({ songs: updated });
         }
     };
 
@@ -76,10 +95,7 @@ export default function CreateEventStep2({
         const updated = selectedSongs.filter((_, i) => i !== index);
 
         setSelectedSongs(updated);
-
-        updateEvent({
-            songs: updated
-        });
+        updateEvent({ songs: updated });
     };
 
     const handleNewSong = (song) => {
@@ -90,14 +106,11 @@ export default function CreateEventStep2({
 
         setAvailableSongs(prev => [...prev, song]);
         setSelectedSongs(updated);
-
-        updateEvent({
-            songs: updated
-        });
+        updateEvent({ songs: updated });
     };
 
     const finish = () => {
-        createEvent(); 
+        createEvent();
     };
 
     const filteredSongs = availableSongs.filter(
@@ -170,7 +183,9 @@ export default function CreateEventStep2({
                     <div>
                         <strong>{song.title}</strong>
                         <br />
-                        <small className="text-muted">{song.artist}</small>
+                        <small className="text-muted">
+                            {song.artist || song.author}
+                        </small>
                     </div>
 
                     <small>{song.duration}</small>
@@ -187,7 +202,7 @@ export default function CreateEventStep2({
                     style={{ backgroundColor: "#c6a188", border: "none" }}
                     onClick={finish}
                 >
-                    Crear evento
+                    {eventData?.id ? "Actualizar evento" : "Crear evento"}
                 </Button>
 
             </div>

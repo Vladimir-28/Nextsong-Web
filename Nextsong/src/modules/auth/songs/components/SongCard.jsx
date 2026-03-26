@@ -1,9 +1,9 @@
-import { FaAngleRight } from "react-icons/fa";
-import { BsTrash } from "react-icons/bs";
+import { BsTrash,BsChevronRight} from "react-icons/bs";
 import { SlMusicToneAlt } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
 
-export default function SongCard({ item, onDelete, isAdmin }) {
+export default function SongCard({ item, onDelete, onEdit, isAdmin }){
 
     const navigate = useNavigate();
 
@@ -35,6 +35,8 @@ export default function SongCard({ item, onDelete, isAdmin }) {
                         {/* BOTONES */}
                         <div className="d-flex gap-2">
 
+                            
+
                             {/* DELETE SOLO ADMIN */}
                             {isAdmin && (
                                 <button 
@@ -48,15 +50,27 @@ export default function SongCard({ item, onDelete, isAdmin }) {
                                 </button>
                             )}
 
+                            {isAdmin && (
+                               <button
+                                 className="btn p-0 border-0 bg-transparent text-warning"
+                                  onClick={(e) => {
+                                         e.stopPropagation();
+                                         onEdit(item);
+                                        }}
+                                >
+                              <FaEdit  />
+                             </button>
+                            )}
+
                             {/* VER DETALLE */}
                             <button 
-                                className="btn btn-light btn-sm bg-transparent border-0"
+                                    className="btn p-0 border-0 bg-transparent"
                                 onClick={(e) => {
                                     e.stopPropagation(); 
                                     navigate(`/songs/${item.id}`);
                                 }}
                             >
-                                <FaAngleRight />
+                                <BsChevronRight />
                             </button>
 
                         </div>

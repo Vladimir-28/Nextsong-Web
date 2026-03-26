@@ -33,7 +33,6 @@ public class AuthController {
 
             User user = userOpt.get();
 
-            // 🔴 VALIDACIÓN AGREGADA
             String roleName;
             if (user.getRole() != null) {
                 roleName = user.getRole().getName();
