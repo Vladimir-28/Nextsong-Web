@@ -3,7 +3,6 @@ package utez.edu.mx.nextsong.controllers;
 import org.springframework.web.bind.annotation.*;
 import utez.edu.mx.nextsong.models.Event;
 import utez.edu.mx.nextsong.services.EventService;
-
 import java.util.List;
 
 @RestController
@@ -27,7 +26,7 @@ public class EventController {
         return eventService.save(event, userId);
     }
 
-    @PutMapping("/{id}") // 🔥 ESTE ES EL NUEVO
+    @PutMapping("/{id}")
     public Event updateEvent(@PathVariable Long id, @RequestBody Event event) {
         event.setId(id);
         return eventService.update(event);
@@ -43,4 +42,21 @@ public class EventController {
         return eventService.findById(id);
     }
 
+    // ✅ Añadir un músico al evento
+    @PostMapping("/{eventId}/collaborators/{userId}")
+    public void addCollaborator(@PathVariable Long eventId, @PathVariable Long userId) {
+        eventService.addCollaborator(eventId, userId);
+    }
+
+    // ✅ Eliminar un músico del evento (Solo el dueño puede llamar a esto desde la App)
+    @DeleteMapping("/{eventId}/collaborators/{userId}")
+    public void removeCollaborator(@PathVariable Long eventId, @PathVariable Long userId) {
+        eventService.removeCollaborator(eventId, userId);
+    }
+
+    // ✅ Obtener eventos donde se es invitado
+    @GetMapping("/collaborated/{userId}")
+    public List<Event> getCollaboratedEvents(@PathVariable Long userId) {
+        return eventService.findCollaboratedEvents(userId);
+    }
 }

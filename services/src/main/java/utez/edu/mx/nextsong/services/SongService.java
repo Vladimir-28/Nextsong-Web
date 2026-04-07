@@ -52,22 +52,18 @@ public class SongService {
 
         // 4. Reordenar cada evento
         for(Long eventId : eventIds){
-
             List<EventSong> songs = eventSongRepository
                     .findByEvent_IdOrderBySongOrder(eventId);
 
             int order = 1;
-
             for(EventSong es : songs){
                 es.setSongOrder(order++);
             }
-
             eventSongRepository.saveAll(songs);
         }
 
         // 5. Eliminar canción
         songRepository.deleteById(id);
-
         return true;
     }
 }

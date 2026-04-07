@@ -1,9 +1,9 @@
 package utez.edu.mx.nextsong.services;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;import org.springframework.stereotype.Service;
 import utez.edu.mx.nextsong.models.User;
 import utez.edu.mx.nextsong.repositories.UserRepository;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +17,6 @@ public class UserService {
     }
 
     public User updateUser(User updatedUser) {
-
         if (updatedUser.getId() == null) {
             throw new RuntimeException("El ID del usuario es obligatorio");
         }
@@ -25,16 +24,19 @@ public class UserService {
         User user = userRepository.findById(updatedUser.getId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // actualizar nombre
         if (updatedUser.getFullName() != null) {
             user.setFullName(updatedUser.getFullName());
         }
 
-        // 🔥 SIN encriptar (como tú quieres)
         if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
             user.setPassword(updatedUser.getPassword());
         }
 
         return userRepository.save(user);
+    }
+
+    // ✅ Nuevo método para buscar colaboradores por email
+    public List<User> findByEmailContaining(String email) {
+        return userRepository.findByEmailContaining(email);
     }
 }
