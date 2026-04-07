@@ -1,12 +1,14 @@
 package utez.edu.mx.nextsong.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import utez.edu.mx.nextsong.models.Event;
 import utez.edu.mx.nextsong.models.User;
 import utez.edu.mx.nextsong.repositories.EventRepository;
 import utez.edu.mx.nextsong.repositories.EventSongRepository;
 import utez.edu.mx.nextsong.repositories.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,25 +30,33 @@ public class EventService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        List<Event> events;
+        List<Event> events = new ArrayList<>();
 
-        //  LÓGICA DE ROLES: Si el ID de rol es 1 (ADMIN), devolvemos todo
         if (user.getRole() != null && user.getRole().getId() == 1L) {
             events = eventRepository.findAll();
         } else {
-            // Si es un usuario normal, devolvemos solo lo que él creó
-            events = eventRepository.findByCreatorId(userId);
+            // 1. Eventos propios
+            events.addAll(eventRepository.findByCreatorId(userId));
+
+            // 2. Eventos donde es colaborador
+            List<Event> collaborated = eventRepository.findByCollaboratorsId(userId);
+
+            // 3. Combinar sin duplicados
+            for (Event colEvent : collaborated) {
+                if (events.stream().noneMatch(e -> e.getId().equals(colEvent.getId()))) {
+                    events.add(colEvent);
+                }
+            }
         }
 
-        // Agregar conteo de canciones a cada evento
         for (Event event : events) {
             int count = eventSongRepository.countByEventId(event.getId());
             event.setSongsCount(count);
         }
-
         return events;
     }
 
+    @Transactional
     public Event save(Event event, Long creatorId) {
         User creator = userRepository.findById(creatorId)
                 .orElseThrow(() -> new RuntimeException("Usuario creador no encontrado"));
@@ -54,6 +64,7 @@ public class EventService {
         return eventRepository.save(event);
     }
 
+    @Transactional
     public void delete(Long id) {
         eventSongRepository.deleteByEvent_Id(id);
         eventRepository.deleteById(id);
@@ -62,8 +73,9 @@ public class EventService {
     public Event findById(Long id) {
         return eventRepository.findById(id).orElse(null);
     }
-    public Event update(Event updatedEvent) {
 
+    @Transactional
+    public Event update(Event updatedEvent) {
         Event event = eventRepository.findById(updatedEvent.getId())
                 .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
 
@@ -74,9 +86,36 @@ public class EventService {
         event.setDescription(updatedEvent.getDescription());
         event.setStatus(updatedEvent.getStatus());
 
-        // 🔥 limpiar canciones anteriores
         eventSongRepository.deleteByEvent_Id(event.getId());
-
         return eventRepository.save(event);
+    }
+
+    @Transactional
+    public void addCollaborator(Long eventId, Long userId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        event.getCollaborators().add(user);
+        eventRepository.save(event);
+    }
+
+    @Transactional
+    public void removeCollaborator(Long eventId, Long userId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+
+        event.getCollaborators().removeIf(u -> u.getId().equals(userId));
+        eventRepository.save(event);
+    }
+
+    public List<Event> findCollaboratedEvents(Long userId) {
+        List<Event> events = eventRepository.findByCollaboratorsId(userId);
+        for (Event event : events) {
+            int count = eventSongRepository.countByEventId(event.getId());
+            event.setSongsCount(count);
+        }
+        return events;
     }
 }

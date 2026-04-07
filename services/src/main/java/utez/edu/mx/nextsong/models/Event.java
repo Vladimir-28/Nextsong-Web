@@ -3,6 +3,7 @@ package utez.edu.mx.nextsong.models;
 import jakarta.persistence.*;
 import java.util.Set;
 import java.util.HashSet;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="events")
@@ -24,8 +25,7 @@ public class Event {
     @JoinColumn(name = "creator_id")
     private User creator;
 
-    // ✅ NUEVO: Lista de músicos invitados al evento
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "event_collaborators",
             joinColumns = @JoinColumn(name = "event_id"),
@@ -37,6 +37,12 @@ public class Event {
     private Integer songsCount;
 
     public Event(){}
+
+    // ✅ Permite que Android sepa quién es el dueño sin enviar todo el objeto User
+    @JsonProperty("creatorId")
+    public Long getCreatorId() {
+        return creator != null ? creator.getId() : null;
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

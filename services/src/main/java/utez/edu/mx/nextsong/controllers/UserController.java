@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import utez.edu.mx.nextsong.models.User;
 import utez.edu.mx.nextsong.services.UserService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -19,9 +20,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getCurrentUser(id));
     }
 
-    // ✅ Actualizar usuario
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.updateUser(user));
+    }
+
+    // ✅ Endpoint para buscar músicos por correo
+    @GetMapping("/search")
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String email) {
+        return ResponseEntity.ok(userService.findByEmailContaining(email));
     }
 }

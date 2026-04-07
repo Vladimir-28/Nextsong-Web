@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/songs")
-@CrossOrigin(origins ="http://localhost:5173")
+@CrossOrigin(origins = "*") // ✅ Permitir acceso desde Android
 public class SongController {
 
     private final SongService songService;
@@ -32,7 +32,7 @@ public class SongController {
         return songService.findById(id);
     }
 
-    @PutMapping("/{id}") // 🔥 ESTE TE FALTABA
+    @PutMapping("/{id}")
     public Song updateSong(@PathVariable Long id, @RequestBody Song song) {
         song.setId(id);
         return songService.save(song);

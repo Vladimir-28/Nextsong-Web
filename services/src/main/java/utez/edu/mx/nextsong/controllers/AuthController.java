@@ -1,6 +1,5 @@
-package utez.edu.mx.nextsong.controllers;
-
-import org.springframework.http.ResponseEntity;
+package utez.edu.mx.nextsong.controllers;import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import utez.edu.mx.nextsong.dto.UserDTO;
 import utez.edu.mx.nextsong.models.Role;
@@ -8,8 +7,12 @@ import utez.edu.mx.nextsong.repositories.RoleRepository;
 import utez.edu.mx.nextsong.repositories.UserRepository;
 import utez.edu.mx.nextsong.models.User;
 import utez.edu.mx.nextsong.dto.LoginRequest;
+import utez.edu.mx.nextsong.models.PasswordResetToken;
+import utez.edu.mx.nextsong.repositories.PasswordResetTokenRepository;
+import utez.edu.mx.nextsong.services.EmailService;
 
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/auth")
@@ -18,19 +21,25 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordResetTokenRepository tokenRepository;
+    private final EmailService emailService;
 
-    public AuthController(UserRepository userRepository, RoleRepository roleRepository){
+    public AuthController(UserRepository userRepository,
+                          RoleRepository roleRepository,
+                          PasswordResetTokenRepository tokenRepository,
+                          EmailService emailService){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.tokenRepository = tokenRepository;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
-
+        // Usamos la nueva búsqueda insensible a mayúsculas
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
 
         if(userOpt.isPresent() && userOpt.get().getPassword().equals(request.getPassword())){
-
             User user = userOpt.get();
 
             String roleName;
@@ -56,7 +65,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user){
-
         Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
 
         if(existingUser.isPresent()){
@@ -70,7 +78,68 @@ public class AuthController {
         user.setStatus("ACTIVE");
 
         User savedUser = userRepository.save(user);
-
         return ResponseEntity.ok(savedUser);
+    }
+
+    // --- LÓGICA DE RECUPERACIÓN DE CONTRASEÑA ---
+
+    // PASO 1: Enviar código al correo
+    @PostMapping("/recover-password")
+    @Transactional
+    public ResponseEntity<?> requestRecovery(@RequestParam("email") String email) {
+        System.out.println("Solicitando recuperación para: [" + email + "]");
+
+        // Búsqueda insensible a mayúsculas y minúsculas con limpieza de espacios
+        Optional<User> user = userRepository.findByEmail(email.trim());
+
+        if (user.isEmpty()) {
+            System.out.println("DEBUG: El correo no existe en la BD.");
+            return ResponseEntity.status(404).body("El correo no está registrado");
+        }
+
+        // Generar código aleatorio de 6 dígitos
+        String code = String.format("%06d", new Random().nextInt(999999));
+
+        // Limpiar códigos anteriores y guardar el nuevo
+        tokenRepository.deleteByEmail(email);
+        tokenRepository.save(new PasswordResetToken(email, code, 15));
+
+        // Enviar el correo
+        emailService.sendRecoveryCode(email, code);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // PASO 2: Verificar que el código sea correcto
+    @PostMapping("/verify-code")
+    public ResponseEntity<?> verifyCode(@RequestParam String email, @RequestParam String code) {
+        Optional<PasswordResetToken> tokenOpt = tokenRepository.findByEmail(email);
+
+        if (tokenOpt.isPresent() &&
+                tokenOpt.get().getCode().equals(code) &&
+                !tokenOpt.get().isExpired()) {
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.status(401).body("Código incorrecto o expirado");
+    }
+
+    // PASO 3: Establecer la nueva contraseña final
+    @PostMapping("/reset-password")
+    @Transactional
+    public ResponseEntity<?> resetPassword(@RequestParam String email, @RequestParam String newPassword) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(404).body("Usuario no encontrado");
+        }
+
+        User user = userOpt.get();
+        user.setPassword(newPassword);
+        userRepository.save(user);
+
+        // Eliminar el token usado
+        tokenRepository.deleteByEmail(email);
+
+        return ResponseEntity.ok().build();
     }
 }
