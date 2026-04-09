@@ -7,7 +7,7 @@ import utez.edu.mx.nextsong.services.EventSongService;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*") // 🔥 mejor así
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/event-songs")
 public class EventSongController {
@@ -23,13 +23,13 @@ public class EventSongController {
         return service.getSongsByEvent(eventId);
     }
 
+    // Al usar POST, el Service ahora limpia y guarda, resolviendo la duplicidad
     @PostMapping("/event/{eventId}")
     public void saveEventSongs(@PathVariable Long eventId,
                                @RequestBody List<EventSongDTO> songs){
         service.saveEventSongs(eventId, songs);
     }
 
-    // 🔥 ESTE ES EL QUE TE FALTA
     @DeleteMapping("/event/{eventId}")
     public void deleteSongsByEvent(@PathVariable Long eventId){
         service.deleteByEvent(eventId);
