@@ -1,6 +1,7 @@
 package utez.edu.mx.nextsong.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // 🔥 Importante
 import utez.edu.mx.nextsong.models.Event;
 import utez.edu.mx.nextsong.models.EventSong;
 import utez.edu.mx.nextsong.models.Song;
@@ -30,25 +31,34 @@ public class EventSongService {
         return eventSongRepository.findByEventIdOrderBySongOrder(eventId);
     }
 
+    @Transactional // 🔥 Asegura que si algo falla, no se borre nada
     public void saveEventSongs(Long eventId, List<EventSongDTO> songs){
 
+        // 1. Buscamos el evento
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
 
-        for (EventSongDTO dto : songs){
+        // 2. 🔥 LIMPIEZA: Borramos las canciones actuales del evento antes de guardar las nuevas
+        // Esto evita duplicados y permite "eliminar" al desmarcar en Android
+        eventSongRepository.deleteByEvent_Id(eventId);
 
+        // 3. GUARDADO: Insertamos la nueva lista recibida
+        int order = 1;
+        for (EventSongDTO dto : songs){
             Song song = songRepository.findById(dto.getSongId())
                     .orElseThrow(() -> new RuntimeException("Canción no encontrada"));
 
             EventSong es = new EventSong();
             es.setEvent(event);
             es.setSong(song);
-            es.setSongOrder(dto.getSongOrder());
+            // Asignamos el orden secuencialmente
+            es.setSongOrder(order++);
 
             eventSongRepository.save(es);
         }
     }
 
+    @Transactional
     public void deleteByEvent(Long eventId) {
         eventSongRepository.deleteByEvent_Id(eventId);
     }
