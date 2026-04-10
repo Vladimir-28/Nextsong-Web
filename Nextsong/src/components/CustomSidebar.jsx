@@ -13,9 +13,8 @@ export default function CustomSidebar({ setSession }) {
 
 	const navigate = useNavigate();
 
-	// Obtener usuario y validar admin
+	// Obtener usuario 
 	const user = JSON.parse(sessionStorage.getItem("user"));
-	const isAdmin = user?.role === "ADMIN";
 
 	const closeSession = () => {
 		sessionStorage.removeItem("user");
@@ -78,31 +77,30 @@ export default function CustomSidebar({ setSession }) {
 
 				</ul>
 
-				{isAdmin && (
-					<div className="mt-5">
-						<button
-							className="btn text-white d-flex justify-content-start align-items-center w-100 mb-2"
-							style={{ backgroundColor: "#a56d49" }}
-							onClick={() => setShowModalEvent(true)}
-						>
-							<FaPlus className="me-1" /> Crear Evento
-						</button>
 
-						<button
-							className="btn text-white d-flex justify-content-start align-items-center w-100"
-							style={{ backgroundColor: "#a56d49" }}
-							onClick={() => setShowModalSong(true)}
-						>
-							<FaPlus className="me-1" /> Agregar Canción Independiente
-						</button>
-					</div>
-				)}
+				<div className="mt-5">
+					<button
+						className="btn text-white d-flex justify-content-start align-items-center w-100 mb-2"
+						style={{ backgroundColor: "#a56d49" }}
+						onClick={() => setShowModalEvent(true)}
+					>
+						<FaPlus className="me-1" /> Crear Evento
+					</button>
+
+					<button
+						className="btn text-white d-flex justify-content-start align-items-center w-100"
+						style={{ backgroundColor: "#a56d49" }}
+						onClick={() => setShowModalSong(true)}
+					>
+						<FaPlus className="me-1" /> Agregar Canción Independiente
+					</button>
+				</div>
+
 
 			</div>
 
 			<div className='border-top p-2'>
 
-				
 				<button className="btn btn-outline-danger border-0 d-flex justify-content-start align-items-center w-100"
 					onClick={() => closeSession()}
 
@@ -112,20 +110,19 @@ export default function CustomSidebar({ setSession }) {
 
 			</div>
 
-			{/* MODALES SOLO EXISTEN SI ES ADMIN */}
-			{isAdmin && (
-				<>
-					<CreateIndependentSong
-						show={showModalSong}
-						onClose={() => setShowModalSong(false)}
-					/>
 
-					<CreateEventModal
-						show={showModalEvent}
-						onClose={() => setShowModalEvent(false)}
-					/>
-				</>
-			)}
+			<>
+				<CreateIndependentSong
+					show={showModalSong}
+					onClose={() => setShowModalSong(false)}
+				/>
+
+				<CreateEventModal
+					show={showModalEvent}
+					onClose={() => setShowModalEvent(false)}
+				/>
+			</>
+
 
 		</div>
 	);

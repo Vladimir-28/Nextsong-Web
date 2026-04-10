@@ -12,9 +12,8 @@ export default function Songs() {
     const [selectedSong, setSelectedSong] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
 
-    // VALIDACIÓN ADMIN
+    // usuario
     const user = JSON.parse(sessionStorage.getItem("user"));
-    const isAdmin = user?.role === "ADMIN";
 
     const getSongs = async () => {
         try {
@@ -22,7 +21,6 @@ export default function Songs() {
             setSongs(data);
         } catch (error) {
             console.error(error);
-            alert("Error al cargar canciones");
         }
     };
 
@@ -52,9 +50,9 @@ export default function Songs() {
         }
     };
     const handleEdit = (song) => {
-      setSelectedSong(song);
-      setShowEditModal(true);
-     };
+        setSelectedSong(song);
+        setShowEditModal(true);
+    };
 
     return (
         <div className="container mt-4">
@@ -68,16 +66,13 @@ export default function Songs() {
                     </p>
                 </div>
 
-                {/* SOLO ADMIN */}
-                {isAdmin && (
-                    <button
-                        className="btn text-white d-flex align-items-center"
-                        style={{ backgroundColor: "#a56d49" }}
-                        onClick={() => setShowModalSong(true)}
-                    >
-                        <FaPlus className="me-1" /> Crear Canción
-                    </button>
-                )}
+                <button
+                    className="btn text-white d-flex align-items-center"
+                    style={{ backgroundColor: "#a56d49" }}
+                    onClick={() => setShowModalSong(true)}
+                >
+                    <FaPlus className="me-1" /> Crear Canción
+                </button>
 
             </div>
 
@@ -108,39 +103,36 @@ export default function Songs() {
                     </div>
                 ) : (
                     filteredSongs.map((song, index) => (
-                        <SongCard 
-                            key={index} 
-                            item={song} 
+                        <SongCard
+                            key={index}
+                            item={song}
                             onDelete={handleDelete}
-                            onEdit={handleEdit} 
-                            isAdmin={isAdmin}
+                            onEdit={handleEdit}
                         />
                     ))
                 )}
             </div>
+            
+                <CreateIndependentSong
+                    show={showModalSong}
+                    onClose={() => {
+                        setShowModalSong(false);
+                        getSongs();
+                    }}
+                />
 
-            {isAdmin && (
-        <CreateIndependentSong
-        show={showModalSong}   // 🔥 CORRECTO
-        onClose={() => {
-            setShowModalSong(false);
-            getSongs();
-        }}
-            />
-        )}
-
-        {isAdmin && showEditModal && (
-        <CreateIndependentSong
-        show={showEditModal}
-        onClose={() => {
-            setShowEditModal(false);
-            setSelectedSong(null);
-            getSongs();
-        }}
-        song={selectedSong}
-        isEdit={true}
-    />
-)}
+            {showEditModal && (
+                <CreateIndependentSong
+                    show={showEditModal}
+                    onClose={() => {
+                        setShowEditModal(false);
+                        setSelectedSong(null);
+                        getSongs();
+                    }}
+                    song={selectedSong}
+                    isEdit={true}
+                />
+            )}
         </div>
     );
 }
