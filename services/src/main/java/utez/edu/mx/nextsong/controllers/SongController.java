@@ -38,9 +38,10 @@ public class SongController {
         return songService.save(song);
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteSong(@PathVariable Long id){
-        boolean deleted = songService.deleteById(id);
+    @DeleteMapping("/{id}/user/{userId}")
+    public String deleteSong(@PathVariable Long id, @PathVariable Long userId){
+
+        boolean deleted = songService.deleteById(id, userId);
 
         if(deleted){
             return "Canción eliminada correctamente";

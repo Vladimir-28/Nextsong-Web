@@ -18,7 +18,7 @@ const SongsController = {
         const text = await response.text();
 
         if (!response.ok) {
-            return null; 
+            return null;
         }
 
         return text ? JSON.parse(text) : null;
@@ -60,8 +60,8 @@ const SongsController = {
         return text ? JSON.parse(text) : {};
     },
 
-    delete: async (id) => {
-        const response = await fetch(`${API_URL}/${id}`, {
+    delete: async (id, userId) => {
+        const response = await fetch(`${API_URL}/${id}/user/${userId}`, {
             method: "DELETE"
         });
 
