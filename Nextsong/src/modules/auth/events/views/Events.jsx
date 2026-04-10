@@ -25,10 +25,7 @@ export default function Events() {
 
     // usuario
     const user = JSON.parse(sessionStorage.getItem("user"));
-<<<<<<< HEAD
-=======
     const isAdmin = user?.role === 'ADMIN';
->>>>>>> bd
 
     const getEvents = async () => {
         const data = await EventsController.findByUser(user.id);
@@ -171,7 +168,6 @@ export default function Events() {
                 )}
 
             </div>
-<<<<<<< HEAD
 
             <CreateEventModal
                 show={showModal}
@@ -183,22 +179,6 @@ export default function Events() {
 
 
             {showEditModal && (
-=======
-
-            {/* 🔥 MODAL CREAR */}
-            {isAdmin && (
-                <CreateEventModal
-                    show={showModal}
-                    onClose={() => {
-                        setShowModal(false);
-                        getEvents();
-                    }}
-                />
-            )}
-
-            {/* 🔥 MODAL EDITAR */}
-            {isAdmin && showEditModal && (
->>>>>>> bd
                 <CreateEventModal
                     show={showEditModal}
                     onClose={() => {
@@ -210,8 +190,6 @@ export default function Events() {
                     isEdit={true}
                 />
             )}
-<<<<<<< HEAD
-=======
 
             {/* 🔥 MODAL CONFIRMAR ELIMINACIÓN */}
             <ConfirmModal
@@ -221,7 +199,6 @@ export default function Events() {
                 onClose={() => setConfirmModal({ show: false, id: null })}
                 onConfirm={confirmDelete}
             />
->>>>>>> bd
 
         </div>
     );
