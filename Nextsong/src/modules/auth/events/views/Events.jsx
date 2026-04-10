@@ -151,15 +151,15 @@ export default function Events() {
                 )}
 
             </div>
-           
-                <CreateEventModal
-                    show={showModal}  
-                    onClose={() => {
-                        setShowModal(false);
-                        getEvents();
-                    }}
-                />
-           
+
+            <CreateEventModal
+                show={showModal}
+                onClose={() => {
+                    setShowModal(false);
+                    getEvents();
+                }}
+            />
+
 
             {showEditModal && (
                 <CreateEventModal
