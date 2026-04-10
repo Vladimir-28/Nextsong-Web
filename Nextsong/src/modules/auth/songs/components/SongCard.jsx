@@ -1,14 +1,14 @@
-import { BsTrash,BsChevronRight} from "react-icons/bs";
+import { BsTrash, BsChevronRight } from "react-icons/bs";
 import { SlMusicToneAlt } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 
-export default function SongCard({ item, onDelete, onEdit, isAdmin }){
+export default function SongCard({ item, onDelete, onEdit, isAdmin }) {
 
     const navigate = useNavigate();
 
     return (
-        <div 
+        <div
             className="col-md-4 mb-4"
             onClick={() => navigate(`/songs/${item.id}`)}
             style={{ cursor: "pointer" }}
@@ -35,12 +35,12 @@ export default function SongCard({ item, onDelete, onEdit, isAdmin }){
                         {/* BOTONES */}
                         <div className="d-flex gap-2">
 
-                            
+
 
                             {/* DELETE SOLO ADMIN */}
                             {isAdmin && (
-                                <button 
-                                className="btn p-0 border-0 bg-transparent text-danger"
+                                <button
+                                    className="btn p-0 border-0 bg-transparent text-danger"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onDelete(item.id);
@@ -50,23 +50,23 @@ export default function SongCard({ item, onDelete, onEdit, isAdmin }){
                                 </button>
                             )}
 
-                            {isAdmin && (
-                               <button
-                                 className="btn p-0 border-0 bg-transparent text-warning"
-                                  onClick={(e) => {
-                                         e.stopPropagation();
-                                         onEdit(item);
-                                        }}
-                                >
-                              <FaEdit  />
-                             </button>
-                            )}
+
+                            <button
+                                className="btn p-0 border-0 bg-transparent text-warning"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onEdit(item);
+                                }}
+                            >
+                                <FaEdit />
+                            </button>
+
 
                             {/* VER DETALLE */}
-                            <button 
-                                    className="btn p-0 border-0 bg-transparent"
+                            <button
+                                className="btn p-0 border-0 bg-transparent"
                                 onClick={(e) => {
-                                    e.stopPropagation(); 
+                                    e.stopPropagation();
                                     navigate(`/songs/${item.id}`);
                                 }}
                             >
