@@ -13,6 +13,17 @@ const SongsController = {
         return text ? JSON.parse(text) : [];
     },
 
+    findById: async (id) => {
+        const response = await fetch(`${API_URL}/${id}`);
+        const text = await response.text();
+
+        if (!response.ok) {
+            return null; 
+        }
+
+        return text ? JSON.parse(text) : null;
+    },
+
     create: async (song) => {
         const response = await fetch(API_URL, {
             method: "POST",
