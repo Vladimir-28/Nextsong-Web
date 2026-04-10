@@ -159,6 +159,7 @@ export default function Login({ setSession }) {
                 title={modal.title}
                 message={modal.message}
                 type={modal.type}
+                
                 onClose={() => {
                     setModal({ ...modal, show: false });
 

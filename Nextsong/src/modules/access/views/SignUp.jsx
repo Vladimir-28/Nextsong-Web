@@ -1,10 +1,18 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { handleRegister } from "../controller/UserController";
+import SuccessModal from "../../../components/SuccessModal";
 
 export default function Register() {
 
     const navigate = useNavigate();
+
+    const [modal, setModal] = useState({
+    show: false,
+    title: "",
+    message: "",
+    type: ""
+});
 
     const [form, setForm] = useState({
         name: "",
@@ -49,12 +57,22 @@ export default function Register() {
 
         try {
             await handleRegister(form);
-            alert("Usuario registrado correctamente");
-            navigate("/login");
+           setModal({
+                show: true,
+                title: "Registro exitoso",
+                message: "Tu cuenta fue creada correctamente",
+                type: "success"
+            });
+            
 
         } catch (error) {
             console.error(error);
-            alert(error.message);
+            setModal({
+            show: true,
+            title: "Error",
+            message: error.message || "No se pudo registrar",
+            type: "error"
+        });
         }
     };
 
@@ -205,6 +223,20 @@ export default function Register() {
 
                 </div>
             </div>
+            <SuccessModal
+                show={modal.show}
+                title={modal.title}
+                message={modal.message}
+                type={modal.type}
+                onClose={() => {
+                    setModal({ ...modal, show: false });
+
+                    // 🔥 redirigir solo si fue éxito
+                    if (modal.type === "success") {
+                        navigate("/login");
+                    }
+                }}
+            />
 
         </main>
     );
