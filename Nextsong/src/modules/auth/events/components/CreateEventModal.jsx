@@ -3,8 +3,9 @@ import { Modal } from "react-bootstrap";
 import CreateEventStep1 from "./CreateEventStep1";
 import CreateEventStep2 from "./CreateEventStep2";
 import EventsController from "../controller/events.controller";
-import '../styles/createEvent.css';
 import EventSongsController from "../controller/eventSongs.controller";
+import SuccessModal from "../../../../components/SuccessModal";
+import '../styles/createEvent.css';
 
 export default function CreateEventModal({ show, onClose, onUpdated, event }) {
 
@@ -20,22 +21,26 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
     songs: []
   });
 
-  // 🔥 CARGAR DATOS (CREATE vs EDIT)
+  // 🔥 MODAL STATE
+  const [modal, setModal] = useState({
+    show: false,
+    title: "",
+    message: "",
+    type: ""
+  });
+
+  // 🔥 CARGAR DATOS
   useEffect(() => {
 
     if (event) {
-      // 🔥 EDITAR
       setEventData({
-        id: event.id, // CLAVE
+        id: event.id,
         name: event.name || "",
         type: event.category || "",
-        date: event.eventDate
-  ? event.eventDate.split("T")[0]
-  : "",
+        date: event.eventDate ? event.eventDate.split("T")[0] : "",
         songs: []
       });
     } else {
-      // 🔥 CREAR
       setEventData({
         id: null,
         name: "",
@@ -56,7 +61,7 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
     setEventData(prev => ({ ...prev, ...data }));
   };
 
-  // 🔥 CREATE + UPDATE EN UNA SOLA FUNCIÓN
+  // 🔥 GUARDAR EVENTO
   const saveEvent = async () => {
 
     try {
@@ -64,7 +69,7 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
       let savedEvent;
 
       if (eventData.id) {
-        // 🔥 UPDATE
+        // UPDATE
         savedEvent = await EventsController.update(eventData.id, {
           name: eventData.name,
           eventDate: eventData.date,
@@ -74,16 +79,12 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
           category: eventData.type
         });
 
-        
-
-        alert("Evento actualizado correctamente");
-
       } else {
-        // 🔥 CREATE
+        // CREATE
         savedEvent = await EventsController.create(
           {
             name: eventData.name,
-             eventDate: eventData.date,
+            eventDate: eventData.date,
             location: "",
             description: "",
             status: "ACTIVE",
@@ -91,11 +92,9 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
           },
           user.id
         );
-
-        alert("Evento creado correctamente");
       }
 
-      // 🔥 GUARDAR canciones (ambos casos)
+      // 🔥 GUARDAR CANCIONES
       if (eventData.songs.length > 0) {
         await EventSongsController.addSongsToEvent(
           savedEvent.id,
@@ -105,59 +104,90 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
 
       if (onUpdated) onUpdated();
 
-      // 🔥 RESET
-      setEventData({
-        id: null,
-        name: "",
-        type: "",
-        date: "",
-        songs: []
+      // 🔥 MOSTRAR MODAL ÉXITO
+      setModal({
+        show: true,
+        title: "Éxito",
+        message: eventData.id
+          ? "Evento actualizado correctamente"
+          : "Evento creado correctamente",
+        type: "success"
       });
-
-      setStep(1);
-      onClose();
 
     } catch (error) {
       console.error("Error guardando evento:", error);
-      alert("Error al guardar evento");
+
+      setModal({
+        show: true,
+        title: "Error",
+        message: "No se pudo guardar el evento",
+        type: "error"
+      });
     }
   };
 
   return (
-    <Modal show={show} onHide={onClose} centered size="lg">
+    <>
+      <Modal show={show} onHide={onClose} centered size="lg">
 
-      <Modal.Header closeButton>
-        <Modal.Title>
-          {eventData.id ? "Editar Evento" : "Crear Evento"}
-          <div className="text-muted small">
-            {step === 1 && "Paso 1: Información del evento"}
-            {step === 2 && "Paso 2: Agregar canciones"}
-          </div>
-        </Modal.Title>
-      </Modal.Header>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {eventData.id ? "Editar Evento" : "Crear Evento"}
+            <div className="text-muted small">
+              {step === 1 && "Paso 1: Información del evento"}
+              {step === 2 && "Paso 2: Agregar canciones"}
+            </div>
+          </Modal.Title>
+        </Modal.Header>
 
-      <Modal.Body>
+        <Modal.Body>
 
-        {step === 1 && (
-          <CreateEventStep1
-            eventData={eventData}
-            updateEvent={updateEventData}
-            nextStep={nextStep}
-            onClose={onClose}
-          />
-        )}
+          {step === 1 && (
+            <CreateEventStep1
+              eventData={eventData}
+              updateEvent={updateEventData}
+              nextStep={nextStep}
+              onClose={onClose}
+            />
+          )}
 
-        {step === 2 && (
-          <CreateEventStep2
-            eventData={eventData}
-            updateEvent={updateEventData}
-            prevStep={prevStep}
-            createEvent={saveEvent} // 🔥 ahora sí correcto
-          />
-        )}
+          {step === 2 && (
+            <CreateEventStep2
+              eventData={eventData}
+              updateEvent={updateEventData}
+              prevStep={prevStep}
+              createEvent={saveEvent}
+            />
+          )}
 
-      </Modal.Body>
+        </Modal.Body>
 
-    </Modal>
+      </Modal>
+
+      {/* 🔥 MODAL DE RESULTADO */}
+      <SuccessModal
+        show={modal.show}
+        title={modal.title}
+        message={modal.message}
+        type={modal.type}
+        onClose={() => {
+          setModal({ ...modal, show: false });
+
+          // 🔥 SOLO SI TODO SALIÓ BIEN
+          if (modal.type === "success") {
+            setEventData({
+              id: null,
+              name: "",
+              type: "",
+              date: "",
+              songs: []
+            });
+
+            setStep(1);
+            onClose();
+          }
+        }}
+      />
+    </>
   );
 }

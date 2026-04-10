@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { BsChevronRight } from "react-icons/bs";
 import SongsController from "../controller/songs.controller";
+import SuccessModal from "../../../../components/SuccessModal";
 
 export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
 
@@ -10,6 +11,12 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
   const [bpm, setBpm] = useState("");
   const [keyTone, setKeyTone] = useState("");
   const [chords, setChords] = useState("");
+  const [modal, setModal] = useState({
+    show: false,
+    title: "",
+    message: "",
+    type: ""
+  });
 
   useEffect(() => {
     if (song && isEdit) {
@@ -23,6 +30,24 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
   }, [song, isEdit]);
 
   const handleSaveSong = async () => {
+    // 🔥 VALIDACIÓN CAMPOS VACÍOS
+  if (
+    !title.trim() ||
+    !artist.trim() ||
+    !duration.trim() ||
+    !bpm || String(bpm).trim() === ""||
+    !keyTone.trim() ||
+    !chords.trim()
+  ) {
+    setModal({
+      show: true,
+      title: "Error",
+      message: "Todos los campos son obligatorios",
+      type: "error"
+    });
+    return;
+  }
+
     try {
 
       const payload = {
@@ -37,12 +62,25 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
       };
 
       if (isEdit) {
-        await SongsController.update(payload);
-        alert("Canción actualizada");
-      } else {
-        await SongsController.create(payload);
-        alert("Canción creada");
-      }
+      await SongsController.update(payload);
+
+      setModal({
+        show: true,
+        title: "Actualizada",
+        message: "La canción se actualizó correctamente",
+        type: "success"
+      });
+
+    } else {
+      await SongsController.create(payload);
+
+      setModal({
+        show: true,
+        title: "Creada",
+        message: "La canción se creó correctamente",
+        type: "success"
+      });
+    }
 
       // limpiar
       setTitle("");
@@ -52,11 +90,17 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
       setKeyTone("");
       setChords("");
 
-      onClose();
+      
 
     } catch (error) {
       console.error(error);
-      alert(error.message);
+
+      setModal({
+        show: true,
+        title: "Error",
+        message: error.message || "No se pudo guardar la canción",
+        type: "error"
+      });
     }
   };
 
@@ -135,6 +179,21 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
       </div>
 
       <div className="modal-backdrop fade show"></div>
+
+      <SuccessModal
+      show={modal.show}
+      title={modal.title}
+      message={modal.message}
+      type={modal.type}
+      onClose={() => {
+        setModal({ ...modal, show: false });
+
+        // 🔥 cerrar el modal principal SOLO en éxito
+        if (modal.type === "success") {
+          onClose();
+        }
+      }}
+    />
     </>
   );
 }
