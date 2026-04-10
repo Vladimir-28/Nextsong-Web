@@ -37,18 +37,20 @@ export default function Songs() {
         : songs;
 
     const handleDelete = async (id) => {
-        const confirmDelete = window.confirm("¿Seguro que quieres eliminar esta canción?");
 
+        const confirmDelete = window.confirm("¿Seguro que quieres eliminar esta canción?");
         if (!confirmDelete) return;
 
         try {
-            await SongsController.delete(id);
-            getSongs(); // refresca lista
+            await SongsController.delete(id, user.id);
+            getSongs();
         } catch (error) {
             console.error(error);
-            alert("Error al eliminar canción");
+
+            alert(error.message);
         }
     };
+
     const handleEdit = (song) => {
         setSelectedSong(song);
         setShowEditModal(true);
@@ -108,18 +110,19 @@ export default function Songs() {
                             item={song}
                             onDelete={handleDelete}
                             onEdit={handleEdit}
+                            isAdmin={user?.role === "ADMIN"}
                         />
                     ))
                 )}
             </div>
-            
-                <CreateIndependentSong
-                    show={showModalSong}
-                    onClose={() => {
-                        setShowModalSong(false);
-                        getSongs();
-                    }}
-                />
+
+            <CreateIndependentSong
+                show={showModalSong}
+                onClose={() => {
+                    setShowModalSong(false);
+                    getSongs();
+                }}
+            />
 
             {showEditModal && (
                 <CreateIndependentSong

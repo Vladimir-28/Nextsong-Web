@@ -22,4 +22,6 @@ public interface EventSongRepository extends JpaRepository<EventSong, Long> {
     void deleteBySong_Id(Long songId);
 
     List<EventSong> findByEvent_IdOrderBySongOrder(Long eventId);
+
+    boolean existsBySong_Id(Long songId);
 }

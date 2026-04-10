@@ -2,9 +2,11 @@ package utez.edu.mx.nextsong.services;
 
 import org.springframework.stereotype.Service;
 import utez.edu.mx.nextsong.models.EventSong;
+import utez.edu.mx.nextsong.models.User;
 import utez.edu.mx.nextsong.repositories.EventSongRepository;
 import utez.edu.mx.nextsong.repositories.SongRepository;
 import utez.edu.mx.nextsong.models.Song;
+import utez.edu.mx.nextsong.repositories.UserRepository;
 
 import java.util.List;
 
@@ -12,10 +14,12 @@ import java.util.List;
 public class SongService {
     private final SongRepository songRepository;
     private final EventSongRepository eventSongRepository;
+    private final UserRepository userRepository;
 
-    public SongService(SongRepository songRepository, EventSongRepository eventSongRepository){
+    public SongService(SongRepository songRepository, EventSongRepository eventSongRepository,  UserRepository userRepository) {
         this.songRepository = songRepository;
         this.eventSongRepository = eventSongRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Song> findAll(){
@@ -30,39 +34,27 @@ public class SongService {
         return songRepository.findById(id).orElse(null);
     }
 
-    public boolean deleteById(Long id){
+    public boolean deleteById(Long id, Long userId){
+
         if(!songRepository.existsById(id)){
-            return false;
+            throw new RuntimeException("Canción no encontrada");
         }
 
-        // 1. Obtener relaciones antes de borrar
-        List<EventSong> relations = eventSongRepository.findAll()
-                .stream()
-                .filter(es -> es.getSong().getId().equals(id))
-                .toList();
+        // validar usuario
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // 2. Obtener IDs de eventos afectados
-        List<Long> eventIds = relations.stream()
-                .map(es -> es.getEvent().getId())
-                .distinct()
-                .toList();
-
-        // 3. Eliminar relaciones
-        eventSongRepository.deleteBySong_Id(id);
-
-        // 4. Reordenar cada evento
-        for(Long eventId : eventIds){
-            List<EventSong> songs = eventSongRepository
-                    .findByEvent_IdOrderBySongOrder(eventId);
-
-            int order = 1;
-            for(EventSong es : songs){
-                es.setSongOrder(order++);
-            }
-            eventSongRepository.saveAll(songs);
+        if(user.getRole() == null || user.getRole().getId() != 1L){
+            throw new RuntimeException("No tienes permisos para eliminar canciones");
         }
 
-        // 5. Eliminar canción
+        // validar si está en eventos
+        boolean isUsed = eventSongRepository.existsBySong_Id(id);
+
+        if(isUsed){
+            throw new RuntimeException("No puedes eliminar la canción porque está asignada a un evento");
+        }
+
         songRepository.deleteById(id);
         return true;
     }
