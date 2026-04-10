@@ -13,10 +13,11 @@ export default function User() {
     role: ""
   });
 
-  const [form, setForm] = useState({
-    fullName: "",
-    password: ""
-  });
+ const [form, setForm] = useState({
+  fullName: "",
+  password: "",
+  confirmPassword: ""
+});
 
   const [loading, setLoading] = useState(true);
 
@@ -29,7 +30,8 @@ export default function User() {
 
         setForm({
           fullName: data.fullName,
-          password: ""
+          password: "",
+          confirmPassword: ""
         });
 
       } catch (error) {
@@ -52,6 +54,26 @@ export default function User() {
       return alert("El nombre es obligatorio");
     }
 
+   
+    if (form.password) {
+
+   
+      if (form.password) {
+
+        const isValidPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-]).{8,}$/.test(form.password);
+
+        if (!isValidPassword) {
+          return alert("La contraseña debe tener mayúscula, minúscula, número y carácter especial");
+        }
+
+        if (form.password !== form.confirmPassword) {
+          return alert("Las contraseñas no coinciden");
+        }
+
+      }
+
+  }
+
     try {
       const updatedUser = await updateUser({
         id: user.id,
@@ -63,7 +85,8 @@ export default function User() {
 
       setForm({
         fullName: updatedUser.fullName,
-        password: ""
+        password: "",
+         confirmPassword: ""
       });
 
       // 🔥 FIX AQUÍ TAMBIÉN
@@ -196,6 +219,23 @@ export default function User() {
               }
             />
           </div>
+
+          <div className="mb-3">
+            <label className="form-label">
+              Confirmar contraseña
+            </label>
+            <input
+              type="password"
+              className="form-control"
+              value={form.confirmPassword}
+              onChange={(e) =>
+                setForm(prev => ({
+                  ...prev,
+                  confirmPassword: e.target.value
+                }))
+              }
+            />
+          </div>  
 
           <div className="mb-3 d-flex justify-content-end">
             <button
