@@ -10,7 +10,7 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
     duration: "",
     bpm: "",
     keyTone: "",
-    lyrics: ""
+    chords: ""
 
   });
 
@@ -40,7 +40,7 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
         duration: "",
         bpm: "",
         keyTone: "",
-        lyrics:""
+        chords:""
       });
 
       onClose();
@@ -114,8 +114,8 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
                  as="textarea"
                  rows={4}
                  placeholder="Escribe la letra de la canción..."
-                 value={form.lyrics}
-                onChange={(e) => handleChange("lyrics", e.target.value)}
+                 value={form.chords}
+                onChange={(e) => handleChange("chords", e.target.value)}
                />
              </Form.Group>
 

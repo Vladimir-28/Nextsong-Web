@@ -144,7 +144,7 @@ public class AuthController {
         if (email == null || email.isBlank() || newPassword == null || newPassword.isBlank()) {
             return ResponseEntity.badRequest().body("Datos incompletos");
         }
-        
+
 
         User user = userOpt.get();
         user.setPassword(newPassword);

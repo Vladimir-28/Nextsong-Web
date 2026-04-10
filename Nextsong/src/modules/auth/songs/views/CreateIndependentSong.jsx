@@ -9,7 +9,7 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
   const [duration, setDuration] = useState("");
   const [bpm, setBpm] = useState("");
   const [keyTone, setKeyTone] = useState("");
-  const [lyrics, setLyrics] = useState("");
+  const [chords, setChords] = useState("");
 
   useEffect(() => {
     if (song && isEdit) {
@@ -18,7 +18,7 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
       setDuration(song.duration || "");
       setBpm(song.bpm || "");
       setKeyTone(song.keyTone || "");
-      setLyrics(song.lyrics || "");
+      setChords(song.chords || "");
     }
   }, [song, isEdit]);
 
@@ -33,7 +33,7 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
         bpm,
         keyTone,
         status: "ACTIVE",
-        lyrics
+        chords
       };
 
       if (isEdit) {
@@ -50,7 +50,7 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
       setDuration("");
       setBpm("");
       setKeyTone("");
-      setLyrics("");
+      setChords("");
 
       onClose();
 
@@ -106,7 +106,7 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
 
                 <div className="col-12">
                   <textarea className="form-control" placeholder="Letra"
-                    value={lyrics} onChange={(e) => setLyrics(e.target.value)} />
+                    value={chords} onChange={(e) => setChords(e.target.value)} />
                 </div>
 
               </div>

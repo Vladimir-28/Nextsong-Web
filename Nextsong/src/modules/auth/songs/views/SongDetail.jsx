@@ -117,7 +117,7 @@ export default function SongDetail() {
                                 fontSize: "14px"
                             }}
                         >
-                            {song.lyrics}
+                            {song.chords}
                         </div>
                     </div>
                 </div>
