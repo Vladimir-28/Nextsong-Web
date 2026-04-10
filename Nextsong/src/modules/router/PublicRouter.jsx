@@ -2,7 +2,9 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "../access/views/Login";
 import RecoveryPassword  from "../access/views/RecoveryPassword";
 import SignUp from "../access/views/SignUp";
-import Error404 from "../errors/Error404";
+import VerifyCode from "../access/views/VerifyCode";
+import ResetPassword from "../access/views/ResetPassword";
+
 
 
 export default function PublicRouter({setSession}){
@@ -11,7 +13,9 @@ export default function PublicRouter({setSession}){
         <Route path="/login" element={ <Login setSession={setSession}/>} />
         <Route path="/" element={ <Navigate to="/login" /> } />
         <Route path="/recovery" element={ <RecoveryPassword/>} />
-        <Route path="/signUp" element={ <SignUp/>} />
+        <Route path="/signUp" element={ <SignUp/>} /> 
+        <Route path="/verify-code" element={<VerifyCode/>} />
+        <Route path="/reset-password" element={<ResetPassword/>} />
 
         <Route path="/*" element={ <Navigate to="/" /> } />
 

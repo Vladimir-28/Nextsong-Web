@@ -92,6 +92,10 @@ public class AuthController {
         // Búsqueda insensible a mayúsculas y minúsculas con limpieza de espacios
         Optional<User> user = userRepository.findByEmail(email.trim());
 
+        if (email == null || email.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("El correo es obligatorio");
+        }
+
         if (user.isEmpty()) {
             System.out.println("DEBUG: El correo no existe en la BD.");
             return ResponseEntity.status(404).body("El correo no está registrado");
@@ -121,6 +125,10 @@ public class AuthController {
             return ResponseEntity.ok().build();
         }
 
+        if (email == null || email.isBlank() || code == null || code.isBlank()) {
+            return ResponseEntity.badRequest().body("Datos incompletos");
+        }
+
         return ResponseEntity.status(401).body("Código incorrecto o expirado");
     }
 
@@ -132,6 +140,11 @@ public class AuthController {
         if (userOpt.isEmpty()) {
             return ResponseEntity.status(404).body("Usuario no encontrado");
         }
+
+        if (email == null || email.isBlank() || newPassword == null || newPassword.isBlank()) {
+            return ResponseEntity.badRequest().body("Datos incompletos");
+        }
+        
 
         User user = userOpt.get();
         user.setPassword(newPassword);
