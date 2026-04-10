@@ -6,6 +6,7 @@ import SongsController from "../../songs/controller/songs.controller";
 import EventSongsController from "../controller/eventSongs.controller";
 import CreateSongModal from "./CreateSongModal";
 import '../styles/addSongs.css'
+import SuccessModal from "../../../../components/SuccessModal";
 
 export default function CreateEventStep2({
     eventData,
@@ -17,6 +18,13 @@ export default function CreateEventStep2({
     const [availableSongs, setAvailableSongs] = useState([]);
     const [selectedSongs, setSelectedSongs] = useState([]);
     const [showSongModal, setShowSongModal] = useState(false);
+
+    const [modal, setModal] = useState({
+        show: false,
+        title: "",
+        message: "",
+        type: ""
+    });
 
     // 🔥 cargar canciones disponibles (solo una vez)
     useEffect(() => {
@@ -110,8 +118,21 @@ export default function CreateEventStep2({
     };
 
     const finish = () => {
-        createEvent();
-    };
+
+    // ❌ VALIDACIÓN
+    if (selectedSongs.length === 0) {
+        setModal({
+            show: true,
+            title: "Atención",
+            message: "Debes agregar al menos una canción",
+            type: "error"
+        });
+        return;
+    }
+
+    // ✔ TODO BIEN
+    createEvent();
+};
 
     const filteredSongs = availableSongs.filter(
         song => !selectedSongs.find(s => s.id === song.id)
@@ -212,6 +233,14 @@ export default function CreateEventStep2({
                 onClose={() => setShowSongModal(false)}
                 onCreate={handleNewSong}
             />
+
+            <SuccessModal
+            show={modal.show}
+            title={modal.title}
+            message={modal.message}
+            type={modal.type}
+            onClose={() => setModal({ ...modal, show: false })}
+        />
 
         </>
     );

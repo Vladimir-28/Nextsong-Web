@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import SongCard from "../components/SongCard";
 import SongsController from "../controller/songs.controller";
 import CreateIndependentSong from "./CreateIndependentSong";
-import { FaPlus, FaSearch, FaEdit } from "react-icons/fa";
+import ConfirmModal from "../../../../components/ConfirmModal";
+import { FaPlus, FaSearch } from "react-icons/fa";
 
 export default function Songs() {
 
@@ -11,6 +12,12 @@ export default function Songs() {
     const [search, setSearch] = useState("");
     const [selectedSong, setSelectedSong] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
+
+    // 🔥 CONFIRM MODAL STATE
+    const [confirmModal, setConfirmModal] = useState({
+        show: false,
+        id: null
+    });
 
     // VALIDACIÓN ADMIN
     const user = JSON.parse(sessionStorage.getItem("user"));
@@ -38,23 +45,35 @@ export default function Songs() {
         )
         : songs;
 
-    const handleDelete = async (id) => {
-        const confirmDelete = window.confirm("¿Seguro que quieres eliminar esta canción?");
+    // 🔥 ABRIR MODAL CONFIRMACIÓN
+    const handleDelete = (id) => {
+        setConfirmModal({
+            show: true,
+            id
+        });
+    };
 
-        if (!confirmDelete) return;
-
+    // 🔥 CONFIRMAR DELETE REAL
+    const confirmDelete = async () => {
         try {
-            await SongsController.delete(id);
-            getSongs(); // refresca lista
+            await SongsController.delete(confirmModal.id);
+
+            setSongs(prev =>
+                prev.filter(s => s.id !== confirmModal.id)
+            );
+
         } catch (error) {
             console.error(error);
             alert("Error al eliminar canción");
         }
+
+        setConfirmModal({ show: false, id: null });
     };
+
     const handleEdit = (song) => {
-      setSelectedSong(song);
-      setShowEditModal(true);
-     };
+        setSelectedSong(song);
+        setShowEditModal(true);
+    };
 
     return (
         <div className="container mt-4">
@@ -98,6 +117,7 @@ export default function Songs() {
             </div>
 
             <div className="row">
+
                 {filteredSongs.length === 0 ? (
                     <div className="alert alert-secondary rounded-4">
                         <span>
@@ -107,40 +127,53 @@ export default function Songs() {
                         </span>
                     </div>
                 ) : (
-                    filteredSongs.map((song, index) => (
-                        <SongCard 
-                            key={index} 
-                            item={song} 
+                    filteredSongs.map((song) => (
+                        <SongCard
+                            key={song.id}
+                            item={song}
                             onDelete={handleDelete}
-                            onEdit={handleEdit} 
+                            onEdit={handleEdit}
                             isAdmin={isAdmin}
                         />
                     ))
                 )}
+
             </div>
 
+            {/* 🔥 MODAL CREAR */}
             {isAdmin && (
-        <CreateIndependentSong
-        show={showModalSong}   // 🔥 CORRECTO
-        onClose={() => {
-            setShowModalSong(false);
-            getSongs();
-        }}
-            />
-        )}
+                <CreateIndependentSong
+                    show={showModalSong}
+                    onClose={() => {
+                        setShowModalSong(false);
+                        getSongs();
+                    }}
+                />
+            )}
 
-        {isAdmin && showEditModal && (
-        <CreateIndependentSong
-        show={showEditModal}
-        onClose={() => {
-            setShowEditModal(false);
-            setSelectedSong(null);
-            getSongs();
-        }}
-        song={selectedSong}
-        isEdit={true}
-    />
-)}
+            {/* 🔥 MODAL EDITAR */}
+            {isAdmin && showEditModal && (
+                <CreateIndependentSong
+                    show={showEditModal}
+                    onClose={() => {
+                        setShowEditModal(false);
+                        setSelectedSong(null);
+                        getSongs();
+                    }}
+                    song={selectedSong}
+                    isEdit={true}
+                />
+            )}
+
+            {/* 🔥 CONFIRM MODAL DELETE */}
+            <ConfirmModal
+                show={confirmModal.show}
+                title="Eliminar canción"
+                message="¿Seguro que quieres eliminar esta canción?"
+                onClose={() => setConfirmModal({ show: false, id: null })}
+                onConfirm={confirmDelete}
+            />
+
         </div>
     );
 }
