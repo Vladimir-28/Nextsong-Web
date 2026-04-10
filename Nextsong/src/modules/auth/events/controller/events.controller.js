@@ -70,6 +70,7 @@ EventsController.findByUser = async (userId) => {
     return await response.json();
 };
 
+//Actualizar evento
 EventsController.update = async (id, event) => {
     const response = await fetch(`${API_URL}/${id}`, {
         method: "PUT",
@@ -83,9 +84,31 @@ EventsController.update = async (id, event) => {
 
     return await response.json();
 };
+
+//Obtener canciones del evento
 EventsController.getSongsByEvent = async (eventId) => {
     const response = await fetch(`${API_URL}/${eventId}/songs`);
     return await response.json();
+};
+
+//Agregar colaborador
+EventsController.addCollaborator = async (eventId, userId) => {
+    const response = await fetch(`${API_URL}/${eventId}/collaborators/${userId}`, {
+        method: "POST",
+        headers
+    });
+
+    if (!response.ok) throw new Error("Error al agregar colaborador");
+};
+
+//Quitar colaborador
+EventsController.removeCollaborator = async (eventId, userId) => {
+    const response = await fetch(`${API_URL}/${eventId}/collaborators/${userId}`, {
+        method: "DELETE",
+        headers
+    });
+
+    if (!response.ok) throw new Error("Error al eliminar colaborador");
 };
 
 export default EventsController;
