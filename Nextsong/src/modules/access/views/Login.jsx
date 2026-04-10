@@ -2,44 +2,86 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import { handleLogin } from "../controller/LoginController";
+import SuccessModal from "../../../components/SuccessModal";
 
 export default function Login({ setSession }) {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState(""); // Añadido para mostrar errores
+    const [error, setError] = useState("");
 
     const navigate = useNavigate();
 
-    const changeSession = async (e) => {
-        e.preventDefault();
+    // 🔥 Modal state
+    const [modal, setModal] = useState({
+        show: false,
+        title: "",
+        message: "",
+        type: ""
+    });
 
-        try {
-            const data = await handleLogin(email, password);
-            console.log("LOGIN DATA:", data);
+   
 
-            if (data) {
-                alert("Inicio de sesión correcto");
+   const changeSession = async (e) => {
+    e.preventDefault();
 
-                // Guardar los datos del usuario en sessionStorage
-                sessionStorage.setItem("user", JSON.stringify(data));
-                console.log("GUARDADO:", sessionStorage.getItem("user"));
+    try {
+        const data = await handleLogin(email, password);
+        console.log("DATA:", data);
 
-                setSession(true);  // Aquí cambiamos el estado global de la sesión
-
-                // Redirigir al usuario a la página principal
-                navigate("/"); 
-            }
-
-        } catch (error) {
-            console.error(error);
-            setError("Error al iniciar sesión. Por favor, verifica tus credenciales.");
+        // 🔥 VALIDACIÓN REAL
+        // Si no viene algo típico de usuario → error
+        if (!data || data.error || data.message === "Credenciales incorrectas") {
+            setModal({
+                show: true,
+                title: "Error",
+                message: "Correo o contraseña incorrectos",
+                type: "error"
+            });
+            return;
         }
-    };
+        // ✔ éxito
+        sessionStorage.setItem("user", JSON.stringify(data));
+
+        setModal({
+            show: true,
+            title: "Bienvenido",
+            message: "Inicio de sesión exitoso",
+            type: "success"
+        });
+
+    } catch (error) {
+    console.error("ERROR COMPLETO:", error);
+
+    const msg = error?.message || "";
+
+    // 🔥 detectar credenciales incorrectas
+    if (
+        msg.includes("401") ||
+        msg.toLowerCase().includes("unauthorized") ||
+        msg.toLowerCase().includes("credenciales") ||
+        msg.toLowerCase().includes("bad credentials")
+    ) {
+        setModal({
+            show: true,
+            title: "Error",
+            message: "Correo o contraseña incorrectos",
+            type: "error"
+        });
+    } else {
+        setModal({
+            show: true,
+            title: "Error",
+            message: "Error del servidor",
+            type: "error"
+        });
+    }
+}
+};
 
     useEffect(() => {
-        if (sessionStorage.getItem("user")) { 
-            navigate("/"); // Si ya hay un usuario en sessionStorage, redirigir a la página principal
+        if (sessionStorage.getItem("user")) {
+            navigate("/");
         }
     }, [navigate]);
 
@@ -56,12 +98,10 @@ export default function Login({ setSession }) {
                         </p>
                     </div>
 
-                    {/* Mostrar mensaje de error si es necesario */}
                     {error && <div className="alert alert-danger">{error}</div>}
 
                     <form className="row g-3" onSubmit={changeSession}>
 
-                        {/* EMAIL */}
                         <div className="col-12">
                             <label className="form-label">Correo electrónico *</label>
                             <input
@@ -74,7 +114,6 @@ export default function Login({ setSession }) {
                             />
                         </div>
 
-                        {/* PASSWORD */}
                         <div className="col-12">
                             <label className="form-label">Contraseña *</label>
                             <input
@@ -111,9 +150,27 @@ export default function Login({ setSession }) {
                         </div>
 
                     </form>
-
                 </div>
             </div>
+
+            {/* 🔥 MODAL */}
+            <SuccessModal
+                show={modal.show}
+                title={modal.title}
+                message={modal.message}
+                type={modal.type}
+                
+                onClose={() => {
+                    setModal({ ...modal, show: false });
+
+                    // ✔ SOLO si fue éxito
+                    if (modal.type === "success") {
+                        setSession(true);
+                        navigate("/");
+                    }
+                }}
+            />
+
         </main>
     );
 }
