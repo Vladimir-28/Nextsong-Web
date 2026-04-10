@@ -4,6 +4,7 @@ import { FaPlus, FaSearch } from "react-icons/fa";
 import EventCard from "../components/EventCard";
 import EventsController from "../controller/events.controller";
 import CreateEventModal from "../components/CreateEventModal";
+import ConfirmModal from "../../../../components/ConfirmModal";
 
 export default function Events() {
 
@@ -14,10 +15,20 @@ export default function Events() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
 
+    // 🔥 estado del modal de confirmación
+    const [confirmModal, setConfirmModal] = useState({
+        show: false,
+        id: null
+    });
+
     const navigate = useNavigate();
 
     // usuario
     const user = JSON.parse(sessionStorage.getItem("user"));
+<<<<<<< HEAD
+=======
+    const isAdmin = user?.role === 'ADMIN';
+>>>>>>> bd
 
     const getEvents = async () => {
         const data = await EventsController.findByUser(user.id);
@@ -36,23 +47,32 @@ export default function Events() {
         getEvents();
     }, []);
 
-    // ELIMINAR EVENTO
-    const handleDelete = async (id) => {
+    /* =========================
+       ELIMINAR EVENTO (MODAL)
+    ========================== */
 
-        const confirmDelete = window.confirm("¿Seguro que quieres eliminar este evento?");
-        if (!confirmDelete) return;
+    const handleDelete = (id) => {
+        setConfirmModal({
+            show: true,
+            id
+        });
+    };
 
+    const confirmDelete = async () => {
         try {
-            await EventsController.delete(id);
+            await EventsController.delete(confirmModal.id);
 
-            // actualizar lista sin recargar
-            setEvents(prev => prev.filter(e => e.id !== id));
+            setEvents(prev => prev.filter(e => e.id !== confirmModal.id));
 
         } catch (error) {
             console.error(error);
             setAlert("❌ Error al eliminar el evento");
         }
+
+        setConfirmModal({ show: false, id: null });
     };
+
+    /* ========================= */
 
     const filteredEvents = events.filter((event) =>
         event.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -151,6 +171,7 @@ export default function Events() {
                 )}
 
             </div>
+<<<<<<< HEAD
 
             <CreateEventModal
                 show={showModal}
@@ -162,6 +183,22 @@ export default function Events() {
 
 
             {showEditModal && (
+=======
+
+            {/* 🔥 MODAL CREAR */}
+            {isAdmin && (
+                <CreateEventModal
+                    show={showModal}
+                    onClose={() => {
+                        setShowModal(false);
+                        getEvents();
+                    }}
+                />
+            )}
+
+            {/* 🔥 MODAL EDITAR */}
+            {isAdmin && showEditModal && (
+>>>>>>> bd
                 <CreateEventModal
                     show={showEditModal}
                     onClose={() => {
@@ -173,6 +210,18 @@ export default function Events() {
                     isEdit={true}
                 />
             )}
+<<<<<<< HEAD
+=======
+
+            {/* 🔥 MODAL CONFIRMAR ELIMINACIÓN */}
+            <ConfirmModal
+                show={confirmModal.show}
+                title="Eliminar evento"
+                message="¿Seguro que quieres eliminar este evento?"
+                onClose={() => setConfirmModal({ show: false, id: null })}
+                onConfirm={confirmDelete}
+            />
+>>>>>>> bd
 
         </div>
     );
