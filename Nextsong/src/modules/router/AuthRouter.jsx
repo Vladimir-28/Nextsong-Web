@@ -8,27 +8,31 @@ import User from "../auth/user/view/User";
 import SongDetail from "../auth/songs/views/SongDetail";
 
 import Error404 from "../errors/Error404";
+import Error403 from "../errors/Error403";
 
 export default function AuthRouter() {
-  return (
-    <Routes>
+    return (
+        <Routes>
 
-      {/* base */}
-      <Route path="/" element={<Navigate to="/home" />} />
+            {/* base */}
+            <Route path="/" element={<Navigate to="/home" />} />
 
-      {/* rutas */}
-      <Route path="/home" element={<Home />} />
-      <Route path="/songs" element={<Songs />} />
-      <Route path="/events" element={<Events />} />
-      <Route path="/users" element={<User />} />
+            {/* rutas */}
+            <Route path="/home" element={<Home />} />
+            <Route path="/songs" element={<Songs />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/users" element={<User />} />
 
-      {/* dinámicas */}
-      <Route path="/songs/:id" element={<SongDetail />} />
-      <Route path="/events/:id" element={<EventDetail />} />
+            {/* dinámicas */}
+            <Route path="/songs/:id" element={<SongDetail />} />
+            <Route path="/events/:id" element={<EventDetail />} />
 
-      {/* 404 */}
-      <Route path="*" element={<Error404 />} />
+            {/* 404 */}
+            <Route path="*" element={<Error404 />} />
 
-    </Routes>
-  );
+            {/* 403 */}
+            <Route path="/forbidden" element={<Error403 />} />
+
+        </Routes>
+    );
 }
