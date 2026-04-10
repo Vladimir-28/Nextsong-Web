@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import EventsController from "../controller/events.controller";
 import SongEventCard from "../components/SongEventCard";
@@ -10,27 +10,48 @@ import { FaTimes, FaUserPlus } from "react-icons/fa";
 export default function EventDetail() {
 
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [event, setEvent] = useState(null);
     const [songs, setSongs] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [showAll, setShowAll] = useState(false); // modal de todos
+    const [showAll, setShowAll] = useState(false);
 
     const user = JSON.parse(sessionStorage.getItem("user"));
 
     const getEvent = async () => {
-        const data = await EventsController.findById(id);
-        setEvent(data);
-    };
+        try {
+            const data = await EventsController.findById(id);
 
-    const getSongs = async () => {
-        const data = await EventSongsController.getSongsByEvent(id);
-        setSongs(data);
+            // 404 → no existe
+            if (!data || !data.id) {
+                navigate("/not-found");
+                return;
+            }
+
+            // validar acceso (creator o colaborador)
+            const isCreator = data.creator?.id === user.id;
+            const isCollaborator = data.collaborators?.some(c => c.id === user.id);
+
+            if (!isCreator && !isCollaborator) {
+                navigate("/forbidden");
+                return;
+            }
+
+            setEvent(data);
+
+            // solo carga canciones si tiene acceso
+            const songsData = await EventSongsController.getSongsByEvent(id);
+            setSongs(songsData);
+
+        } catch (error) {
+            console.error(error);
+            navigate("/not-found"); // fallback
+        }
     };
 
     useEffect(() => {
         getEvent();
-        getSongs();
     }, []);
 
     const isCreator = event?.creator?.id === user.id;
@@ -40,7 +61,6 @@ export default function EventDetail() {
         getEvent();
     };
 
-    // iniciales
     const getInitials = (name) => {
         if (!name) return "?";
         const parts = name.split(" ");
@@ -49,7 +69,6 @@ export default function EventDetail() {
             : parts[0][0].toUpperCase();
     };
 
-    // límite visual
     const MAX_VISIBLE = 8;
     const visible = event?.collaborators?.slice(0, MAX_VISIBLE) || [];
     const remaining = (event?.collaborators?.length || 0) - MAX_VISIBLE;
@@ -106,7 +125,6 @@ export default function EventDetail() {
                                 }}
                             >
 
-                                {/* AVATAR */}
                                 <div
                                     className="d-flex align-items-center justify-content-center"
                                     style={{
@@ -135,7 +153,6 @@ export default function EventDetail() {
                             </div>
                         ))}
 
-                        {/* + MÁS */}
                         {remaining > 0 && (
                             <div
                                 className="px-3 py-2"
