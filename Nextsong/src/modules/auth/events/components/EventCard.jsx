@@ -13,17 +13,17 @@ const icons = {
 
 export default function EventCard({ event, onClick, onDelete, onEdit, user }) {
 
-	// validación de admin 
-	const isAdmin = user?.role === 'ADMIN';
-	// 🔥 función arriba
-const formatDate = (date) => {
-  if (!date) return "";
+	// solo creador
+	const isCreator = event?.creator?.id === user?.id;
 
-  const clean = date.includes("T") ? date.split("T")[0] : date;
-  const [year, month, day] = clean.split("-");
+	const formatDate = (date) => {
+		if (!date) return "";
 
-  return `${day}/${month}/${year}`;
-};
+		const clean = date.includes("T") ? date.split("T")[0] : date;
+		const [year, month, day] = clean.split("-");
+
+		return `${day}/${month}/${year}`;
+	};
 
 	return (
 		<div className="col-md-4 mb-4">
@@ -50,35 +50,35 @@ const formatDate = (date) => {
 
 					<div className="d-flex align-items-center gap-2">
 
-						{/* Botón eliminar SOLO ADMIN */}
-						{isAdmin && (
+						{/* ELIMINAR SOLO CREADOR */}
+						{isCreator && (
 							<button
 								className="btn p-0 border-0 bg-transparent text-danger"
 								onClick={(e) => {
-									e.stopPropagation(); 
+									e.stopPropagation();
 									onDelete && onDelete(event.id);
 								}}
 							>
 								<BsTrash />
 							</button>
 						)}
-						{/* EDITAR SOLO ADMIN */}
-                        {isAdmin && (
-						<button
-							className="btn p-0 border-0 bg-transparent text-warning"
-							onClick={(e) => {
-								e.stopPropagation();
-								onEdit && onEdit(event);
-							}}
-						>
-							<FaEdit />
-						</button>
-						)} 
+
+						{/* EDITAR SOLO CREADOR */}
+						{isCreator && (
+							<button
+								className="btn p-0 border-0 bg-transparent text-warning"
+								onClick={(e) => {
+									e.stopPropagation();
+									onEdit && onEdit(event);
+								}}
+							>
+								<FaEdit />
+							</button>
+						)}
 
 						<button className="btn p-0 border-0 bg-transparent">
 							<BsChevronRight />
 						</button>
-						
 
 					</div>
 
@@ -92,8 +92,8 @@ const formatDate = (date) => {
 
 				<small className="text-muted">
 					{event.eventDate
-					? formatDate(event.eventDate)
-					: "Sin fecha"}
+						? formatDate(event.eventDate)
+						: "Sin fecha"}
 				</small>
 
 				<hr />
@@ -102,6 +102,7 @@ const formatDate = (date) => {
 					<small className="text-muted">Canciones</small>
 					<strong>{event.songsCount || 0}</strong>
 				</div>
+
 			</div>
 
 		</div>
