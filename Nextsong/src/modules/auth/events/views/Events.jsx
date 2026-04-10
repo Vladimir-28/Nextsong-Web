@@ -19,8 +19,6 @@ export default function Events() {
     // usuario
     const user = JSON.parse(sessionStorage.getItem("user"));
 
-    const isAdmin = user?.role === 'ADMIN';
-
     const getEvents = async () => {
         const data = await EventsController.findByUser(user.id);
         setEvents(data);
@@ -62,9 +60,9 @@ export default function Events() {
     );
 
     const handleEdit = (event) => {
-    setSelectedEvent(event);
-    setShowEditModal(true);
-};
+        setSelectedEvent(event);
+        setShowEditModal(true);
+    };
 
     return (
         <div className="container mt-4">
@@ -78,16 +76,13 @@ export default function Events() {
                     </p>
                 </div>
 
-                {/* BOTÓN SOLO ADMIN */}
-                {isAdmin && (
-                    <button
-                        className="btn text-white d-flex justify-content-center align-items-center"
-                        style={{ backgroundColor: "#a56d49" }}
-                        onClick={() => setShowModal(true)}
-                    >
-                        <FaPlus className="me-1" /> Crear Evento
-                    </button>
-                )}
+                <button
+                    className="btn text-white d-flex justify-content-center align-items-center"
+                    style={{ backgroundColor: "#a56d49" }}
+                    onClick={() => setShowModal(true)}
+                >
+                    <FaPlus className="me-1" /> Crear Evento
+                </button>
 
             </div>
 
@@ -127,16 +122,14 @@ export default function Events() {
                                 Crea tu primer evento para comenzar a organizar canciones.
                             </p>
 
-                            {isAdmin && (
-                                <button
-                                    className="btn text-white"
-                                    style={{ backgroundColor: "#a56d49" }}
-                                    onClick={() => setShowModal(true)}
-                                >
-                                    <FaPlus className="me-2" />
-                                    Crear primer evento
-                                </button>
-                            )}
+                            <button
+                                className="btn text-white"
+                                style={{ backgroundColor: "#a56d49" }}
+                                onClick={() => setShowModal(true)}
+                            >
+                                <FaPlus className="me-2" />
+                                Crear primer evento
+                            </button>
 
                         </div>
 
@@ -148,38 +141,38 @@ export default function Events() {
                         <EventCard
                             key={event.id}
                             event={event}
-                            user={user} 
+                            user={user}
                             onClick={() => openEvent(event)}
                             onDelete={handleDelete}
-                            onEdit={handleEdit}   // 🔥 ESTE ES NUEVO
+                            onEdit={handleEdit}
                         />
                     ))
 
                 )}
 
             </div>
-            {isAdmin && (
+           
                 <CreateEventModal
-                show={showModal}   // 🔥 ESTE ES EL CORRECTO
-                onClose={() => {
-                setShowModal(false);
-             getEvents();
-              }}
-                 />
-            )}
+                    show={showModal}  
+                    onClose={() => {
+                        setShowModal(false);
+                        getEvents();
+                    }}
+                />
+           
 
-           {isAdmin && showEditModal && (
-        <CreateEventModal
-        show={showEditModal}
-        onClose={() => {
-            setShowEditModal(false);
-            setSelectedEvent(null);
-            getEvents();
-        }}
-        event={selectedEvent}
-        isEdit={true}
-    />
-)}
+            {showEditModal && (
+                <CreateEventModal
+                    show={showEditModal}
+                    onClose={() => {
+                        setShowEditModal(false);
+                        setSelectedEvent(null);
+                        getEvents();
+                    }}
+                    event={selectedEvent}
+                    isEdit={true}
+                />
+            )}
 
         </div>
     );
