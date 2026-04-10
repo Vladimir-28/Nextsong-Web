@@ -10,21 +10,21 @@ export default function CreateEventStep1({ eventData, updateEvent, nextStep, onC
   const [type, setType] = useState("");
   const [date, setDate] = useState("");
 
-  // 🔥 SINCRONIZA DATOS (CLAVE PARA EDITAR)
-useEffect(() => {
+  // sincronizar datos
+  useEffect(() => {
 
-  if (!eventData) return;
+    if (!eventData) return;
 
-  setName(eventData.name || "");
-  setType(eventData.type || "");
+    setName(eventData.name || "");
+    setType(eventData.type || "");
 
-  const cleanDate = eventData.date?.includes("T")
-    ? eventData.date.split("T")[0]
-    : eventData.date || "";
+    const cleanDate = eventData.date?.includes("T")
+      ? eventData.date.split("T")[0]
+      : eventData.date || "";
 
-  setDate(cleanDate);
+    setDate(cleanDate);
 
-}, [eventData]); // 🔥 volver a usar eventData completo
+  }, [eventData]);
 
   const eventTypes = [
     { id: "boda", label: "Boda", icon: <FaUserFriends />, color: "#ff2d55" },
@@ -102,16 +102,10 @@ useEffect(() => {
       <Form.Group>
         <Form.Label>Fecha *</Form.Label>
         <Form.Control
-  type="date"
-  value={date}
-  onChange={(e) => {
-    setDate(e.target.value);
-
-    updateEvent({
-      date: e.target.value // 🔥 ESTA ES LA CLAVE
-    });
-  }}
-/>
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
       </Form.Group>
 
       {/* BOTONES */}
