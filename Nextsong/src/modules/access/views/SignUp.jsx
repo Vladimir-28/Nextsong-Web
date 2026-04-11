@@ -7,12 +7,15 @@ export default function Register() {
 
     const navigate = useNavigate();
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const [modal, setModal] = useState({
-    show: false,
-    title: "",
-    message: "",
-    type: ""
-});
+        show: false,
+        title: "",
+        message: "",
+        type: ""
+    });
 
     const [form, setForm] = useState({
         name: "",
@@ -57,37 +60,36 @@ export default function Register() {
 
         try {
             await handleRegister(form);
-           setModal({
+
+            setModal({
                 show: true,
                 title: "Registro exitoso",
                 message: "Tu cuenta fue creada correctamente",
                 type: "success"
             });
-            
 
         } catch (error) {
             console.error(error);
+
             setModal({
-            show: true,
-            title: "Error",
-            message: error.message || "No se pudo registrar",
-            type: "error"
-        });
+                show: true,
+                title: "Error",
+                message: error.message || "No se pudo registrar",
+                type: "error"
+            });
         }
     };
 
     return (
         <main className="d-flex flex-column align-items-center">
 
-            <div
-                className="d-flex justify-content-center align-items-center w-100"
-                style={{ minHeight: "80vh" }}
-            >
-                <div
-                    className="card border-1 mb-4 p-4"
-                    style={{ width: 450, overflow: "visible" }} // 👈 importante
-                >
+            <div className="d-flex justify-content-center align-items-center w-100"
+                style={{ minHeight: "80vh" }}>
 
+                <div className="card border-1 mb-4 p-4"
+                    style={{ width: 450, overflow: "visible" }}>
+
+                    {/* BACK */}
                     <Link
                         to="/login"
                         className="text-decoration-none d-inline-block mb-3 text-secondary"
@@ -95,6 +97,7 @@ export default function Register() {
                         ← Volver a inicio de sesión
                     </Link>
 
+                    {/* HEADER */}
                     <div className="text-center mb-4">
                         <h2 className="fw-bold">Crear cuenta</h2>
                         <p className="text-muted mb-0">
@@ -133,13 +136,22 @@ export default function Register() {
                         </div>
 
                         {/* PASSWORD */}
-                        <div className="col-12 position-relative">
-                            <label className="form-label">Contraseña *</label>
+                        <div className="col-12">
+                            <label className="form-label d-flex justify-content-between align-items-center">
+                                Contraseña *
 
-                            <div className="position-relative">
+                                <i
+                                    className="bi bi-info-circle text-muted"
+                                    style={{ cursor: "pointer" }}
+                                    onMouseEnter={() => setShowInfo(true)}
+                                    onMouseLeave={() => setShowInfo(false)}
+                                ></i>
+                            </label>
+
+                            <div className="input-group">
 
                                 <input
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     name="password"
                                     className="form-control"
                                     value={form.password}
@@ -149,63 +161,51 @@ export default function Register() {
                                     required
                                 />
 
-                                {/* ICONO */}
                                 <span
-                                    className="position-absolute top-50 end-0 translate-middle-y me-3"
+                                    className="input-group-text bg-white"
                                     style={{ cursor: "pointer" }}
-                                    onMouseEnter={() => setShowInfo(true)}
-                                    onMouseLeave={() => setShowInfo(false)}
+                                    onClick={() => setShowPassword(!showPassword)}
                                 >
-                                    <i className="bi bi-info-circle"></i>
+                                    <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
                                 </span>
-
-                                {/* TARJETA FLOTANTE */}
-                                {showInfo && (
-                                    <div
-                                        className="position-absolute bg-white border rounded shadow p-2"
-                                        style={{
-                                            top: "110%",
-                                            right: "0",
-                                            width: "250px",
-                                            zIndex: 10
-                                        }}
-                                    >
-                                        <small className={validations.length ? "text-success" : "text-danger"}>
-                                            • Mínimo 8 caracteres
-                                        </small><br />
-
-                                        <small className={validations.upper ? "text-success" : "text-danger"}>
-                                            • Una mayúscula
-                                        </small><br />
-
-                                        <small className={validations.lower ? "text-success" : "text-danger"}>
-                                            • Una minúscula
-                                        </small><br />
-
-                                        <small className={validations.number ? "text-success" : "text-danger"}>
-                                            • Un número
-                                        </small><br />
-
-                                        <small className={validations.special ? "text-success" : "text-danger"}>
-                                            • Un carácter especial
-                                        </small>
-                                    </div>
-                                )}
-
                             </div>
+
+                            {/* INFO PASSWORD */}
+                            {showInfo && (
+                                <div className="position-absolute bg-white border rounded shadow p-2 mt-1"
+                                    style={{ width: "250px", zIndex: 10 }}>
+                                    <small className={validations.length ? "text-success" : "text-danger"}>• Mínimo 8 caracteres</small><br />
+                                    <small className={validations.upper ? "text-success" : "text-danger"}>• Una mayúscula</small><br />
+                                    <small className={validations.lower ? "text-success" : "text-danger"}>• Una minúscula</small><br />
+                                    <small className={validations.number ? "text-success" : "text-danger"}>• Un número</small><br />
+                                    <small className={validations.special ? "text-success" : "text-danger"}>• Un carácter especial</small>
+                                </div>
+                            )}
                         </div>
 
                         {/* CONFIRM PASSWORD */}
                         <div className="col-12">
                             <label className="form-label">Confirmar contraseña *</label>
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                className="form-control"
-                                value={form.confirmPassword}
-                                onChange={handleChange}
-                                required
-                            />
+
+                            <div className="input-group">
+
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    name="confirmPassword"
+                                    className="form-control"
+                                    value={form.confirmPassword}
+                                    onChange={handleChange}
+                                    required
+                                />
+
+                                <span
+                                    className="input-group-text bg-white"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    <i className={`bi ${showConfirmPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                                </span>
+                            </div>
                         </div>
 
                         {/* BOTÓN */}
@@ -220,9 +220,10 @@ export default function Register() {
                         </div>
 
                     </form>
-
                 </div>
             </div>
+
+            {/* MODAL */}
             <SuccessModal
                 show={modal.show}
                 title={modal.title}
@@ -231,7 +232,6 @@ export default function Register() {
                 onClose={() => {
                     setModal({ ...modal, show: false });
 
-                    // 🔥 redirigir solo si fue éxito
                     if (modal.type === "success") {
                         navigate("/login");
                     }
