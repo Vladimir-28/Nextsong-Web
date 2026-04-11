@@ -21,7 +21,7 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
     songs: []
   });
 
-  // 🔥 MODAL STATE
+  // MODAL STATE
   const [modal, setModal] = useState({
     show: false,
     title: "",
@@ -29,7 +29,7 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
     type: ""
   });
 
-  // 🔥 CARGAR DATOS
+  // CARGAR DATOS
   useEffect(() => {
 
     if (event) {
@@ -61,7 +61,7 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
     setEventData(prev => ({ ...prev, ...data }));
   };
 
-  // 🔥 GUARDAR EVENTO
+  // GUARDAR EVENTO
   const saveEvent = async () => {
 
     try {
@@ -94,7 +94,7 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
         );
       }
 
-      // 🔥 GUARDAR CANCIONES
+      // GUARDAR CANCIONES
       if (eventData.songs.length > 0) {
         await EventSongsController.addSongsToEvent(
           savedEvent.id,
@@ -104,7 +104,7 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
 
       if (onUpdated) onUpdated();
 
-      // 🔥 MOSTRAR MODAL ÉXITO
+      // MOSTRAR MODAL ÉXITO
       setModal({
         show: true,
         title: "Éxito",
@@ -164,7 +164,7 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
 
       </Modal>
 
-      {/* 🔥 MODAL DE RESULTADO */}
+      {/* MODAL DE RESULTADO */}
       <SuccessModal
         show={modal.show}
         title={modal.title}
@@ -173,7 +173,7 @@ export default function CreateEventModal({ show, onClose, onUpdated, event }) {
         onClose={() => {
           setModal({ ...modal, show: false });
 
-          // 🔥 SOLO SI TODO SALIÓ BIEN
+          // SOLO SI TODO SALIÓ BIEN
           if (modal.type === "success") {
             setEventData({
               id: null,
