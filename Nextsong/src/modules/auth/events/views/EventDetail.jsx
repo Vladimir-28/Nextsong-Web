@@ -29,11 +29,12 @@ export default function EventDetail() {
                 return;
             }
 
-            // validar acceso (creator o colaborador)
+            // validar acceso (creator, colaborador o admin)
             const isCreator = data.creator?.id === user.id;
+            const isAdmin = user.role ===  "ADMIN";
             const isCollaborator = data.collaborators?.some(c => c.id === user.id);
 
-            if (!isCreator && !isCollaborator) {
+            if (!isCreator && !isCollaborator && !isAdmin) {
                 navigate("/forbidden");
                 return;
             }
