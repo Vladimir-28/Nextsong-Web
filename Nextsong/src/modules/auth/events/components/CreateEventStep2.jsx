@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { FiMusic } from "react-icons/fi";
-import { FaTrash, FaPlus } from "react-icons/fa";
+import { FaTrash, FaPlus, FaGlobe } from "react-icons/fa";
 import SongsController from "../../songs/controller/songs.controller";
 import EventSongsController from "../controller/eventSongs.controller";
 import CreateSongModal from "./CreateSongModal";
+import ExternalSongSearchModal from "../../songs/components/ExternalSongSearchModal"; // ✅ NUEVO
 import '../styles/addSongs.css'
 import SuccessModal from "../../../../components/SuccessModal";
 
@@ -18,6 +19,7 @@ export default function CreateEventStep2({
     const [availableSongs, setAvailableSongs] = useState([]);
     const [selectedSongs, setSelectedSongs] = useState([]);
     const [showSongModal, setShowSongModal] = useState(false);
+    const [showExternalModal, setShowExternalModal] = useState(false); // ✅ NUEVO
 
     const [modal, setModal] = useState({
         show: false,
@@ -117,6 +119,15 @@ export default function CreateEventStep2({
         updateEvent({ songs: updated });
     };
 
+    // ✅ NUEVO: cuando se importa desde APIs externas, se agrega a disponibles y se refresca
+    const handleExternalImport = (importedSong) => {
+        if (!importedSong?.id) return;
+        setAvailableSongs(prev => {
+            const exists = prev.find(s => s.id === importedSong.id);
+            return exists ? prev : [...prev, importedSong];
+        });
+    };
+
     const finish = () => {
 
     // ❌ VALIDACIÓN
@@ -147,12 +158,24 @@ export default function CreateEventStep2({
                     {selectedSongs.length} canciones agregadas
                 </h6>
 
-                <Button
-                    style={{ backgroundColor: "#c6a188", border: "none" }}
-                    onClick={() => setShowSongModal(true)}
-                >
-                    <FaPlus className="me-1" /> Crear canción
-                </Button>
+                {/* ✅ Botones: buscar externa + crear manual */}
+                <div className="d-flex gap-2">
+
+                    <Button
+                        style={{ backgroundColor: "#5b7fa6", border: "none" }}
+                        onClick={() => setShowExternalModal(true)}
+                    >
+                        <FaGlobe className="me-1" /> Buscar en catálogos
+                    </Button>
+
+                    <Button
+                        style={{ backgroundColor: "#c6a188", border: "none" }}
+                        onClick={() => setShowSongModal(true)}
+                    >
+                        <FaPlus className="me-1" /> Crear canción
+                    </Button>
+
+                </div>
 
             </div>
 
@@ -232,6 +255,16 @@ export default function CreateEventStep2({
                 show={showSongModal}
                 onClose={() => setShowSongModal(false)}
                 onCreate={handleNewSong}
+            />
+
+            {/* ✅ NUEVO: búsqueda en catálogos externos */}
+            <ExternalSongSearchModal
+                show={showExternalModal}
+                onClose={() => {
+                    setShowExternalModal(false);
+                    loadSongs(); // refresca canciones disponibles tras importar
+                }}
+                onImported={handleExternalImport}
             />
 
             <SuccessModal

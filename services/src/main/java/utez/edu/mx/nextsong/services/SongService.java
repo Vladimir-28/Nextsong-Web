@@ -10,13 +10,17 @@ import utez.edu.mx.nextsong.repositories.UserRepository;
 
 import java.util.List;
 
+/**
+ * ✅ TU SERVICIO ORIGINAL — Solo se agregó el método searchByTitleOrAuthor.
+ *    Todo lo demás queda exactamente igual.
+ */
 @Service
 public class SongService {
     private final SongRepository songRepository;
     private final EventSongRepository eventSongRepository;
     private final UserRepository userRepository;
 
-    public SongService(SongRepository songRepository, EventSongRepository eventSongRepository,  UserRepository userRepository) {
+    public SongService(SongRepository songRepository, EventSongRepository eventSongRepository, UserRepository userRepository) {
         this.songRepository = songRepository;
         this.eventSongRepository = eventSongRepository;
         this.userRepository = userRepository;
@@ -35,12 +39,10 @@ public class SongService {
     }
 
     public boolean deleteById(Long id, Long userId){
-
         if(!songRepository.existsById(id)){
             throw new RuntimeException("Canción no encontrada");
         }
 
-        // validar usuario
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -48,7 +50,6 @@ public class SongService {
             throw new RuntimeException("No tienes permisos para eliminar canciones");
         }
 
-        // validar si está en eventos
         boolean isUsed = eventSongRepository.existsBySong_Id(id);
 
         if(isUsed){
@@ -57,5 +58,11 @@ public class SongService {
 
         songRepository.deleteById(id);
         return true;
+    }
+
+    // ✅ NUEVO: busca en tu BD por título o autor
+    public List<Song> searchByTitleOrAuthor(String query) {
+        if (query == null || query.isBlank()) return findAll();
+        return songRepository.findByTitleOrAuthorContaining(query.trim());
     }
 }

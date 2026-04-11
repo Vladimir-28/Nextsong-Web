@@ -6,9 +6,13 @@ import utez.edu.mx.nextsong.models.Song;
 
 import java.util.List;
 
+/**
+ * ✅ TU CONTROLADOR ORIGINAL — Solo se agregó el endpoint /songs/search
+ *    Todo lo demás queda exactamente igual.
+ */
 @RestController
 @RequestMapping("/songs")
-@CrossOrigin(origins = "*") // ✅ Permitir acceso desde Android
+@CrossOrigin(origins = "*")
 public class SongController {
 
     private final SongService songService;
@@ -40,13 +44,19 @@ public class SongController {
 
     @DeleteMapping("/{id}/user/{userId}")
     public String deleteSong(@PathVariable Long id, @PathVariable Long userId){
-
         boolean deleted = songService.deleteById(id, userId);
-
         if(deleted){
             return "Canción eliminada correctamente";
         } else {
             return "Canción no encontrada";
         }
+    }
+
+    // ✅ NUEVO: Búsqueda en tu propia BD por título o autor
+    // GET /songs/search?q=queen
+    // Esto complementa la búsqueda externa — busca en TUS canciones guardadas
+    @GetMapping("/search")
+    public List<Song> searchLocalSongs(@RequestParam("q") String query) {
+        return songService.searchByTitleOrAuthor(query);
     }
 }
