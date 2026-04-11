@@ -3,7 +3,8 @@ import SongCard from "../components/SongCard";
 import SongsController from "../controller/songs.controller";
 import CreateIndependentSong from "./CreateIndependentSong";
 import ConfirmModal from "../../../../components/ConfirmModal";
-import { FaPlus, FaSearch } from "react-icons/fa";
+import ExternalSongSearchModal from "../components/ExternalSongSearchModal"; // ✅ NUEVO
+import { FaPlus, FaSearch, FaGlobe } from "react-icons/fa";
 
 export default function Songs() {
 
@@ -12,6 +13,7 @@ export default function Songs() {
     const [search, setSearch] = useState("");
     const [selectedSong, setSelectedSong] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showExternalSearch, setShowExternalSearch] = useState(false); // ✅ NUEVO
 
     //  CONFIRM MODAL STATE
     const [confirmModal, setConfirmModal] = useState({
@@ -87,13 +89,26 @@ export default function Songs() {
                     </p>
                 </div>
 
-                <button
-                    className="btn text-white d-flex align-items-center"
-                    style={{ backgroundColor: "#a56d49" }}
-                    onClick={() => setShowModalSong(true)}
-                >
-                    <FaPlus className="me-1" /> Crear Canción
-                </button>
+                {/* ✅ Botones: buscar externa + crear manual */}
+                <div className="d-flex gap-2">
+
+                    <button
+                        className="btn d-flex align-items-center"
+                        style={{ backgroundColor: "#5b7fa6", color: "white" }}
+                        onClick={() => setShowExternalSearch(true)}
+                    >
+                        <FaGlobe className="me-1" /> Buscar en catálogos
+                    </button>
+
+                    <button
+                        className="btn text-white d-flex align-items-center"
+                        style={{ backgroundColor: "#a56d49" }}
+                        onClick={() => setShowModalSong(true)}
+                    >
+                        <FaPlus className="me-1" /> Crear Canción
+                    </button>
+
+                </div>
 
             </div>
 
@@ -106,7 +121,7 @@ export default function Songs() {
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="Buscar canción..."
+                        placeholder="Buscar en mis canciones..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
@@ -165,6 +180,13 @@ export default function Songs() {
                 message="¿Seguro que quieres eliminar esta canción?"
                 onClose={() => setConfirmModal({ show: false, id: null })}
                 onConfirm={confirmDelete}
+            />
+
+            {/* ✅ NUEVO: modal de búsqueda en catálogos externos */}
+            <ExternalSongSearchModal
+                show={showExternalSearch}
+                onClose={() => setShowExternalSearch(false)}
+                onImported={() => getSongs()}
             />
 
         </div>
