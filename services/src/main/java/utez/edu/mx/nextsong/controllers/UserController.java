@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import utez.edu.mx.nextsong.models.User;
 import utez.edu.mx.nextsong.services.UserService;
 import java.util.List;
+import utez.edu.mx.nextsong.models.UserCategory;
+import utez.edu.mx.nextsong.repositories.UserCategoryRepository;
 
 @RestController
 @RequestMapping("/api/user")
@@ -29,5 +31,22 @@ public class UserController {
     @GetMapping("/search")
     public ResponseEntity<List<User>> searchUsers(@RequestParam String email) {
         return ResponseEntity.ok(userService.findByEmailContaining(email));
+    }
+    // ... otros imports
+
+
+    // Dentro de la clase UserController:
+    private final UserCategoryRepository categoryRepository; // Inyectalo en el constructor
+
+    @GetMapping("/{userId}/categories")
+    public ResponseEntity<List<UserCategory>> getCategories(@PathVariable Long userId) {
+        return ResponseEntity.ok(categoryRepository.findByUserId(userId));
+    }
+
+    @PostMapping("/{userId}/categories")
+    public ResponseEntity<UserCategory> addCategory(@PathVariable Long userId, @RequestBody UserCategory category) {
+        User user = userService.getCurrentUser(userId);
+        category.setUser(user);
+        return ResponseEntity.ok(categoryRepository.save(category));
     }
 }
