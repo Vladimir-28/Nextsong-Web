@@ -13,30 +13,30 @@ import SuccessModal from "../../../../components/SuccessModal";
 
 // Catálogo de íconos genéricos disponibles para categorías personalizadas
 const ICON_CATALOG = [
-  { id: "FaMusic",         label: "Música",        icon: <FaMusic /> },
-  { id: "FaGuitar",        label: "Guitarra",       icon: <FaGuitar /> },
-  { id: "FaDrum",          label: "Batería",        icon: <FaDrum /> },
-  { id: "FaMicrophone",    label: "Micrófono",      icon: <FaMicrophone /> },
-  { id: "FaPray",          label: "Oración",        icon: <FaPray /> },
-  { id: "FaBirthdayCake",  label: "Cumpleaños",     icon: <FaBirthdayCake /> },
-  { id: "FaGlassCheers",   label: "Celebración",    icon: <FaGlassCheers /> },
-  { id: "FaTheaterMasks",  label: "Teatro",         icon: <FaTheaterMasks /> },
-  { id: "FaGraduationCap", label: "Graduación",     icon: <FaGraduationCap /> },
-  { id: "FaHeart",         label: "Amor",           icon: <FaHeart /> },
-  { id: "FaStar",          label: "Estrella",       icon: <FaStar /> },
-  { id: "FaLeaf",          label: "Naturaleza",     icon: <FaLeaf /> },
-  { id: "FaFireAlt",       label: "Fuego",          icon: <FaFireAlt /> },
-  { id: "FaSnowflake",     label: "Invierno",       icon: <FaSnowflake /> },
-  { id: "FaCoffee",        label: "Café",           icon: <FaCoffee /> },
-  { id: "FaCamera",        label: "Foto",           icon: <FaCamera /> },
-  { id: "FaGamepad",       label: "Juego",          icon: <FaGamepad /> },
-  { id: "FiStar",          label: "Favorito",       icon: <FiStar /> },
-  { id: "FiHeart",         label: "Especial",       icon: <FiHeart /> },
-  { id: "FiSun",           label: "Día",            icon: <FiSun /> },
-  { id: "FiMoon",          label: "Noche",          icon: <FiMoon /> },
-  { id: "FiZap",           label: "Energía",        icon: <FiZap /> },
-  { id: "FiGlobe",         label: "Global",         icon: <FiGlobe /> },
-  { id: "FiAward",         label: "Premio",         icon: <FiAward /> },
+  { id: "FaMusic", label: "Música", icon: <FaMusic /> },
+  { id: "FaGuitar", label: "Guitarra", icon: <FaGuitar /> },
+  { id: "FaDrum", label: "Batería", icon: <FaDrum /> },
+  { id: "FaMicrophone", label: "Micrófono", icon: <FaMicrophone /> },
+  { id: "FaPray", label: "Oración", icon: <FaPray /> },
+  { id: "FaBirthdayCake", label: "Cumpleaños", icon: <FaBirthdayCake /> },
+  { id: "FaGlassCheers", label: "Celebración", icon: <FaGlassCheers /> },
+  { id: "FaTheaterMasks", label: "Teatro", icon: <FaTheaterMasks /> },
+  { id: "FaGraduationCap", label: "Graduación", icon: <FaGraduationCap /> },
+  { id: "FaHeart", label: "Amor", icon: <FaHeart /> },
+  { id: "FaStar", label: "Estrella", icon: <FaStar /> },
+  { id: "FaLeaf", label: "Naturaleza", icon: <FaLeaf /> },
+  { id: "FaFireAlt", label: "Fuego", icon: <FaFireAlt /> },
+  { id: "FaSnowflake", label: "Invierno", icon: <FaSnowflake /> },
+  { id: "FaCoffee", label: "Café", icon: <FaCoffee /> },
+  { id: "FaCamera", label: "Foto", icon: <FaCamera /> },
+  { id: "FaGamepad", label: "Juego", icon: <FaGamepad /> },
+  { id: "FiStar", label: "Favorito", icon: <FiStar /> },
+  { id: "FiHeart", label: "Especial", icon: <FiHeart /> },
+  { id: "FiSun", label: "Día", icon: <FiSun /> },
+  { id: "FiMoon", label: "Noche", icon: <FiMoon /> },
+  { id: "FiZap", label: "Energía", icon: <FiZap /> },
+  { id: "FiGlobe", label: "Global", icon: <FiGlobe /> },
+  { id: "FiAward", label: "Premio", icon: <FiAward /> },
 ];
 
 // Resuelve el ícono React a partir del id string almacenado en la categoría
@@ -53,11 +53,11 @@ const ICON_COLORS = [
 
 // Tipos de evento fijos (igual que antes)
 const FIXED_EVENT_TYPES = [
-  { id: "boda",        label: "Boda",              icon: <FaUserFriends />, color: "#ff2d55" },
-  { id: "misa",        label: "Misa",              icon: <FaChurch />,      color: "#a855f7" },
-  { id: "concierto",   label: "Concierto",          icon: <FiMusic />,       color: "#b08968" },
-  { id: "ensayo",      label: "Ensayo",             icon: <FaRegCalendarAlt />, color: "#22c55e" },
-  { id: "corporativo", label: "Evento Corporativo", icon: <FaBriefcase />,   color: "#f59e0b" },
+  { id: "boda", label: "Boda", icon: <FaUserFriends />, color: "#ff2d55" },
+  { id: "misa", label: "Misa", icon: <FaChurch />, color: "#a855f7" },
+  { id: "concierto", label: "Concierto", icon: <FiMusic />, color: "#b08968" },
+  { id: "ensayo", label: "Ensayo", icon: <FaRegCalendarAlt />, color: "#22c55e" },
+  { id: "corporativo", label: "Evento Corporativo", icon: <FaBriefcase />, color: "#f59e0b" },
 ];
 
 
@@ -65,11 +65,11 @@ const FIXED_EVENT_TYPES = [
 //  Modal para crear tipo personalizado
 // ─────────────────────────────────────────────
 function CustomTypeModal({ show, onClose, onSave }) {
-  const [customName, setCustomName]     = useState("");
+  const [customName, setCustomName] = useState("");
   const [selectedIcon, setSelectedIcon] = useState(ICON_CATALOG[0].id);
   const [selectedColor, setSelectedColor] = useState(ICON_COLORS[0]);
   const [saving, setSaving] = useState(false);
-  const [error, setError]   = useState("");
+  const [error, setError] = useState("");
 
   // Resetear al abrir
   useEffect(() => {
@@ -219,21 +219,21 @@ function CustomTypeModal({ show, onClose, onSave }) {
 //  Paso 1 del formulario de evento
 // ─────────────────────────────────────────────
 export default function CreateEventStep1({ eventData, updateEvent, nextStep, onClose }) {
-  const [name, setName]   = useState("");
-  const [type, setType]   = useState("");
-  const [date, setDate]   = useState("");
+  const [name, setName] = useState("");
+  const [type, setType] = useState("");
+  const [date, setDate] = useState("");
 
   const [showSuccess, setShowSuccess] = useState(false);
-const [modalData, setModalData] = useState({
-  title: "",
-  message: "",
-  type: "success"
-});
+  const [modalData, setModalData] = useState({
+    title: "",
+    message: "",
+    type: "success"
+  });
 
   // Categorías personalizadas cargadas desde el backend (igual que móvil)
   const [customCategories, setCustomCategories] = useState([]);
-  const [showCustomModal, setShowCustomModal]   = useState(false);
-  const [loadingCats, setLoadingCats]           = useState(false);
+  const [showCustomModal, setShowCustomModal] = useState(false);
+  const [loadingCats, setLoadingCats] = useState(false);
 
   // Sincronizar datos de edición
   useEffect(() => {
@@ -253,45 +253,45 @@ const [modalData, setModalData] = useState({
     setLoadingCats(true);
     UserCategoriesController.getByUser(userId)
       .then(data => setCustomCategories(data || []))
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoadingCats(false));
   }, []);
 
   // Guardar nueva categoría en el backend (mismo endpoint que la móvil)
   const handleSaveCustomType = async ({ name: catName, iconId, color }) => {
-  const userId = JSON.parse(sessionStorage.getItem("user") || "{}")?.id;
-  if (!userId) throw new Error("Sin sesión");
+    const userId = JSON.parse(sessionStorage.getItem("user") || "{}")?.id;
+    if (!userId) throw new Error("Sin sesión");
 
-  try {
-    const saved = await UserCategoriesController.create(userId, catName);
+    try {
+      const saved = await UserCategoriesController.create(userId, catName);
 
-    const metaKey = `nextsong_cat_meta_${saved.id}`;
-    localStorage.setItem(metaKey, JSON.stringify({ iconId, color }));
+      const metaKey = `nextsong_cat_meta_${saved.id}`;
+      localStorage.setItem(metaKey, JSON.stringify({ iconId, color }));
 
-    setCustomCategories(prev => [...prev, saved]);
-    setType(catName);
+      setCustomCategories(prev => [...prev, saved]);
+      setType(catName);
 
-    // ✅ ÉXITO
-    setModalData({
-      title: "Categoría creada",
-      message: "El tipo de evento se guardó correctamente.",
-      type: "success"
-    });
-    setShowSuccess(true);
+      // ÉXITO
+      setModalData({
+        title: "Categoría creada",
+        message: "El tipo de evento se guardó correctamente.",
+        type: "success"
+      });
+      setShowSuccess(true);
 
-  } catch (error) {
+    } catch (error) {
 
-    // ❌ ERROR
-    setModalData({
-      title: "Error",
-      message: "No se pudo guardar la categoría.",
-      type: "error"
-    });
-    setShowSuccess(true);
+      // ERROR
+      setModalData({
+        title: "Error",
+        message: "No se pudo guardar la categoría.",
+        type: "error"
+      });
+      setShowSuccess(true);
 
-    throw error; // importante para que tu CustomTypeModal siga mostrando error si falla
-  }
-};
+      throw error; // importante para que tu CustomTypeModal siga mostrando error si falla
+    }
+  };
   // Recupera meta visual (ícono y color) de una categoría personalizada
   const getCatMeta = (cat) => {
     const raw = localStorage.getItem(`nextsong_cat_meta_${cat.id}`);
@@ -304,19 +304,19 @@ const [modalData, setModalData] = useState({
   const isValid = name && type && date;
 
   const handleNext = () => {
-  if (!isValid) {
-    setModalData({
-      title: "Campos incompletos",
-      message: "Por favor llena todos los campos.",
-      type: "error"
-    });
-    setShowSuccess(true);
-    return;
-  }
+    if (!isValid) {
+      setModalData({
+        title: "Campos incompletos",
+        message: "Por favor llena todos los campos.",
+        type: "error"
+      });
+      setShowSuccess(true);
+      return;
+    }
 
-  updateEvent({ name, type, date });
-  nextStep();
-};
+    updateEvent({ name, type, date });
+    nextStep();
+  };
 
   // Todos los tipos: fijos + personalizados
   const allTypes = [
@@ -401,6 +401,7 @@ const [modalData, setModalData] = useState({
         <Form.Control
           type="date"
           value={date}
+          min={new Date().toISOString().split("T")[0]} // bloquea fechas pasadas
           onChange={e => setDate(e.target.value)}
         />
       </Form.Group>
@@ -411,7 +412,6 @@ const [modalData, setModalData] = useState({
           Cancelar
         </Button>
         <Button
-          disabled={!isValid}
           style={{ backgroundColor: "#c6a188", border: "none" }}
           onClick={handleNext}
         >
@@ -427,12 +427,12 @@ const [modalData, setModalData] = useState({
       />
 
       <SuccessModal
-      show={showSuccess}
-      onClose={() => setShowSuccess(false)}
-      title={modalData.title}
-      message={modalData.message}
-      type={modalData.type}
-    />
+        show={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        title={modalData.title}
+        message={modalData.message}
+        type={modalData.type}
+      />
     </>
   );
 }
