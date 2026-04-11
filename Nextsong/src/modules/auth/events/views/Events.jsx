@@ -5,6 +5,7 @@ import EventCard from "../components/EventCard";
 import EventsController from "../controller/events.controller";
 import CreateEventModal from "../components/CreateEventModal";
 import ConfirmModal from "../../../../components/ConfirmModal";
+import SuccessModal from "../../../../components/SuccessModal";
 
 export default function Events() {
 
@@ -15,15 +16,22 @@ export default function Events() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
 
-    // 🔥 estado del modal de confirmación
+    // 🔥 confirm modal
     const [confirmModal, setConfirmModal] = useState({
         show: false,
         id: null
     });
 
+    // 🔥 success modal
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [modalData, setModalData] = useState({
+        title: "",
+        message: "",
+        type: "success"
+    });
+
     const navigate = useNavigate();
 
-    // usuario
     const user = JSON.parse(sessionStorage.getItem("user"));
     const isAdmin = user?.role === 'ADMIN';
 
@@ -45,7 +53,7 @@ export default function Events() {
     }, []);
 
     /* =========================
-       ELIMINAR EVENTO (MODAL)
+       ELIMINAR EVENTO
     ========================== */
 
     const handleDelete = (id) => {
@@ -61,9 +69,24 @@ export default function Events() {
 
             setEvents(prev => prev.filter(e => e.id !== confirmModal.id));
 
+            setModalData({
+                title: "Evento eliminado",
+                message: "El evento se eliminó correctamente",
+                type: "success"
+            });
+
+            setShowSuccess(true);
+
         } catch (error) {
             console.error(error);
-            setAlert("❌ Error al eliminar el evento");
+
+            setModalData({
+                title: "Error",
+                message: "No se pudo eliminar el evento",
+                type: "error"
+            });
+
+            setShowSuccess(true);
         }
 
         setConfirmModal({ show: false, id: null });
@@ -169,6 +192,7 @@ export default function Events() {
 
             </div>
 
+            {/* CREAR EVENTO */}
             <CreateEventModal
                 show={showModal}
                 onClose={() => {
@@ -177,7 +201,7 @@ export default function Events() {
                 }}
             />
 
-
+            {/* EDITAR EVENTO */}
             {showEditModal && (
                 <CreateEventModal
                     show={showEditModal}
@@ -191,13 +215,22 @@ export default function Events() {
                 />
             )}
 
-            {/* 🔥 MODAL CONFIRMAR ELIMINACIÓN */}
+            {/* 🔥 CONFIRM MODAL */}
             <ConfirmModal
                 show={confirmModal.show}
                 title="Eliminar evento"
                 message="¿Seguro que quieres eliminar este evento?"
                 onClose={() => setConfirmModal({ show: false, id: null })}
                 onConfirm={confirmDelete}
+            />
+
+            {/* 🔥 SUCCESS MODAL */}
+            <SuccessModal
+                show={showSuccess}
+                onClose={() => setShowSuccess(false)}
+                title={modalData.title}
+                message={modalData.message}
+                type={modalData.type}
             />
 
         </div>

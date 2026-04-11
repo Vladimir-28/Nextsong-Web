@@ -5,32 +5,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.web.reactive.function.client.WebClient;
 
-/**
- * Configuración de WebClient para consumir APIs externas.
- * Se crean 3 beans separados, uno por cada API.
- */
 @Configuration
-@EnableCaching  // ✅ Activa el caché para no spamear las APIs externas
+@EnableCaching
 public class WebClientConfig {
 
-    /**
-     * MusicBrainz — metadatos de canciones populares y clásicas
-     * Documentación: https://musicbrainz.org/doc/MusicBrainz_API
-     */
     @Bean(name = "musicBrainzClient")
     public WebClient musicBrainzClient() {
         return WebClient.builder()
                 .baseUrl("https://musicbrainz.org/ws/2")
-                // ⚠️ MusicBrainz REQUIERE User-Agent identificado o bloquea la petición
                 .defaultHeader("User-Agent", "NextSong/1.0 (utez.edu.mx)")
                 .defaultHeader("Accept", "application/json")
                 .build();
     }
 
-    /**
-     * Lyrics.ovh — letras de canciones gratis, sin autenticación
-     * Documentación: https://lyricsovh.docs.apiary.io
-     */
     @Bean(name = "lyricsClient")
     public WebClient lyricsClient() {
         return WebClient.builder()
@@ -38,14 +25,59 @@ public class WebClientConfig {
                 .build();
     }
 
-    /**
-     * OpenOpus — catálogo de música clásica de dominio público
-     * Documentación: https://openopus.org
-     */
     @Bean(name = "openOpusClient")
     public WebClient openOpusClient() {
         return WebClient.builder()
                 .baseUrl("https://api.openopus.org")
+                .build();
+    }
+
+    @Bean(name = "acousticBrainzClient")
+    public WebClient acousticBrainzClient() {
+        return WebClient.builder()
+                .baseUrl("https://acousticbrainz.org")
+                .defaultHeader("User-Agent", "NextSong/1.0 (utez.edu.mx)")
+                .defaultHeader("Accept", "application/json")
+                .build();
+    }
+
+    @Bean(name = "happiClient")
+    public WebClient happiClient() {
+        return WebClient.builder()
+                .baseUrl("https://api.happi.dev")
+                .defaultHeader("Accept", "application/json")
+                .build();
+    }
+
+    @Bean(name = "itunesClient")
+    public WebClient itunesClient() {
+        return WebClient.builder()
+                .baseUrl("https://itunes.apple.com")
+                .defaultHeader("Accept", "application/json")
+                .build();
+    }
+
+    @Bean(name = "lrclibClient")
+    public WebClient lrclibClient() {
+        return WebClient.builder()
+                .baseUrl("https://lrclib.net/api")
+                .defaultHeader("Accept", "application/json")
+                .build();
+    }
+
+    @Bean(name = "songsterrClient")
+    public WebClient songsterrClient() {
+        return WebClient.builder()
+                .baseUrl("https://www.songsterr.com")
+                .defaultHeader("Accept", "application/json")
+                .build();
+    }
+
+    @Bean(name = "lastFmClient")
+    public WebClient lastFmClient() {
+        return WebClient.builder()
+                .baseUrl("https://ws.audioscrobbler.com/2.0")
+                .defaultHeader("Accept", "application/json")
                 .build();
     }
 }

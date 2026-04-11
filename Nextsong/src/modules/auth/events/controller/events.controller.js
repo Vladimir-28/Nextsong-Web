@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:8080/events";
+import { buildApiUrl } from "../../../../services/api";
+
+const API_URL = buildApiUrl("/events");
 
 const headers = {
     "Content-Type": "application/json",

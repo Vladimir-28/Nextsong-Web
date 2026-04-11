@@ -1,5 +1,6 @@
+import { buildApiUrl } from "../../../../services/api";
 
-const API_URL = "http://localhost:8080/api/user";
+const API_URL = buildApiUrl("/api/user");
 
 export const getUser = async () => {
 

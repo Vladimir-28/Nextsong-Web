@@ -5,6 +5,9 @@ import SongEventCard from "../components/SongEventCard";
 import EventSongsController from "../controller/eventSongs.controller";
 import CollaboratorsModal from "../components/CollaboratorsModal";
 
+import ConfirmModal from "../../../../components/ConfirmModal";
+import SuccessModal from "../../../../components/SuccessModal";
+
 import { FaTimes, FaUserPlus } from "react-icons/fa";
 
 export default function EventDetail() {
@@ -17,21 +20,30 @@ export default function EventDetail() {
     const [showModal, setShowModal] = useState(false);
     const [showAll, setShowAll] = useState(false);
 
+    // 🔥 NUEVOS ESTADOS
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(null);
+
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [modalData, setModalData] = useState({
+        title: "",
+        message: "",
+        type: "success"
+    });
+
     const user = JSON.parse(sessionStorage.getItem("user"));
 
     const getEvent = async () => {
         try {
             const data = await EventsController.findById(id);
 
-            // 404 → no existe
             if (!data || !data.id) {
                 navigate("/not-found");
                 return;
             }
 
-            // validar acceso (creator, colaborador o admin)
             const isCreator = data.creator?.id === user.id;
-            const isAdmin = user.role ===  "ADMIN";
+            const isAdmin = user.role === "ADMIN";
             const isCollaborator = data.collaborators?.some(c => c.id === user.id);
 
             if (!isCreator && !isCollaborator && !isAdmin) {
@@ -41,13 +53,12 @@ export default function EventDetail() {
 
             setEvent(data);
 
-            // solo carga canciones si tiene acceso
             const songsData = await EventSongsController.getSongsByEvent(id);
             setSongs(songsData);
 
         } catch (error) {
             console.error(error);
-            navigate("/not-found"); // fallback
+            navigate("/not-found");
         }
     };
 
@@ -57,9 +68,38 @@ export default function EventDetail() {
 
     const isCreator = event?.creator?.id === user.id;
 
-    const removeCollaborator = async (userId) => {
-        await EventsController.removeCollaborator(event.id, userId);
-        getEvent();
+    // 🔥 ABRIR CONFIRM MODAL
+    const handleAskDelete = (userId) => {
+        setSelectedUserId(userId);
+        setShowConfirm(true);
+    };
+
+    // 🔥 ELIMINAR COLABORADOR
+    const handleConfirmDelete = async () => {
+        try {
+            await EventsController.removeCollaborator(event.id, selectedUserId);
+
+            setModalData({
+                title: "Colaborador eliminado",
+                message: "Se eliminó correctamente del evento",
+                type: "success"
+            });
+
+            setShowSuccess(true);
+            getEvent();
+
+        } catch (error) {
+            setModalData({
+                title: "Error",
+                message: "No se pudo eliminar el colaborador",
+                type: "error"
+            });
+
+            setShowSuccess(true);
+        } finally {
+            setShowConfirm(false);
+            setSelectedUserId(null);
+        }
     };
 
     const getInitials = (name) => {
@@ -147,7 +187,7 @@ export default function EventDetail() {
                                     <FaTimes
                                         size={12}
                                         style={{ cursor: "pointer" }}
-                                        onClick={() => removeCollaborator(col.id)}
+                                        onClick={() => handleAskDelete(col.id)}
                                     />
                                 )}
 
@@ -243,7 +283,7 @@ export default function EventDetail() {
                                         {isCreator && (
                                             <FaTimes
                                                 style={{ cursor: "pointer" }}
-                                                onClick={() => removeCollaborator(col.id)}
+                                                onClick={() => handleAskDelete(col.id)}
                                             />
                                         )}
 
@@ -256,6 +296,24 @@ export default function EventDetail() {
                     </div>
                 </div>
             )}
+
+            {/* 🔥 CONFIRM MODAL */}
+            <ConfirmModal
+                show={showConfirm}
+                onClose={() => setShowConfirm(false)}
+                onConfirm={handleConfirmDelete}
+                title="Eliminar colaborador"
+                message="¿Seguro que deseas eliminar este colaborador del evento?"
+            />
+
+            {/* 🔥 SUCCESS MODAL */}
+            <SuccessModal
+                show={showSuccess}
+                onClose={() => setShowSuccess(false)}
+                title={modalData.title}
+                message={modalData.message}
+                type={modalData.type}
+            />
 
         </div>
     );

@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:8080/api/user";
+import { buildApiUrl } from "../../../../services/api";
+
+const API_URL = buildApiUrl("/api/user");
 
 const UsersController = {};
 

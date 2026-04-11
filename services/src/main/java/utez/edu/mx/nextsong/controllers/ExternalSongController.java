@@ -84,12 +84,16 @@ public class ExternalSongController {
      * con el endpoint de EventSongController que ya tienes.
      */
     @PostMapping("/import")
-    public ResponseEntity<Song> importSong(@RequestBody ExternalSongDTO dto) {
+    public ResponseEntity<?> importSong(@RequestBody ExternalSongDTO dto) {
         if (dto == null || dto.getTitle() == null || dto.getTitle().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
-        Song saved = externalSongService.importExternalSong(dto);
-        return ResponseEntity.ok(saved);
+        try {
+            Song saved = externalSongService.importExternalSong(dto);
+            return ResponseEntity.ok(saved);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
     /**

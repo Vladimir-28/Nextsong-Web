@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
+import { buildApiUrl } from "../../../services/api";
 
 export default function VerifyCode() {
 
@@ -16,7 +17,7 @@ export default function VerifyCode() {
 
         try {
             const response = await fetch(
-                `http://localhost:8080/auth/verify-code?email=${email}&code=${code}`,
+                buildApiUrl(`/auth/verify-code?email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`),
                 { method: "POST" }
             );
 

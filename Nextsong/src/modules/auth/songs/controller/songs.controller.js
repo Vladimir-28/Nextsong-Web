@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:8080/songs";
+import { buildApiUrl } from "../../../../services/api";
+
+const API_URL = buildApiUrl("/songs");
 
 const SongsController = {
 

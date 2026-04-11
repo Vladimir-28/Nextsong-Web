@@ -1,4 +1,6 @@
-const EXTERNAL_API_URL = "http://localhost:8080/external-songs";
+import { buildApiUrl } from "../../../../services/api";
+
+const EXTERNAL_API_URL = buildApiUrl("/external-songs");
 
 const ExternalSongService = {
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { getUser, updateUser } from "../controller/UserController";
 import { useNavigate } from "react-router-dom";
+import SuccessModal from "../../../../components/SuccessModal";
 
 export default function User() {
   const navigate = useNavigate();
@@ -13,13 +14,21 @@ export default function User() {
     role: ""
   });
 
- const [form, setForm] = useState({
-  fullName: "",
-  password: "",
-  confirmPassword: ""
-});
+  const [form, setForm] = useState({
+    fullName: "",
+    password: "",
+    confirmPassword: ""
+  });
 
   const [loading, setLoading] = useState(true);
+
+  // 🔥 Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState({
+    title: "",
+    message: "",
+    type: "success"
+  });
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -36,9 +45,16 @@ export default function User() {
 
       } catch (error) {
         console.error(error);
-        alert("Sesión expirada");
-        navigate("/login");
-        
+
+        setModalData({
+          title: "Sesión expirada",
+          message: "Por favor inicia sesión nuevamente",
+          type: "error"
+        });
+        setShowModal(true);
+
+        setTimeout(() => navigate("/login"), 1500);
+
       } finally {
         setLoading(false);
       }
@@ -50,29 +66,42 @@ export default function User() {
   const handleUpdate = async (e) => {
     e.preventDefault();
 
+    // 🔴 Validación nombre
     if (!form.fullName.trim()) {
-      return alert("El nombre es obligatorio");
+      setModalData({
+        title: "Campo requerido",
+        message: "El nombre es obligatorio",
+        type: "error"
+      });
+      setShowModal(true);
+      return;
     }
 
-   
+    // 🔴 Validación contraseña
     if (form.password) {
+      const isValidPassword =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-]).{8,}$/.test(form.password);
 
-   
-      if (form.password) {
-
-        const isValidPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-]).{8,}$/.test(form.password);
-
-        if (!isValidPassword) {
-          return alert("La contraseña debe tener mayúscula, minúscula, número y carácter especial");
-        }
-
-        if (form.password !== form.confirmPassword) {
-          return alert("Las contraseñas no coinciden");
-        }
-
+      if (!isValidPassword) {
+        setModalData({
+          title: "Contraseña inválida",
+          message: "Debe tener mayúscula, minúscula, número y carácter especial",
+          type: "error"
+        });
+        setShowModal(true);
+        return;
       }
 
-  }
+      if (form.password !== form.confirmPassword) {
+        setModalData({
+          title: "Error",
+          message: "Las contraseñas no coinciden",
+          type: "error"
+        });
+        setShowModal(true);
+        return;
+      }
+    }
 
     try {
       const updatedUser = await updateUser({
@@ -86,10 +115,9 @@ export default function User() {
       setForm({
         fullName: updatedUser.fullName,
         password: "",
-         confirmPassword: ""
+        confirmPassword: ""
       });
 
-      // 🔥 FIX AQUÍ TAMBIÉN
       const current = JSON.parse(sessionStorage.getItem("user")) || {};
 
       sessionStorage.setItem("user", JSON.stringify({
@@ -97,11 +125,24 @@ export default function User() {
         fullName: updatedUser.fullName
       }));
 
-      alert("Datos actualizados correctamente");
+      // 🟢 Éxito
+      setModalData({
+        title: "Actualizado",
+        message: "Tus datos se actualizaron correctamente",
+        type: "success"
+      });
+      setShowModal(true);
 
     } catch (error) {
       console.error(error);
-      alert("Error al actualizar");
+
+      // 🔴 Error
+      setModalData({
+        title: "Error",
+        message: "No se pudieron actualizar los datos",
+        type: "error"
+      });
+      setShowModal(true);
     }
   };
 
@@ -161,7 +202,7 @@ export default function User() {
         </div>
       </div>
 
-      <div className="card  border p-4">
+      <div className="card border p-4">
 
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5 className="fw-semibold mb-0">Información Personal</h5>
@@ -235,7 +276,7 @@ export default function User() {
                 }))
               }
             />
-          </div>  
+          </div>
 
           <div className="mb-3 d-flex justify-content-end">
             <button
@@ -250,6 +291,15 @@ export default function User() {
         </form>
 
       </div>
+
+      {/* 🔥 MODAL */}
+      <SuccessModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        title={modalData.title}
+        message={modalData.message}
+        type={modalData.type}
+      />
 
     </div>
   );

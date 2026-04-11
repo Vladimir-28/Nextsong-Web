@@ -3,27 +3,23 @@ import { Modal, Button, Form, Spinner, Badge } from "react-bootstrap";
 import { FaSearch, FaDownload, FaMusic, FaBookOpen } from "react-icons/fa";
 import ExternalSongService from "../service/ExternalSongService";
 import SuccessModal from "../../../../components/SuccessModal";
+import CreateIndependentSong from "../views/CreateIndependentSong";
 
-/**
- * Modal para buscar canciones en APIs externas (MusicBrainz + OpenOpus)
- * e importarlas directo a tu BD.
- *
- * Props:
- *  - show: boolean
- *  - onClose: () => void
- *  - onImported: (song) => void   ← callback cuando se importó exitosamente
- */
 export default function ExternalSongSearchModal({ show, onClose, onImported }) {
 
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [importing, setImporting] = useState(null); // ID del que se está importando
+    const [importing, setImporting] = useState(null);
     const [searched, setSearched] = useState(false);
     const [popularComposers, setPopularComposers] = useState([]);
     const [loadingComposers, setLoadingComposers] = useState(false);
 
     const [modal, setModal] = useState({ show: false, title: "", message: "", type: "" });
+
+    // Estado para abrir el modal de edición tras importar
+    const [editSong, setEditSong] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     const handleSearch = async () => {
         if (!query.trim()) return;
@@ -81,13 +77,14 @@ export default function ExternalSongSearchModal({ show, onClose, onImported }) {
         setImporting(song.externalId);
         try {
             const imported = await ExternalSongService.importSong(song);
-            setModal({
-                show: true,
-                title: "¡Canción importada!",
-                message: `"${imported.title}" se guardó en tu catálogo correctamente.`,
-                type: "success"
-            });
+
+            // Cerrar el modal de búsqueda y abrir el de edición
+            // para que el usuario complete BPM, tonalidad y acordes
+            setEditSong(imported);
+            setShowEditModal(true);
+
             if (onImported) onImported(imported);
+
         } catch (error) {
             setModal({
                 show: true,
@@ -114,9 +111,17 @@ export default function ExternalSongSearchModal({ show, onClose, onImported }) {
         return { text: source, color: "#888" };
     };
 
+    const getMissingFieldsText = (song) => {
+        if (!Array.isArray(song.missingFields) || song.missingFields.length === 0) {
+            return "";
+        }
+
+        return song.missingFields.join(", ");
+    };
+
     return (
         <>
-            <Modal show={show} onHide={handleClose} centered size="lg">
+            <Modal show={show && !showEditModal} onHide={handleClose} centered size="lg">
 
                 <Modal.Header closeButton>
                     <Modal.Title>
@@ -197,6 +202,8 @@ export default function ExternalSongSearchModal({ show, onClose, onImported }) {
                             {results.map((song, i) => {
                                 const label = sourceLabel(song.source);
                                 const isImporting = importing === song.externalId;
+                                const missingFieldsText = getMissingFieldsText(song);
+                                const canImport = song.importReady !== false;
                                 return (
                                     <div
                                         key={i}
@@ -233,7 +240,54 @@ export default function ExternalSongSearchModal({ show, onClose, onImported }) {
                                                     >
                                                         {label.text}
                                                     </Badge>
+                                                    {song.chordsAvailable && (
+                                                        <Badge
+                                                            pill
+                                                            bg="info"
+                                                            className="ms-2"
+                                                            style={{ fontSize: "10px" }}
+                                                        >
+                                                            Acordes externos
+                                                        </Badge>
+                                                    )}
+                                                    {song.lyrics && (
+                                                        <Badge
+                                                            pill
+                                                            bg="success"
+                                                            className="ms-2"
+                                                            style={{ fontSize: "10px" }}
+                                                        >
+                                                            Letra
+                                                        </Badge>
+                                                    )}
+                                                    {!canImport && (
+                                                        <Badge
+                                                            pill
+                                                            bg="warning"
+                                                            text="dark"
+                                                            className="ms-2"
+                                                            style={{ fontSize: "10px" }}
+                                                        >
+                                                            Incompleta
+                                                        </Badge>
+                                                    )}
                                                 </div>
+                                                {song.chordsAvailable && song.chordSourceUrl && (
+                                                    <small className="d-block mt-1">
+                                                        <a
+                                                            href={song.chordSourceUrl}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                        >
+                                                            Ver tabs/acordes externos
+                                                        </a>
+                                                    </small>
+                                                )}
+                                                {!canImport && (
+                                                    <small className="d-block text-danger mt-1">
+                                                        Faltan: {missingFieldsText}
+                                                    </small>
+                                                )}
                                             </div>
                                         </div>
 
@@ -241,7 +295,8 @@ export default function ExternalSongSearchModal({ show, onClose, onImported }) {
                                             size="sm"
                                             style={{ backgroundColor: "#a56d49", border: "none", minWidth: "90px" }}
                                             onClick={() => handleImport(song)}
-                                            disabled={isImporting}
+                                            disabled={isImporting || !canImport}
+                                            title={!canImport ? `Faltan: ${missingFieldsText}` : "Importar canción"}
                                         >
                                             {isImporting
                                                 ? <Spinner size="sm" />
@@ -258,7 +313,7 @@ export default function ExternalSongSearchModal({ show, onClose, onImported }) {
                     {!searched && !loading && (
                         <div className="text-muted text-center py-3" style={{ fontSize: "13px" }}>
                             Busca canciones en MusicBrainz (popular) y OpenOpus (clásica).<br />
-                            Al importar, la letra se agrega automáticamente si está disponible.
+                            Solo podrás importar canciones que ya tengan título, autor, duración, BPM y tonalidad.
                         </div>
                     )}
 
@@ -271,6 +326,20 @@ export default function ExternalSongSearchModal({ show, onClose, onImported }) {
                 </Modal.Footer>
 
             </Modal>
+
+            {/* Modal de edición que se abre automáticamente tras importar */}
+            {showEditModal && editSong && (
+                <CreateIndependentSong
+                    show={showEditModal}
+                    song={editSong}
+                    isEdit={true}
+                    onClose={() => {
+                        setShowEditModal(false);
+                        setEditSong(null);
+                        handleClose();
+                    }}
+                />
+            )}
 
             <SuccessModal
                 show={modal.show}
