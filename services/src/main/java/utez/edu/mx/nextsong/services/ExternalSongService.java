@@ -4,132 +4,193 @@ import org.springframework.stereotype.Service;
 import utez.edu.mx.nextsong.dto.ExternalSongDTO;
 import utez.edu.mx.nextsong.models.Song;
 import utez.edu.mx.nextsong.repositories.SongRepository;
+import utez.edu.mx.nextsong.utils.TextCleaner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-/**
- * Servicio orquestador que combina MusicBrainz + OpenOpus + Lyrics.ovh
- * en una sola capa limpia para el controlador.
- *
- * También permite importar una canción externa directamente a tu BD.
- */
 @Service
 public class ExternalSongService {
 
     private final MusicBrainzService musicBrainzService;
     private final OpenOpusService openOpusService;
     private final LyricsService lyricsService;
+    private final AcousticBrainzService acousticBrainzService;
+    private final ItunesMetadataService itunesMetadataService;
+    private final LastFmMetadataService lastFmMetadataService;
+    private final SongsterrChordService songsterrChordService;
     private final SongRepository songRepository;
 
     public ExternalSongService(
             MusicBrainzService musicBrainzService,
             OpenOpusService openOpusService,
             LyricsService lyricsService,
+            AcousticBrainzService acousticBrainzService,
+            ItunesMetadataService itunesMetadataService,
+            LastFmMetadataService lastFmMetadataService,
+            SongsterrChordService songsterrChordService,
             SongRepository songRepository
     ) {
-        this.musicBrainzService = musicBrainzService;
-        this.openOpusService    = openOpusService;
-        this.lyricsService      = lyricsService;
-        this.songRepository     = songRepository;
+        this.musicBrainzService    = musicBrainzService;
+        this.openOpusService       = openOpusService;
+        this.lyricsService         = lyricsService;
+        this.acousticBrainzService = acousticBrainzService;
+        this.itunesMetadataService = itunesMetadataService;
+        this.lastFmMetadataService = lastFmMetadataService;
+        this.songsterrChordService = songsterrChordService;
+        this.songRepository        = songRepository;
     }
 
-    /**
-     * Búsqueda combinada: busca en MusicBrainz (popular + clásica) y en OpenOpus (clásica).
-     * Los resultados se mezclan y se devuelven juntos.
-     *
-     * @param query  texto libre: título, artista o compositor
-     * @return       lista de resultados de ambas fuentes
-     */
     public List<ExternalSongDTO> searchAll(String query) {
         List<ExternalSongDTO> combined = new ArrayList<>();
-
-        // Búsqueda en MusicBrainz (música popular y clásica con metadatos)
-        List<ExternalSongDTO> mbResults = musicBrainzService.searchSongs(query, 10);
-        combined.addAll(mbResults);
-
-        // Búsqueda en OpenOpus (solo clásica, pero con más contexto musical)
-        List<ExternalSongDTO> opResults = openOpusService.searchWorks(query);
-        combined.addAll(opResults);
-
+        combined.addAll(musicBrainzService.searchSongs(query, 10));
+        combined.addAll(openOpusService.searchWorks(query));
+        combined.forEach(this::completeMetadata);
         return combined;
     }
 
-    /**
-     * Busca solo por compositor en OpenOpus (ideal para exploración clásica).
-     */
     public List<ExternalSongDTO> searchByComposer(String composerName) {
-        return openOpusService.searchByComposer(composerName);
+        List<ExternalSongDTO> results = openOpusService.searchByComposer(composerName);
+        results.forEach(this::completeMetadata);
+        return results;
     }
 
-    /**
-     * Lista compositores populares del catálogo clásico.
-     */
     public List<String> getPopularComposers() {
         return openOpusService.getPopularComposers();
     }
 
     /**
-     * ⭐ IMPORTAR: Toma los datos de una búsqueda externa y los guarda en tu BD.
-     *
-     * Este método es el puente entre las APIs externas y tu sistema.
-     * Si el usuario encuentra una canción y la quiere agregar a un evento,
-     * primero la importa con este método, y luego la asigna al evento por ID.
-     *
-     * Proceso:
-     *   1. Recibe un ExternalSongDTO (lo manda el frontend con los datos del resultado)
-     *   2. Intenta jalar la letra desde Lyrics.ovh automáticamente
-     *   3. Convierte el DTO a tu entidad Song
-     *   4. Guarda en tu BD y retorna la Song con su ID ya asignado
-     *
-     * @param dto  datos de la canción externa seleccionada por el usuario
-     * @return     Song guardada en BD, lista para asignar a eventos
+     * Importa una canción externa a la BD.
+     * Intenta completar todos los datos posibles desde las APIs.
+     * Si faltan datos (letra, BPM, tonalidad), se guarda de todas formas
+     * con los campos disponibles — el usuario puede completarlos después.
      */
     public Song importExternalSong(ExternalSongDTO dto) {
+        completeMetadata(dto);
+
         Song song = new Song();
-        song.setTitle(dto.getTitle());
-        song.setAuthor(dto.getAuthor());
+
+        String cleanArtist = TextCleaner.clean(dto.getAuthor());
+        String cleanTitle  = TextCleaner.clean(dto.getTitle());
+
+        song.setTitle(cleanTitle);
+        song.setAuthor(cleanArtist);
         song.setDuration(dto.getDuration());
-        song.setKeyTone(dto.getKeyTone());
-        song.setBpm(dto.getBpm());
-        song.setNotes(dto.getNotes());
+        song.setNotes(buildNotes(dto));
         song.setStatus("active");
+        song.setBpm(dto.getBpm());
+        song.setKeyTone(dto.getKeyTone());
 
-        // Intentar jalar letra automáticamente si no viene ya en el DTO
-        if ((dto.getLyrics() == null || dto.getLyrics().isBlank())
-                && dto.getAuthor() != null && dto.getTitle() != null) {
+        // Letra: usar la que ya viene en el DTO (fue buscada en completeMetadata)
+        song.setLyrics(!isBlank(dto.getLyrics()) ? dto.getLyrics() : null);
 
-            String lyrics = lyricsService.getLyrics(dto.getAuthor(), dto.getTitle());
-            song.setLyrics(lyrics); // puede ser null si no existe letra (música instrumental)
+        // Acordes: si Songsterr encontró un enlace, guardarlo en chords como referencia
+        if (!isBlank(dto.getChordSourceUrl())) {
+            song.setChords("Acordes disponibles en: " + dto.getChordSourceUrl());
         } else {
-            song.setLyrics(dto.getLyrics());
+            song.setChords(null);
         }
-
-        // chords/partitura no viene de APIs externas — queda null para que el usuario la agregue después
-        song.setChords(null);
 
         return songRepository.save(song);
     }
 
-    /**
-     * Busca la letra de una canción que YA está en tu BD y la actualiza.
-     * Útil si una canción fue creada sin letra y se quiere completar automáticamente.
-     *
-     * @param songId  ID de tu Song en BD
-     * @return        Song actualizada con la letra, o null si no se encontró
-     */
     public Song enrichLyrics(Long songId) {
         Song song = songRepository.findById(songId).orElse(null);
         if (song == null) return null;
 
-        if (song.getAuthor() != null && song.getTitle() != null) {
-            String lyrics = lyricsService.getLyrics(song.getAuthor(), song.getTitle());
-            if (lyrics != null) {
-                song.setLyrics(lyrics);
-                return songRepository.save(song);
+        String lyrics = lyricsService.getLyrics(song.getAuthor(), song.getTitle());
+        if (lyrics != null) {
+            song.setLyrics(lyrics);
+            return songRepository.save(song);
+        }
+
+        return song;
+    }
+
+    /**
+     * Enriquece el DTO con datos de todas las APIs disponibles.
+     * No lanza excepción si algo falta — simplemente deja el campo null.
+     */
+    private void completeMetadata(ExternalSongDTO dto) {
+        if (dto == null) return;
+
+        // Limpiar texto
+        dto.setAuthor(TextCleaner.clean(dto.getAuthor()));
+        dto.setTitle(TextCleaner.clean(dto.getTitle()));
+
+        // Last.fm: corregir nombre y obtener duración/género
+        if (!isBlank(dto.getAuthor()) && !isBlank(dto.getTitle())) {
+            LastFmMetadataService.TrackMetadata lastFm =
+                    lastFmMetadataService.enrichTrack(dto.getAuthor(), dto.getTitle());
+            if (lastFm != null) {
+                if (!isBlank(lastFm.title()))    dto.setTitle(lastFm.title());
+                if (!isBlank(lastFm.artist()))   dto.setAuthor(lastFm.artist());
+                if (isBlank(dto.getDuration()))  dto.setDuration(lastFm.duration());
+                if (isBlank(dto.getGenre()))     dto.setGenre(lastFm.genre());
             }
         }
 
-        return song; // regresa sin cambios si no se encontró letra
+        // iTunes: duración y portada
+        ItunesMetadataService.TrackData itunes =
+                itunesMetadataService.searchTrack(dto.getTitle(), dto.getAuthor());
+        if (itunes != null) {
+            if (isBlank(dto.getDuration()))   dto.setDuration(itunes.duration);
+            if (isBlank(dto.getArtworkUrl())) dto.setArtworkUrl(itunes.artworkUrl);
+            if (isBlank(dto.getAuthor()))     dto.setAuthor(itunes.artistName);
+            if (isBlank(dto.getTitle()))      dto.setTitle(itunes.trackName);
+        }
+
+        // AcousticBrainz: BPM y tonalidad (solo si viene de MusicBrainz)
+        if (!isBlank(dto.getExternalId()) && (dto.getBpm() == null || isBlank(dto.getKeyTone()))) {
+            AcousticBrainzService.AudioData audio =
+                    acousticBrainzService.getAudioData(dto.getExternalId());
+            if (audio != null) {
+                if (dto.getBpm() == null)       dto.setBpm(audio.bpm);
+                if (isBlank(dto.getKeyTone()))  dto.setKeyTone(audio.keyTone);
+            }
+        }
+
+        // Letra: buscar en Lyrics.ovh → LrcLib → Happi.dev
+        if (isBlank(dto.getLyrics()) && !isBlank(dto.getAuthor()) && !isBlank(dto.getTitle())) {
+            dto.setLyrics(lyricsService.getLyrics(dto.getAuthor(), dto.getTitle()));
+        }
+
+        // Songsterr: enlace a acordes/tabs
+        SongsterrChordService.ChordData chords =
+                songsterrChordService.searchChordSource(dto.getTitle(), dto.getAuthor());
+        if (chords != null) {
+            dto.setChordsAvailable(chords.chordsAvailable);
+            if (isBlank(dto.getChordSourceUrl())) dto.setChordSourceUrl(chords.externalUrl);
+        }
+
+        // Marcar campos faltantes para que el frontend los muestre
+        dto.setMissingFields(getMissingFields(dto));
+        dto.setImportReady(dto.getMissingFields().isEmpty());
+    }
+
+    private List<String> getMissingFields(ExternalSongDTO dto) {
+        return Arrays.asList(
+                        isBlank(dto.getTitle())    ? "título"    : null,
+                        isBlank(dto.getAuthor())   ? "autor"     : null,
+                        isBlank(dto.getDuration()) ? "duración"  : null,
+                        dto.getBpm() == null       ? "BPM"       : null,
+                        isBlank(dto.getKeyTone())  ? "tonalidad" : null,
+                        isBlank(dto.getLyrics()) && !dto.isChordsAvailable() ? "letra/acordes" : null
+                ).stream()
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
+    private String buildNotes(ExternalSongDTO dto) {
+        List<String> parts = new ArrayList<>();
+        if (!isBlank(dto.getNotes()))          parts.add(dto.getNotes().trim());
+        if (!isBlank(dto.getChordSourceUrl())) parts.add("Acordes: " + dto.getChordSourceUrl());
+        return parts.isEmpty() ? null : String.join(" | ", parts);
     }
 }

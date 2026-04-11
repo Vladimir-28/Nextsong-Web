@@ -3,7 +3,8 @@ import SongCard from "../components/SongCard";
 import SongsController from "../controller/songs.controller";
 import CreateIndependentSong from "./CreateIndependentSong";
 import ConfirmModal from "../../../../components/ConfirmModal";
-import ExternalSongSearchModal from "../components/ExternalSongSearchModal"; // ✅ NUEVO
+import SuccessModal from "../../../../components/SuccessModal"; // 🔥 NUEVO
+import ExternalSongSearchModal from "../components/ExternalSongSearchModal";
 import { FaPlus, FaSearch, FaGlobe } from "react-icons/fa";
 
 export default function Songs() {
@@ -13,15 +14,22 @@ export default function Songs() {
     const [search, setSearch] = useState("");
     const [selectedSong, setSelectedSong] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [showExternalSearch, setShowExternalSearch] = useState(false); // ✅ NUEVO
+    const [showExternalSearch, setShowExternalSearch] = useState(false);
 
-    //  CONFIRM MODAL STATE
+    // 🔥 CONFIRM MODAL
     const [confirmModal, setConfirmModal] = useState({
         show: false,
         id: null
     });
 
-    // usuario
+    // 🔥 SUCCESS MODAL
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [modalData, setModalData] = useState({
+        title: "",
+        message: "",
+        type: "success"
+    });
+
     const user = JSON.parse(sessionStorage.getItem("user"));
 
     const getSongs = async () => {
@@ -37,7 +45,6 @@ export default function Songs() {
         getSongs();
     }, []);
 
-    // FILTRO
     const filteredSongs = search
         ? songs.filter((song) =>
             song.title?.toLowerCase().includes(search.toLowerCase()) ||
@@ -45,28 +52,51 @@ export default function Songs() {
         )
         : songs;
 
-
-    const handleDelete = async (id) => {
+    const handleDelete = (id) => {
         setConfirmModal({
             show: true,
             id
         });
     };
 
-    // CONFIRMAR DELETE REAL
     const confirmDelete = async () => {
         try {
             await SongsController.delete(confirmModal.id, user.id);
-            getSongs();
 
             setSongs(prev =>
                 prev.filter(s => s.id !== confirmModal.id)
             );
 
+            setModalData({
+                title: "Canción eliminada",
+                message: "La canción se eliminó correctamente",
+                type: "success"
+            });
+
+            setShowSuccess(true);
+
         } catch (error) {
             console.error(error);
 
-            alert(error.message);
+            let message = "No se pudo eliminar la canción";
+
+            // 🔥 Si viene mensaje del backend
+            if (error?.response?.data?.message) {
+                message = error.response.data.message;
+            }
+
+            // 🔥 Si NO viene mensaje (como en tu caso)
+            else if (error?.response?.status === 500) {
+                message = "No puedes eliminar esta canción porque está asociada a un evento";
+            }
+
+            setModalData({
+                title: "No se puede eliminar",
+                message,
+                type: "error"
+            });
+
+            setShowSuccess(true);
         }
 
         setConfirmModal({ show: false, id: null });
@@ -89,7 +119,6 @@ export default function Songs() {
                     </p>
                 </div>
 
-                {/* ✅ Botones: buscar externa + crear manual */}
                 <div className="d-flex gap-2">
 
                     <button
@@ -173,7 +202,7 @@ export default function Songs() {
                 />
             )}
 
-            {/* CONFIRM MODAL DELETE */}
+            {/* 🔥 CONFIRM DELETE */}
             <ConfirmModal
                 show={confirmModal.show}
                 title="Eliminar canción"
@@ -182,7 +211,16 @@ export default function Songs() {
                 onConfirm={confirmDelete}
             />
 
-            {/* ✅ NUEVO: modal de búsqueda en catálogos externos */}
+            {/* 🔥 SUCCESS / ERROR */}
+            <SuccessModal
+                show={showSuccess}
+                onClose={() => setShowSuccess(false)}
+                title={modalData.title}
+                message={modalData.message}
+                type={modalData.type}
+            />
+
+            {/* 🔥 BUSCADOR EXTERNO */}
             <ExternalSongSearchModal
                 show={showExternalSearch}
                 onClose={() => setShowExternalSearch(false)}

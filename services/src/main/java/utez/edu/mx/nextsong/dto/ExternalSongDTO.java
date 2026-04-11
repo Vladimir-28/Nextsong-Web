@@ -1,5 +1,8 @@
 package utez.edu.mx.nextsong.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * DTO que representa un resultado de búsqueda desde APIs externas.
  * NO toca tu BD — es solo para mostrar opciones al usuario antes de guardar.
@@ -16,6 +19,11 @@ public class ExternalSongDTO {
     private String genre;
     private String lyrics;           // jalado de Lyrics.ovh
     private String notes;            // info adicional de la API
+    private String artworkUrl;       // portada cuando existe
+    private String chordSourceUrl;   // enlace externo a tabs/acordes
+    private boolean chordsAvailable; // indica si hay acordes externos
+    private boolean importReady;     // indica si cumple los campos requeridos
+    private List<String> missingFields = new ArrayList<>();
 
     public ExternalSongDTO() {}
 
@@ -56,4 +64,21 @@ public class ExternalSongDTO {
 
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
+
+    public String getArtworkUrl() { return artworkUrl; }
+    public void setArtworkUrl(String artworkUrl) { this.artworkUrl = artworkUrl; }
+
+    public String getChordSourceUrl() { return chordSourceUrl; }
+    public void setChordSourceUrl(String chordSourceUrl) { this.chordSourceUrl = chordSourceUrl; }
+
+    public boolean isChordsAvailable() { return chordsAvailable; }
+    public void setChordsAvailable(boolean chordsAvailable) { this.chordsAvailable = chordsAvailable; }
+
+    public boolean isImportReady() { return importReady; }
+    public void setImportReady(boolean importReady) { this.importReady = importReady; }
+
+    public List<String> getMissingFields() { return missingFields; }
+    public void setMissingFields(List<String> missingFields) {
+        this.missingFields = missingFields != null ? missingFields : new ArrayList<>();
+    }
 }

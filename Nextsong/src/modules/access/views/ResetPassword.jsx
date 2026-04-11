@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
+import { buildApiUrl } from "../../../services/api";
 
 export default function ResetPassword() {
 
@@ -21,7 +22,7 @@ export default function ResetPassword() {
 
         try {
             const response = await fetch(
-                `http://localhost:8080/auth/reset-password?email=${email}&newPassword=${newPassword}`,
+                buildApiUrl(`/auth/reset-password?email=${encodeURIComponent(email)}&newPassword=${encodeURIComponent(newPassword)}`),
                 { method: "POST" }
             );
 

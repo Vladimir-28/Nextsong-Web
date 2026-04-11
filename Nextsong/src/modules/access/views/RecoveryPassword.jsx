@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { buildApiUrl } from "../../../services/api";
 
 export default function Recovery() {
 
@@ -15,7 +16,7 @@ export default function Recovery() {
 
         try {
             const response = await fetch(
-                `http://localhost:8080/auth/recover-password?email=${email}`,
+                buildApiUrl(`/auth/recover-password?email=${encodeURIComponent(email)}`),
                 {
                     method: "POST"
                 }

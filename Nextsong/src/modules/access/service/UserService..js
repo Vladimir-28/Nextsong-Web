@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:8080/auth";
+import { buildApiUrl } from "../../../services/api";
+
+const API_URL = buildApiUrl("/auth");
 
 export const registerUser = async (user) => {
     const response = await fetch(`${API_URL}/register`, {

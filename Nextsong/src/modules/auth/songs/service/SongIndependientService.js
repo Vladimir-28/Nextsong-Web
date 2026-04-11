@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:8080/songs";
+import { buildApiUrl } from "../../../../services/api";
+
+const API_URL = buildApiUrl("/songs");
 
 export const createSongRequest = async (song) => {
     const response = await fetch(API_URL, {
