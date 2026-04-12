@@ -6,10 +6,8 @@ import utez.edu.mx.nextsong.models.Song;
 import utez.edu.mx.nextsong.repositories.SongRepository;
 import utez.edu.mx.nextsong.utils.TextCleaner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ExternalSongService {
@@ -44,16 +42,28 @@ public class ExternalSongService {
     }
 
     public List<ExternalSongDTO> searchAll(String query) {
-        List<ExternalSongDTO> combined = new ArrayList<>();
-        combined.addAll(musicBrainzService.searchSongs(query, 10));
-        combined.addAll(openOpusService.searchWorks(query));
-        combined.forEach(this::completeMetadata);
+        List<ExternalSongDTO> rawResults = new ArrayList<>();
+        rawResults.addAll(musicBrainzService.searchSongs(query, 10));
+        rawResults.addAll(openOpusService.searchWorks(query));
+
+        // 1. De-duplicación para no procesar dos veces la misma canción
+        Map<String, ExternalSongDTO> uniqueMap = new LinkedHashMap<>();
+        for (ExternalSongDTO dto : rawResults) {
+            String key = (TextCleaner.clean(dto.getTitle()) + "|" + TextCleaner.clean(dto.getAuthor())).toLowerCase();
+            uniqueMap.putIfAbsent(key, dto);
+        }
+
+        List<ExternalSongDTO> combined = new ArrayList<>(uniqueMap.values());
+
+        // 2. PARALELISMO: Completa la metadata de todas las canciones a la vez
+        combined.parallelStream().forEach(this::completeMetadata);
+
         return combined;
     }
 
     public List<ExternalSongDTO> searchByComposer(String composerName) {
         List<ExternalSongDTO> results = openOpusService.searchByComposer(composerName);
-        results.forEach(this::completeMetadata);
+        results.parallelStream().forEach(this::completeMetadata);
         return results;
     }
 
@@ -61,15 +71,8 @@ public class ExternalSongService {
         return openOpusService.getPopularComposers();
     }
 
-    /**
-     * Importa una canción externa a la BD.
-     * Intenta completar todos los datos posibles desde las APIs.
-     * Si faltan datos (letra, BPM, tonalidad), se guarda de todas formas
-     * con los campos disponibles — el usuario puede completarlos después.
-     */
     public Song importExternalSong(ExternalSongDTO dto) {
         completeMetadata(dto);
-
         Song song = new Song();
 
         String cleanArtist = TextCleaner.clean(dto.getAuthor());
@@ -82,11 +85,8 @@ public class ExternalSongService {
         song.setStatus("active");
         song.setBpm(dto.getBpm());
         song.setKeyTone(dto.getKeyTone());
-
-        // Letra: usar la que ya viene en el DTO (fue buscada en completeMetadata)
         song.setLyrics(!isBlank(dto.getLyrics()) ? dto.getLyrics() : null);
 
-        // Acordes: si Songsterr encontró un enlace, guardarlo en chords como referencia
         if (!isBlank(dto.getChordSourceUrl())) {
             song.setChords("Acordes disponibles en: " + dto.getChordSourceUrl());
         } else {
@@ -105,67 +105,57 @@ public class ExternalSongService {
             song.setLyrics(lyrics);
             return songRepository.save(song);
         }
-
         return song;
     }
 
-    /**
-     * Enriquece el DTO con datos de todas las APIs disponibles.
-     * No lanza excepción si algo falta — simplemente deja el campo null.
-     */
     private void completeMetadata(ExternalSongDTO dto) {
         if (dto == null) return;
+        try {
+            dto.setAuthor(TextCleaner.clean(dto.getAuthor()));
+            dto.setTitle(TextCleaner.clean(dto.getTitle()));
 
-        // Limpiar texto
-        dto.setAuthor(TextCleaner.clean(dto.getAuthor()));
-        dto.setTitle(TextCleaner.clean(dto.getTitle()));
-
-        // Last.fm: corregir nombre y obtener duración/género
-        if (!isBlank(dto.getAuthor()) && !isBlank(dto.getTitle())) {
-            LastFmMetadataService.TrackMetadata lastFm =
-                    lastFmMetadataService.enrichTrack(dto.getAuthor(), dto.getTitle());
-            if (lastFm != null) {
-                if (!isBlank(lastFm.title()))    dto.setTitle(lastFm.title());
-                if (!isBlank(lastFm.artist()))   dto.setAuthor(lastFm.artist());
-                if (isBlank(dto.getDuration()))  dto.setDuration(lastFm.duration());
-                if (isBlank(dto.getGenre()))     dto.setGenre(lastFm.genre());
+            // Last.fm
+            if (!isBlank(dto.getAuthor()) && !isBlank(dto.getTitle())) {
+                LastFmMetadataService.TrackMetadata lastFm = lastFmMetadataService.enrichTrack(dto.getAuthor(), dto.getTitle());
+                if (lastFm != null) {
+                    if (!isBlank(lastFm.title()))    dto.setTitle(lastFm.title());
+                    if (!isBlank(lastFm.artist()))   dto.setAuthor(lastFm.artist());
+                    if (isBlank(dto.getDuration()))  dto.setDuration(lastFm.duration());
+                    if (isBlank(dto.getGenre()))     dto.setGenre(lastFm.genre());
+                }
             }
-        }
 
-        // iTunes: duración y portada
-        ItunesMetadataService.TrackData itunes =
-                itunesMetadataService.searchTrack(dto.getTitle(), dto.getAuthor());
-        if (itunes != null) {
-            if (isBlank(dto.getDuration()))   dto.setDuration(itunes.duration);
-            if (isBlank(dto.getArtworkUrl())) dto.setArtworkUrl(itunes.artworkUrl);
-            if (isBlank(dto.getAuthor()))     dto.setAuthor(itunes.artistName);
-            if (isBlank(dto.getTitle()))      dto.setTitle(itunes.trackName);
-        }
-
-        // AcousticBrainz: BPM y tonalidad (solo si viene de MusicBrainz)
-        if (!isBlank(dto.getExternalId()) && (dto.getBpm() == null || isBlank(dto.getKeyTone()))) {
-            AcousticBrainzService.AudioData audio =
-                    acousticBrainzService.getAudioData(dto.getExternalId());
-            if (audio != null) {
-                if (dto.getBpm() == null)       dto.setBpm(audio.bpm);
-                if (isBlank(dto.getKeyTone()))  dto.setKeyTone(audio.keyTone);
+            // iTunes
+            ItunesMetadataService.TrackData itunes = itunesMetadataService.searchTrack(dto.getTitle(), dto.getAuthor());
+            if (itunes != null) {
+                if (isBlank(dto.getDuration()))   dto.setDuration(itunes.duration);
+                if (isBlank(dto.getArtworkUrl())) dto.setArtworkUrl(itunes.artworkUrl);
             }
+
+            // AcousticBrainz
+            if (!isBlank(dto.getExternalId()) && (dto.getBpm() == null || isBlank(dto.getKeyTone()))) {
+                AcousticBrainzService.AudioData audio = acousticBrainzService.getAudioData(dto.getExternalId());
+                if (audio != null) {
+                    if (dto.getBpm() == null)       dto.setBpm(audio.bpm);
+                    if (isBlank(dto.getKeyTone()))  dto.setKeyTone(audio.keyTone);
+                }
+            }
+
+            // Letra
+            if (isBlank(dto.getLyrics()) && !isBlank(dto.getAuthor()) && !isBlank(dto.getTitle())) {
+                dto.setLyrics(lyricsService.getLyrics(dto.getAuthor(), dto.getTitle()));
+            }
+
+            // Songsterr
+            SongsterrChordService.ChordData chords = songsterrChordService.searchChordSource(dto.getTitle(), dto.getAuthor());
+            if (chords != null) {
+                dto.setChordsAvailable(chords.chordsAvailable);
+                if (isBlank(dto.getChordSourceUrl())) dto.setChordSourceUrl(chords.externalUrl);
+            }
+        } catch (Exception e) {
+            System.err.println("Error procesando metadata de " + dto.getTitle() + ": " + e.getMessage());
         }
 
-        // Letra: buscar en Lyrics.ovh → LrcLib → Happi.dev
-        if (isBlank(dto.getLyrics()) && !isBlank(dto.getAuthor()) && !isBlank(dto.getTitle())) {
-            dto.setLyrics(lyricsService.getLyrics(dto.getAuthor(), dto.getTitle()));
-        }
-
-        // Songsterr: enlace a acordes/tabs
-        SongsterrChordService.ChordData chords =
-                songsterrChordService.searchChordSource(dto.getTitle(), dto.getAuthor());
-        if (chords != null) {
-            dto.setChordsAvailable(chords.chordsAvailable);
-            if (isBlank(dto.getChordSourceUrl())) dto.setChordSourceUrl(chords.externalUrl);
-        }
-
-        // Marcar campos faltantes para que el frontend los muestre
         dto.setMissingFields(getMissingFields(dto));
         dto.setImportReady(dto.getMissingFields().isEmpty());
     }
@@ -183,9 +173,7 @@ public class ExternalSongService {
                 .toList();
     }
 
-    private boolean isBlank(String value) {
-        return value == null || value.isBlank();
-    }
+    private boolean isBlank(String value) { return value == null || value.isBlank(); }
 
     private String buildNotes(ExternalSongDTO dto) {
         List<String> parts = new ArrayList<>();

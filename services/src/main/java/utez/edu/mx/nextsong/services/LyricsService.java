@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
+import java.time.Duration;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -35,6 +35,7 @@ public class LyricsService {
 
     @Cacheable(value = "lyricsCache", key = "#artist + '_' + #title")
     public String getLyrics(String artist, String title) {
+        if (artist == null || title == null) return null;
 
         System.out.println("[Lyrics DEBUG] " + artist + " - " + title);
 
@@ -44,91 +45,23 @@ public class LyricsService {
         lyrics = getLyricsFromLrcLib(artist, title);
         if (lyrics != null) return lyrics;
 
-        lyrics = getLyricsFromHappi(artist, title);
-        if (lyrics != null) return lyrics;
-
-        System.err.println("[LyricsService] No encontrada letra: " + artist + " - " + title);
-        return null;
+        return getLyricsFromHappi(artist, title);
     }
 
     private String getLyricsFromOvh(String artist, String title) {
         try {
-            String cleanArtist = URLEncoder.encode(artist, StandardCharsets.UTF_8);
-            String cleanTitle  = URLEncoder.encode(title, StandardCharsets.UTF_8);
-
             String response = lyricsClient.get()
-                    .uri("/{artist}/{title}", cleanArtist, cleanTitle)
+                    .uri("/{artist}/{title}", URLEncoder.encode(artist, StandardCharsets.UTF_8), URLEncoder.encode(title, StandardCharsets.UTF_8))
                     .retrieve()
                     .bodyToMono(String.class)
+                    .timeout(Duration.ofSeconds(4)) // Protección contra lentitud
                     .block();
 
             if (response == null) return null;
-
             JsonNode root = objectMapper.readTree(response);
-
-            if (root.has("error")) {
-                System.out.println("[Lyrics.ovh] Error: " + root.get("error").asText());
-                return null;
-            }
-
             String lyrics = root.path("lyrics").asText("");
             return lyrics.isBlank() ? null : lyrics;
-
         } catch (Exception e) {
-            System.err.println("[Lyrics.ovh] Falló: " + e.getMessage());
-            return null;
-        }
-    }
-
-    private String getLyricsFromHappi(String artist, String title) {
-        try {
-            String query = artist + " " + title;
-
-            String searchResponse = happiClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/v1/music")
-                            .queryParam("q", query)
-                            .queryParam("limit", "1")
-                            .queryParam("type", "track")
-                            .queryParam("apikey", happiApiKey)
-                            .build())
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-
-            if (searchResponse == null) return null;
-
-            JsonNode searchRoot = objectMapper.readTree(searchResponse);
-
-            if (!searchRoot.path("success").asBoolean(false)) return null;
-
-            JsonNode results = searchRoot.path("result");
-            if (!results.isArray() || results.isEmpty()) return null;
-
-            JsonNode track = results.get(0);
-
-            if (!track.path("haslyrics").asBoolean(false)) return null;
-
-            String apiLyrics = track.path("api_lyrics").asText("");
-            if (apiLyrics.isBlank()) return null;
-
-            String lyricsResponse = happiClient.get()
-                    .uri(apiLyrics + "?apikey=" + happiApiKey)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-
-            if (lyricsResponse == null) return null;
-
-            JsonNode lyricsRoot = objectMapper.readTree(lyricsResponse);
-
-            if (!lyricsRoot.path("success").asBoolean(false)) return null;
-
-            String lyrics = lyricsRoot.path("result").path("lyrics").asText("");
-            return lyrics.isBlank() ? null : lyrics;
-
-        } catch (Exception e) {
-            System.err.println("[Happi.dev] Falló: " + e.getMessage());
             return null;
         }
     }
@@ -137,28 +70,66 @@ public class LyricsService {
         try {
             String response = lrclibClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/get")
+                            .path("/api/get")  // ✅ antes era /get, el correcto es /api/get
                             .queryParam("artist_name", artist)
                             .queryParam("track_name", title)
                             .build())
                     .retrieve()
                     .bodyToMono(String.class)
+                    .timeout(Duration.ofSeconds(4))
                     .block();
 
             if (response == null) return null;
-
             JsonNode root = objectMapper.readTree(response);
 
+            // Preferimos plainLyrics (texto limpio)
             String plainLyrics = root.path("plainLyrics").asText("");
-            if (!plainLyrics.isBlank()) {
-                return plainLyrics;
+            if (!plainLyrics.isBlank()) return plainLyrics;
+
+            // Fallback: syncedLyrics limpiando timestamps
+            String synced = root.path("syncedLyrics").asText("");
+            if (!synced.isBlank()) {
+                return synced.replaceAll("\\[\\d{2}:\\d{2}\\.\\d{2,3}\\]\\s*", "").trim();
             }
 
-            String syncedLyrics = root.path("syncedLyrics").asText("");
-            return syncedLyrics.isBlank() ? null : syncedLyrics;
-
+            return null;
         } catch (Exception e) {
-            System.err.println("[LRCLIB] Fallo: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private String getLyricsFromHappi(String artist, String title) {
+        try {
+            String searchResponse = happiClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/v1/music")
+                            .queryParam("q", artist + " " + title)
+                            .queryParam("limit", "1")
+                            .queryParam("type", "track")
+                            .queryParam("apikey", happiApiKey).build())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .timeout(Duration.ofSeconds(5))
+                    .block();
+
+            if (searchResponse == null) return null;
+            JsonNode searchRoot = objectMapper.readTree(searchResponse);
+            if (!searchRoot.path("success").asBoolean()) return null;
+
+            JsonNode track = searchRoot.path("result").get(0);
+            if (track == null || !track.path("haslyrics").asBoolean()) return null;
+
+            String apiLyrics = track.path("api_lyrics").asText("");
+            String lyricsResponse = happiClient.get()
+                    .uri(apiLyrics + "?apikey=" + happiApiKey)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .timeout(Duration.ofSeconds(5))
+                    .block();
+
+            if (lyricsResponse == null) return null;
+            JsonNode lyricsRoot = objectMapper.readTree(lyricsResponse);
+            return lyricsRoot.path("result").path("lyrics").asText(null);
+        } catch (Exception e) {
             return null;
         }
     }
