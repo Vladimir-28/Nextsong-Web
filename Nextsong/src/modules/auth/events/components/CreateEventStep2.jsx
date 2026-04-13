@@ -19,7 +19,7 @@ export default function CreateEventStep2({
     const [availableSongs, setAvailableSongs] = useState([]);
     const [selectedSongs, setSelectedSongs] = useState([]);
     const [showSongModal, setShowSongModal] = useState(false);
-    const [showExternalModal, setShowExternalModal] = useState(false); // ✅ NUEVO
+    const [showExternalModal, setShowExternalModal] = useState(false); //  NUEVO
 
     const [modal, setModal] = useState({
         show: false,
@@ -28,12 +28,12 @@ export default function CreateEventStep2({
         type: ""
     });
 
-    // 🔥 cargar canciones disponibles (solo una vez)
+    // cargar canciones disponibles (solo una vez)
     useEffect(() => {
         loadSongs();
     }, []);
 
-    // 🔥 cargar canciones del evento SOLO UNA VEZ (no en cada cambio)
+    // cargar canciones del evento SOLO UNA VEZ (no en cada cambio)
     useEffect(() => {
 
         const loadEventSongs = async () => {
@@ -44,7 +44,7 @@ export default function CreateEventStep2({
                     const songs = eventSongs.map(es => es.song);
                     setSelectedSongs(songs);
 
-                    // 🔥 sincronizar con el modal padre
+                    // sincronizar con el modal padre
                     updateEvent({ songs });
 
                 } catch (error) {
@@ -57,7 +57,7 @@ export default function CreateEventStep2({
 
         loadEventSongs();
 
-    }, [eventData?.id]); // 🔥 SOLO CUANDO CAMBIA EL ID
+    }, [eventData?.id]); // SOLO CUANDO CAMBIA EL ID
 
     const loadSongs = async () => {
         const data = await SongsController.findAll();

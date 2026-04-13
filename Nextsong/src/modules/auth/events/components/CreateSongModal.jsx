@@ -14,7 +14,7 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
     chords: ""
   });
 
-  // 🔥 MODAL
+  // MODAL
   const [modal, setModal] = useState({
     show: false,
     title: "",
@@ -31,7 +31,7 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
 
   const handleCreate = async () => {
 
-    // 🔴 VALIDACIÓN
+    // VALIDACIÓN
     if (!form.title || !form.artist) {
       setModal({
         show: true,
@@ -56,7 +56,7 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
         return;
       }
 
-      // 🔥 éxito
+      // éxito
       onCreate(newSong);
 
       setModal({
