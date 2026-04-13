@@ -16,13 +16,13 @@ export default function Songs() {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showExternalSearch, setShowExternalSearch] = useState(false);
 
-    // 🔥 CONFIRM MODAL
+    // CONFIRM MODAL
     const [confirmModal, setConfirmModal] = useState({
         show: false,
         id: null
     });
 
-    // 🔥 SUCCESS MODAL
+    // SUCCESS MODAL
     const [showSuccess, setShowSuccess] = useState(false);
     const [modalData, setModalData] = useState({
         title: "",
@@ -80,12 +80,12 @@ export default function Songs() {
 
             let message = "No se pudo eliminar la canción";
 
-            // 🔥 Si viene mensaje del backend
+            // Si viene mensaje del backend
             if (error?.response?.data?.message) {
                 message = error.response.data.message;
             }
 
-            // 🔥 Si NO viene mensaje (como en tu caso)
+            // Si NO viene mensaje 
             else if (error?.response?.status === 500) {
                 message = "No puedes eliminar esta canción porque está asociada a un evento";
             }
