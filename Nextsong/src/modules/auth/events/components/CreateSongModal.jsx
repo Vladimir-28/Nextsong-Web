@@ -11,10 +11,10 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
     duration: "",
     bpm: "",
     keyTone: "",
-    chords: ""
+    chords: "",
+    lyrics: ""
   });
 
-  // MODAL
   const [modal, setModal] = useState({
     show: false,
     title: "",
@@ -31,12 +31,31 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
 
   const handleCreate = async () => {
 
-    // VALIDACIÓN
-    if (!form.title || !form.artist) {
+    const hasLyrics = form.lyrics.trim() !== "";
+    const hasChords = form.chords.trim() !== "";
+
+    // 🔥 VALIDACIÓN
+    if (
+      !form.title.trim() ||
+      !form.artist.trim() ||
+      !form.duration.trim() ||
+      !form.bpm ||
+      !form.keyTone.trim()
+    ) {
       setModal({
         show: true,
         title: "Campos requeridos",
-        message: "Debes ingresar título y artista",
+        message: "Todos los campos con * son obligatorios",
+        type: "error"
+      });
+      return;
+    }
+
+    if (!hasLyrics && !hasChords) {
+      setModal({
+        show: true,
+        title: "Error",
+        message: "Debes agregar letra o acordes",
         type: "error"
       });
       return;
@@ -44,7 +63,15 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
 
     try {
 
-      const newSong = await createSong(form);
+      // 🔥 FIX IMPORTANTE AQUÍ
+      const payload = {
+        ...form,
+        author: form.artist   // ✅ backend espera "author"
+      };
+
+      console.log("ENVIANDO:", payload); // opcional para debug
+
+      const newSong = await createSong(payload);
 
       if (!newSong || !newSong.id) {
         setModal({
@@ -56,7 +83,6 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
         return;
       }
 
-      // éxito
       onCreate(newSong);
 
       setModal({
@@ -66,17 +92,20 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
         type: "success"
       });
 
-      // limpiar
+      // limpiar formulario
       setForm({
         title: "",
         artist: "",
         duration: "",
         bpm: "",
         keyTone: "",
-        chords: ""
+        chords: "",
+        lyrics: ""
       });
 
     } catch (error) {
+      console.error(error);
+
       setModal({
         show: true,
         title: "Error",
@@ -100,7 +129,7 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
             <Form.Label>Título *</Form.Label>
             <Form.Control
               value={form.title}
-              placeholder="Nombre de la canción"
+              placeholder="Ej: Mercy"
               onChange={(e) => handleChange("title", e.target.value)}
             />
           </Form.Group>
@@ -109,7 +138,7 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
             <Form.Label>Artista *</Form.Label>
             <Form.Control
               value={form.artist}
-              placeholder="Nombre del artista"
+              placeholder="Ej: Shawn Mendes"
               onChange={(e) => handleChange("artist", e.target.value)}
             />
           </Form.Group>
@@ -117,19 +146,19 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
           <div className="row">
 
             <div className="col-6">
-              <Form.Label>Duración</Form.Label>
+              <Form.Label>Duración *</Form.Label>
               <Form.Control
                 value={form.duration}
-                placeholder="3:30"
+                placeholder="Ej: 3:45"
                 onChange={(e) => handleChange("duration", e.target.value)}
               />
             </div>
 
             <div className="col-6">
-              <Form.Label>Tempo (BPM)</Form.Label>
+              <Form.Label>Tempo (BPM) *</Form.Label>
               <Form.Control
                 value={form.bpm}
-                placeholder="120"
+                placeholder="Ej: 120"
                 onChange={(e) => handleChange("bpm", e.target.value)}
               />
             </div>
@@ -137,10 +166,22 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
           </div>
 
           <Form.Group className="mt-3">
-            <Form.Label>Tonalidad</Form.Label>
+            <Form.Label>Tonalidad *</Form.Label>
             <Form.Control
               value={form.keyTone}
               onChange={(e) => handleChange("keyTone", e.target.value)}
+              placeholder="Ej: C, Gm, F#"
+            />
+          </Form.Group>
+
+          <Form.Group className="mt-3">
+            <Form.Label>Acordes</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              placeholder="Ej: C - G - Am - F"
+              value={form.chords}
+              onChange={(e) => handleChange("chords", e.target.value)}
             />
           </Form.Group>
 
@@ -149,9 +190,9 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
             <Form.Control
               as="textarea"
               rows={4}
-              placeholder="Escribe la letra de la canción..."
-              value={form.chords}
-              onChange={(e) => handleChange("chords", e.target.value)}
+              value={form.lyrics}
+              onChange={(e) => handleChange("lyrics", e.target.value)}
+              placeholder="Ej: You've got a hold of me..."
             />
           </Form.Group>
 
@@ -174,7 +215,6 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
 
       </Modal>
 
-      {/* 🔥 MODAL DE RESULTADO */}
       <SuccessModal
         show={modal.show}
         title={modal.title}
@@ -183,7 +223,6 @@ export default function CreateSongModal({ show, onClose, onCreate }) {
         onClose={() => {
           setModal({ ...modal, show: false });
 
-          // 🔥 SOLO cerrar si fue éxito
           if (modal.type === "success") {
             onClose();
           }
