@@ -33,7 +33,7 @@ export default function ExternalSongSearchModal({ show, onClose, onImported }) {
             setModal({
                 show: true,
                 title: "Error de búsqueda",
-                message: "No se pudo conectar con las APIs externas. Verifica que el backend esté corriendo.",
+                message: "No se pudo obtener la información",
                 type: "error"
             });
         } finally {
@@ -107,7 +107,7 @@ export default function ExternalSongSearchModal({ show, onClose, onImported }) {
 
     const sourceLabel = (source) => {
         if (source === "musicbrainz") return { text: "Popular", color: "#a56d49" };
-        if (source === "openopus")    return { text: "Clásica", color: "#5b7fa6" };
+        if (source === "openopus") return { text: "Clásica", color: "#5b7fa6" };
         return { text: source, color: "#888" };
     };
 
@@ -203,7 +203,9 @@ export default function ExternalSongSearchModal({ show, onClose, onImported }) {
                                 const label = sourceLabel(song.source);
                                 const isImporting = importing === song.externalId;
                                 const missingFieldsText = getMissingFieldsText(song);
-                                const canImport = song.importReady !== false;
+                                const hasLyrics = !!song.lyrics;
+                                const hasChords = !!song.chordsAvailable;
+                                const canImport = hasLyrics || hasChords;
                                 return (
                                     <div
                                         key={i}
@@ -260,7 +262,7 @@ export default function ExternalSongSearchModal({ show, onClose, onImported }) {
                                                             Letra
                                                         </Badge>
                                                     )}
-                                                    {!canImport && (
+                                                    {canImport && (!hasLyrics || !hasChords) && (
                                                         <Badge
                                                             pill
                                                             bg="warning"
