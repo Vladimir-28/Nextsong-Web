@@ -14,7 +14,8 @@ export const createSong = async (form) => {
         bpm: form.bpm,
         keyTone: form.keyTone,
         status: "ACTIVE" ,
-        chords: form.chords
+        chords: form.chords,
+        lyrics: form.lyrics
 
     };
 

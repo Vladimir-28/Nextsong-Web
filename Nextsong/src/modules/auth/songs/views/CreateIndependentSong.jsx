@@ -147,6 +147,7 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
                     className="form-control"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Ej: Mercy"
                   />
                 </div>
 
@@ -158,6 +159,7 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
                     className="form-control"
                     value={artist}
                     onChange={(e) => setArtist(e.target.value)}
+                    placeholder="Ej: Shawn Mendez "
                   />
                 </div>
 
@@ -182,6 +184,7 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
                     value={bpm}
                     onChange={(e) => setBpm(e.target.value)}
                     type="number"
+                    placeholder="Ej: 120"
                   />
                 </div>
 
@@ -219,6 +222,7 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
                     rows={5}
                     value={lyrics}
                     onChange={(e) => setLyrics(e.target.value)}
+                    placeholder="Ej: You've got a hold of me..."
                   />
                 </div>
 
