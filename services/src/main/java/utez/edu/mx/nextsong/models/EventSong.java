@@ -3,7 +3,7 @@ package utez.edu.mx.nextsong.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="event_songs")
+@Table(name = "event_songs")
 public class EventSong {
 
     @Id
@@ -12,16 +12,17 @@ public class EventSong {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="event_id")
+    @JoinColumn(name = "event_id")
     private Event event;
 
     @ManyToOne
-    @JoinColumn(name="song_id")
+    @JoinColumn(name = "song_id")
     private Song song;
 
     private Integer songOrder;
 
-    public EventSong(){}
+    public EventSong() {
+    }
 
     public EventSong(Long id, Event event, Song song, Integer songOrder) {
         this.id = id;
@@ -30,19 +31,35 @@ public class EventSong {
         this.songOrder = songOrder;
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Event getEvent() { return event; }
+    public Event getEvent() {
+        return event;
+    }
 
-    public void setEvent(Event event) { this.event = event; }
+    public void setEvent(Event event) {
+        this.event = event;
+    }
 
-    public Song getSong() { return song; }
+    public Song getSong() {
+        return song;
+    }
 
-    public void setSong(Song song) { this.song = song; }
+    public void setSong(Song song) {
+        this.song = song;
+    }
 
-    public Integer getSongOrder() { return songOrder; }
+    public Integer getSongOrder() {
+        return songOrder;
+    }
 
-    public void setSongOrder(Integer songOrder) { this.songOrder = songOrder; }
+    public void setSongOrder(Integer songOrder) {
+        this.songOrder = songOrder;
+    }
 }

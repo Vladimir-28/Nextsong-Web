@@ -20,7 +20,6 @@ export default function EventDetail() {
     const [showModal, setShowModal] = useState(false);
     const [showAll, setShowAll] = useState(false);
 
-    // 🔥 NUEVOS ESTADOS
     const [showConfirm, setShowConfirm] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
 
@@ -68,13 +67,13 @@ export default function EventDetail() {
 
     const isCreator = event?.creator?.id === user.id;
 
-    // 🔥 ABRIR CONFIRM MODAL
+    // ABRIR CONFIRM MODAL
     const handleAskDelete = (userId) => {
         setSelectedUserId(userId);
         setShowConfirm(true);
     };
 
-    // 🔥 ELIMINAR COLABORADOR
+    // ELIMINAR COLABORADOR
     const handleConfirmDelete = async () => {
         try {
             await EventsController.removeCollaborator(event.id, selectedUserId);
@@ -297,7 +296,7 @@ export default function EventDetail() {
                 </div>
             )}
 
-            {/* 🔥 CONFIRM MODAL */}
+            {/* CONFIRM MODAL */}
             <ConfirmModal
                 show={showConfirm}
                 onClose={() => setShowConfirm(false)}
@@ -306,7 +305,7 @@ export default function EventDetail() {
                 message="¿Seguro que deseas eliminar este colaborador del evento?"
             />
 
-            {/* 🔥 SUCCESS MODAL */}
+            {/* SUCCESS MODAL */}
             <SuccessModal
                 show={showSuccess}
                 onClose={() => setShowSuccess(false)}

@@ -3,7 +3,7 @@ package utez.edu.mx.nextsong.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="roles")
+@Table(name = "roles")
 public class Role {
 
     @Id

@@ -16,9 +16,23 @@ public class UserDTO {
         this.role = role;
     }
 
-    public Long getId() { return id; }
-    public String getFullName() { return fullName; }
-    public String getEmail() { return email; }
-    public String getStatus() { return status; }
-    public String getRole() { return role; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getRole() {
+        return role;
+    }
 }

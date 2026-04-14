@@ -12,7 +12,7 @@ export default function Login({ setSession }) {
 
     const navigate = useNavigate();
 
-    // 🔥 Modal state
+    // Modal state
     const [modal, setModal] = useState({
         show: false,
         title: "",
@@ -20,64 +20,64 @@ export default function Login({ setSession }) {
         type: ""
     });
 
-   
 
-   const changeSession = async (e) => {
-    e.preventDefault();
 
-    try {
-        const data = await handleLogin(email, password);
-        console.log("DATA:", data);
+    const changeSession = async (e) => {
+        e.preventDefault();
 
-        // 🔥 VALIDACIÓN REAL
-        // Si no viene algo típico de usuario → error
-        if (!data || data.error || data.message === "Credenciales incorrectas") {
+        try {
+            const data = await handleLogin(email, password);
+            console.log("DATA:", data);
+
+            // VALIDACIÓN
+            // Si no viene el usuario → error
+            if (!data || data.error || data.message === "Credenciales incorrectas") {
+                setModal({
+                    show: true,
+                    title: "Error",
+                    message: "Correo o contraseña incorrectos",
+                    type: "error"
+                });
+                return;
+            }
+            // éxito
+            sessionStorage.setItem("user", JSON.stringify(data));
+
             setModal({
                 show: true,
-                title: "Error",
-                message: "Correo o contraseña incorrectos",
-                type: "error"
+                title: "Bienvenido",
+                message: "Inicio de sesión exitoso",
+                type: "success"
             });
-            return;
+
+        } catch (error) {
+            console.error("ERROR COMPLETO:", error);
+
+            const msg = error?.message || "";
+
+            // detectar credenciales incorrectas
+            if (
+                msg.includes("401") ||
+                msg.toLowerCase().includes("unauthorized") ||
+                msg.toLowerCase().includes("credenciales") ||
+                msg.toLowerCase().includes("bad credentials")
+            ) {
+                setModal({
+                    show: true,
+                    title: "Error",
+                    message: "Correo o contraseña incorrectos",
+                    type: "error"
+                });
+            } else {
+                setModal({
+                    show: true,
+                    title: "Error",
+                    message: "Error del servidor",
+                    type: "error"
+                });
+            }
         }
-        // ✔ éxito
-        sessionStorage.setItem("user", JSON.stringify(data));
-
-        setModal({
-            show: true,
-            title: "Bienvenido",
-            message: "Inicio de sesión exitoso",
-            type: "success"
-        });
-
-    } catch (error) {
-    console.error("ERROR COMPLETO:", error);
-
-    const msg = error?.message || "";
-
-    // 🔥 detectar credenciales incorrectas
-    if (
-        msg.includes("401") ||
-        msg.toLowerCase().includes("unauthorized") ||
-        msg.toLowerCase().includes("credenciales") ||
-        msg.toLowerCase().includes("bad credentials")
-    ) {
-        setModal({
-            show: true,
-            title: "Error",
-            message: "Correo o contraseña incorrectos",
-            type: "error"
-        });
-    } else {
-        setModal({
-            show: true,
-            title: "Error",
-            message: "Error del servidor",
-            type: "error"
-        });
-    }
-}
-};
+    };
 
     useEffect(() => {
         if (sessionStorage.getItem("user")) {
@@ -153,17 +153,17 @@ export default function Login({ setSession }) {
                 </div>
             </div>
 
-            {/* 🔥 MODAL */}
+            {/* MODAL */}
             <SuccessModal
                 show={modal.show}
                 title={modal.title}
                 message={modal.message}
                 type={modal.type}
-                
+
                 onClose={() => {
                     setModal({ ...modal, show: false });
 
-                    // ✔ SOLO si fue éxito
+                    // SOLO si fue éxito
                     if (modal.type === "success") {
                         setSession(true);
                         navigate("/");

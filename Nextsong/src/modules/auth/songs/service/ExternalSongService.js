@@ -28,7 +28,7 @@ const ExternalSongService = {
         return text ? JSON.parse(text) : [];
     },
 
-    // Importar canción externa a tu BD → devuelve Song con ID
+    // Importar canción externa a BD → devuelve Song con ID
     importSong: async (externalSongDTO) => {
         const response = await fetch(`${EXTERNAL_API_URL}/import`, {
             method: "POST",
@@ -40,7 +40,7 @@ const ExternalSongService = {
         return text ? JSON.parse(text) : null;
     },
 
-    // Enriquecer letra de canción ya existente en tu BD
+    // Enriquecer letra de canción ya existente en BD
     enrichLyrics: async (songId) => {
         const response = await fetch(`${EXTERNAL_API_URL}/${songId}/enrich-lyrics`, {
             method: "PATCH"

@@ -36,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
-        // Usamos la nueva búsqueda insensible a mayúsculas
+        // Usamos la búsqueda insensible a mayúsculas
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
 
         if(userOpt.isPresent() && userOpt.get().getPassword().equals(request.getPassword())){

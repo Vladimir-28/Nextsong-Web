@@ -12,7 +12,7 @@ export default function Recovery() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-     
+
 
         try {
             const response = await fetch(
@@ -22,12 +22,12 @@ export default function Recovery() {
                 }
             );
 
-         if (response.ok) {
-            setMessage("Código enviado ");
-            setTimeout(() => {
-                navigate("/verify-code", { state: { email } });
-            }, 1500);
-        } else {
+            if (response.ok) {
+                setMessage("Código enviado ");
+                setTimeout(() => {
+                    navigate("/verify-code", { state: { email } });
+                }, 1500);
+            } else {
                 const error = await response.text();
                 setMessage(error);
             }

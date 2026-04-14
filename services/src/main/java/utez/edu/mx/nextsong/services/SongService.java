@@ -10,10 +10,6 @@ import utez.edu.mx.nextsong.repositories.UserRepository;
 
 import java.util.List;
 
-/**
- * ✅ TU SERVICIO ORIGINAL — Solo se agregó el método searchByTitleOrAuthor.
- *    Todo lo demás queda exactamente igual.
- */
 @Service
 public class SongService {
     private final SongRepository songRepository;
@@ -26,33 +22,33 @@ public class SongService {
         this.userRepository = userRepository;
     }
 
-    public List<Song> findAll(){
+    public List<Song> findAll() {
         return songRepository.findAll();
     }
 
-    public Song save(Song song){
+    public Song save(Song song) {
         return songRepository.save(song);
     }
 
-    public Song findById(Long id){
+    public Song findById(Long id) {
         return songRepository.findById(id).orElse(null);
     }
 
-    public boolean deleteById(Long id, Long userId){
-        if(!songRepository.existsById(id)){
+    public boolean deleteById(Long id, Long userId) {
+        if (!songRepository.existsById(id)) {
             throw new RuntimeException("Canción no encontrada");
         }
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if(user.getRole() == null || user.getRole().getId() != 1L){
+        if (user.getRole() == null || user.getRole().getId() != 1L) {
             throw new RuntimeException("No tienes permisos para eliminar canciones");
         }
 
         boolean isUsed = eventSongRepository.existsBySong_Id(id);
 
-        if(isUsed){
+        if (isUsed) {
             throw new RuntimeException("No puedes eliminar la canción porque está asignada a un evento");
         }
 
@@ -60,7 +56,7 @@ public class SongService {
         return true;
     }
 
-    // ✅ NUEVO: busca en tu BD por título o autor
+    // busca en BD por título o autor
     public List<Song> searchByTitleOrAuthor(String query) {
         if (query == null || query.isBlank()) return findAll();
         return songRepository.findByTitleOrAuthorContaining(query.trim());

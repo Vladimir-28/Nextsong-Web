@@ -4,7 +4,7 @@ const API_URL = buildApiUrl("/event-songs");
 
 const EventSongsController = {
 
-    // 🔥 AGREGAR canciones a evento
+    // agregar canciones a evento
     addSongsToEvent: async (eventId, songs) => {
 
         const payload = songs.map((song, index) => ({
@@ -30,7 +30,7 @@ const EventSongsController = {
         return text ? JSON.parse(text) : {};
     },
 
-    // 🔥 OBTENER canciones del evento
+    // obtener canciones del evento
     getSongsByEvent: async (eventId) => {
 
         const response = await fetch(`${API_URL}/event/${eventId}`, {
@@ -49,7 +49,7 @@ const EventSongsController = {
         return text ? JSON.parse(text) : [];
     },
 
-    
+
 
 };
 

@@ -27,24 +27,24 @@ public class EventSongService {
         this.songRepository = songRepository;
     }
 
-    public List<EventSong> getSongsByEvent(Long eventId){
+    public List<EventSong> getSongsByEvent(Long eventId) {
         return eventSongRepository.findByEventIdOrderBySongOrder(eventId);
     }
 
-    @Transactional // 🔥 Asegura que si algo falla, no se borre nada
-    public void saveEventSongs(Long eventId, List<EventSongDTO> songs){
+    @Transactional // Asegura que si algo falla, no se borre nada
+    public void saveEventSongs(Long eventId, List<EventSongDTO> songs) {
 
         // 1. Buscamos el evento
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
 
-        // 2. 🔥 LIMPIEZA: Borramos las canciones actuales del evento antes de guardar las nuevas
+        // 2. Borramos las canciones actuales del evento antes de guardar las nuevas
         // Esto evita duplicados y permite "eliminar" al desmarcar en Android
         eventSongRepository.deleteByEvent_Id(eventId);
 
-        // 3. GUARDADO: Insertamos la nueva lista recibida
+        // 3. Insertamos la nueva lista recibida
         int order = 1;
-        for (EventSongDTO dto : songs){
+        for (EventSongDTO dto : songs) {
             Song song = songRepository.findById(dto.getSongId())
                     .orElseThrow(() -> new RuntimeException("Canción no encontrada"));
 

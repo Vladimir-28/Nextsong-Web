@@ -20,15 +20,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 🔥 Configuramos CORS de forma explícita para que Android no sea bloqueado
+                // Configuramos CORS de forma explícita para que Android no sea bloqueado
                 .cors(Customizer.withDefaults())
 
                 // Deshabilitamos CSRF ya que es una API REST y no usa sesiones de navegador
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(auth -> auth
-                        // Mantenemos tu lógica original: permitir todas las rutas
-                        // Pero dejamos lista la estructura por si en el futuro quieres asegurar alguna
+                        // permitir todas las rutas
+                        // dejamos lista la estructura por si en el futuro se desea asegurar alguna
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().permitAll()
                 );
@@ -36,7 +36,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // ✅ Bean necesario para que 'Customizer.withDefaults()' sepa a quién dejar pasar
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -44,7 +43,7 @@ public class SecurityConfig {
         // Permitimos peticiones desde cualquier origen (necesario para el emulador y dispositivos físicos)
         configuration.setAllowedOrigins(List.of("*"));
 
-        // Permitimos todos los métodos HTTP que usa tu App
+        // Permitimos todos los métodos HTTP que son usados
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
         // Permitimos todos los encabezados (Headers)

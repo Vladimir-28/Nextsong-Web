@@ -9,13 +9,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * Servicio que jala BPM y tonalidad desde AcousticBrainz.
- *
+ * <p>
  * API 100% gratuita y sin autenticación.
- * Usa el mismo MBID (MusicBrainz ID) que ya tenemos de la búsqueda.
- *
+ * <p>
  * Endpoint: GET https://acousticbrainz.org/{mbid}/low-level
  * Devuelve análisis de audio: BPM, tonalidad, modo (mayor/menor), etc.
- *
+ * <p>
  * Nota: AcousticBrainz tiene datos para ~7 millones de canciones.
  * Si no existe el MBID, regresa null sin romper el flujo.
  */
@@ -32,8 +31,9 @@ public class AcousticBrainzService {
 
     /**
      * Datos de audio de una canción por su MusicBrainz ID.
-     * @param mbid  ID de MusicBrainz, ej: "5b11f4ce-a62d-471e-81fc-a69a8278c7da"
-     * @return      AudioData con bpm y keyTone, o null si no existe
+     *
+     * @param mbid ID de MusicBrainz, ej: "5b11f4ce-a62d-471e-81fc-a69a8278c7da"
+     * @return AudioData con bpm y keyTone, o null si no existe
      */
     @Cacheable(value = "acousticBrainzCache", key = "#mbid")
     public AudioData getAudioData(String mbid) {
@@ -55,15 +55,15 @@ public class AcousticBrainzService {
             Integer bpm = bpmDouble > 0 ? (int) Math.round(bpmDouble) : null;
 
             // Tonalidad: tonal.key_key + tonal.key_scale (ej: "C" + "major" → "C mayor")
-            String keyKey   = root.path("tonal").path("key_key").asText("");
+            String keyKey = root.path("tonal").path("key_key").asText("");
             String keyScale = root.path("tonal").path("key_scale").asText("");
 
             String keyTone = null;
             if (!keyKey.isBlank()) {
                 // Traducir major/minor al español
                 String scaleEs = keyScale.equalsIgnoreCase("major") ? "mayor"
-                               : keyScale.equalsIgnoreCase("minor") ? "menor"
-                               : keyScale;
+                        : keyScale.equalsIgnoreCase("minor") ? "menor"
+                        : keyScale;
                 keyTone = keyKey + (scaleEs.isBlank() ? "" : " " + scaleEs);
             }
 

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Servicio que consulta MusicBrainz para obtener metadatos de canciones.
  * Cubre tanto música popular como clásica.
- *
+ * <p>
  * API gratuita, sin key. Límite: 1 req/segundo.
  * Se usa @Cacheable para no spamear con la misma búsqueda.
  */
@@ -31,8 +31,9 @@ public class MusicBrainzService {
 
     /**
      * Busca canciones por título/artista en MusicBrainz.
-     * @param query  texto libre, ej: "bohemian rhapsody queen"
-     * @param limit  máximo de resultados (recomendado: 10)
+     *
+     * @param query texto libre, ej: "bohemian rhapsody queen"
+     * @param limit máximo de resultados (recomendado: 10)
      */
     @Cacheable(value = "musicbrainzSearch", key = "#query + '_' + #limit")
     public List<ExternalSongDTO> searchSongs(String query, int limit) {

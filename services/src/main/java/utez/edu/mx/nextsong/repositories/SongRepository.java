@@ -7,14 +7,9 @@ import utez.edu.mx.nextsong.models.Song;
 
 import java.util.List;
 
-/**
- * ✅ TU REPOSITORIO ORIGINAL con un método de búsqueda agregado.
- *    El método existsBySong_Id que usas en SongService sigue funcionando igual
- *    (ese está en EventSongRepository, no en este).
- */
 public interface SongRepository extends JpaRepository<Song, Long> {
 
-    // ✅ NUEVO: búsqueda por título o autor (case-insensitive)
+    // búsqueda por título o autor (case-insensitive)
     // Usado por GET /songs/search?q=...
     @Query("SELECT s FROM Song s WHERE " +
             "LOWER(s.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " +

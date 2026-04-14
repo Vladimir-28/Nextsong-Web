@@ -2,13 +2,13 @@ import { useNavigate } from 'react-router';
 import '../styles/style.css';
 import { RxExit } from "react-icons/rx";
 
-export default function CustomNavbar({setSession}) {
+export default function CustomNavbar({ setSession }) {
 	const navigate = useNavigate();
-    const closeSession = () => {
-        sessionStorage.removeItem("user");
-        setSession(false);
-        navigate("/");
-    }
+	const closeSession = () => {
+		sessionStorage.removeItem("user");
+		setSession(false);
+		navigate("/");
+	}
 	return (
 		<nav className="navbar top-navbar px-3 d-flex align-items-center fixed-top">
 

@@ -75,7 +75,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- ✅ LOMBOK (AGREGAMOS VERSION) -->
+        <!-- LOMBOK (AGREGAMOS VERSION) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -88,19 +88,19 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- ✅ NUEVO: WebFlux para llamadas HTTP a APIs externas (MusicBrainz, Lyrics.ovh, OpenOpus) -->
+        <!-- WebFlux para llamadas HTTP a APIs externas (MusicBrainz, Lyrics.ovh, OpenOpus) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
-        <!-- ✅ NUEVO: Cache para no spamear las APIs externas -->
+        <!-- Cache para no spamear las APIs externas -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
-        <!-- ✅ NUEVO: Jackson para parsear JSON de las APIs externas -->
+        <!-- Jackson para parsear JSON de las APIs externas -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -111,7 +111,7 @@
     <build>
         <plugins>
 
-            <!-- ✅ COMPILADOR COMPATIBLE CON JAVA 21 -->
+            <!-- COMPILADOR COMPATIBLE CON JAVA 21 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

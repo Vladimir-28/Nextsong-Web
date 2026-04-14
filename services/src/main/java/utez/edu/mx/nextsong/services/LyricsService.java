@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
 import java.time.Duration;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -70,7 +71,7 @@ public class LyricsService {
         try {
             String response = lrclibClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/api/get")  // ✅ antes era /get, el correcto es /api/get
+                            .path("/api/get")
                             .queryParam("artist_name", artist)
                             .queryParam("track_name", title)
                             .build())

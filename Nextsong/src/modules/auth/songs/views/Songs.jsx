@@ -202,7 +202,7 @@ export default function Songs() {
                 />
             )}
 
-            {/* 🔥 CONFIRM DELETE */}
+            {/* CONFIRM DELETE */}
             <ConfirmModal
                 show={confirmModal.show}
                 title="Eliminar canción"
@@ -211,7 +211,7 @@ export default function Songs() {
                 onConfirm={confirmDelete}
             />
 
-            {/* 🔥 SUCCESS / ERROR */}
+            {/* SUCCESS / ERROR */}
             <SuccessModal
                 show={showSuccess}
                 onClose={() => setShowSuccess(false)}
@@ -220,7 +220,7 @@ export default function Songs() {
                 type={modalData.type}
             />
 
-            {/* 🔥 BUSCADOR EXTERNO */}
+            {/* BUSCADOR EXTERNO */}
             <ExternalSongSearchModal
                 show={showExternalSearch}
                 onClose={() => setShowExternalSearch(false)}

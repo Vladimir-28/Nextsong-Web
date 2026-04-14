@@ -27,7 +27,7 @@ export default function Register() {
     const [error, setError] = useState("");
     const [showInfo, setShowInfo] = useState(false);
 
-    // 🔐 VALIDACIONES
+    // VALIDACIONES
     const validations = {
         length: form.password.length >= 8,
         upper: /[A-Z]/.test(form.password),

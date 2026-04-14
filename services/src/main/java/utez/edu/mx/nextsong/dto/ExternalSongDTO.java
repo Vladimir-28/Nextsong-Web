@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * DTO que representa un resultado de búsqueda desde APIs externas.
- * NO toca tu BD — es solo para mostrar opciones al usuario antes de guardar.
+ * solo para mostrar opciones al usuario antes de guardar.
  */
 public class ExternalSongDTO {
 
@@ -25,7 +25,8 @@ public class ExternalSongDTO {
     private boolean importReady;     // indica si cumple los campos requeridos
     private List<String> missingFields = new ArrayList<>();
 
-    public ExternalSongDTO() {}
+    public ExternalSongDTO() {
+    }
 
     public ExternalSongDTO(String externalId, String source, String title, String author) {
         this.externalId = externalId;
@@ -35,49 +36,122 @@ public class ExternalSongDTO {
     }
 
     // Getters y Setters
-    public String getExternalId() { return externalId; }
-    public void setExternalId(String externalId) { this.externalId = externalId; }
+    public String getExternalId() {
+        return externalId;
+    }
 
-    public String getSource() { return source; }
-    public void setSource(String source) { this.source = source; }
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public String getSource() {
+        return source;
+    }
 
-    public String getAuthor() { return author; }
-    public void setAuthor(String author) { this.author = author; }
+    public void setSource(String source) {
+        this.source = source;
+    }
 
-    public String getDuration() { return duration; }
-    public void setDuration(String duration) { this.duration = duration; }
+    public String getTitle() {
+        return title;
+    }
 
-    public String getKeyTone() { return keyTone; }
-    public void setKeyTone(String keyTone) { this.keyTone = keyTone; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public Integer getBpm() { return bpm; }
-    public void setBpm(Integer bpm) { this.bpm = bpm; }
+    public String getAuthor() {
+        return author;
+    }
 
-    public String getGenre() { return genre; }
-    public void setGenre(String genre) { this.genre = genre; }
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
-    public String getLyrics() { return lyrics; }
-    public void setLyrics(String lyrics) { this.lyrics = lyrics; }
+    public String getDuration() {
+        return duration;
+    }
 
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
 
-    public String getArtworkUrl() { return artworkUrl; }
-    public void setArtworkUrl(String artworkUrl) { this.artworkUrl = artworkUrl; }
+    public String getKeyTone() {
+        return keyTone;
+    }
 
-    public String getChordSourceUrl() { return chordSourceUrl; }
-    public void setChordSourceUrl(String chordSourceUrl) { this.chordSourceUrl = chordSourceUrl; }
+    public void setKeyTone(String keyTone) {
+        this.keyTone = keyTone;
+    }
 
-    public boolean isChordsAvailable() { return chordsAvailable; }
-    public void setChordsAvailable(boolean chordsAvailable) { this.chordsAvailable = chordsAvailable; }
+    public Integer getBpm() {
+        return bpm;
+    }
 
-    public boolean isImportReady() { return importReady; }
-    public void setImportReady(boolean importReady) { this.importReady = importReady; }
+    public void setBpm(Integer bpm) {
+        this.bpm = bpm;
+    }
 
-    public List<String> getMissingFields() { return missingFields; }
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getLyrics() {
+        return lyrics;
+    }
+
+    public void setLyrics(String lyrics) {
+        this.lyrics = lyrics;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getArtworkUrl() {
+        return artworkUrl;
+    }
+
+    public void setArtworkUrl(String artworkUrl) {
+        this.artworkUrl = artworkUrl;
+    }
+
+    public String getChordSourceUrl() {
+        return chordSourceUrl;
+    }
+
+    public void setChordSourceUrl(String chordSourceUrl) {
+        this.chordSourceUrl = chordSourceUrl;
+    }
+
+    public boolean isChordsAvailable() {
+        return chordsAvailable;
+    }
+
+    public void setChordsAvailable(boolean chordsAvailable) {
+        this.chordsAvailable = chordsAvailable;
+    }
+
+    public boolean isImportReady() {
+        return importReady;
+    }
+
+    public void setImportReady(boolean importReady) {
+        this.importReady = importReady;
+    }
+
+    public List<String> getMissingFields() {
+        return missingFields;
+    }
+
     public void setMissingFields(List<String> missingFields) {
         this.missingFields = missingFields != null ? missingFields : new ArrayList<>();
     }

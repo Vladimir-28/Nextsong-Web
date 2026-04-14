@@ -77,7 +77,6 @@ export default function CustomSidebar({ setSession }) {
 
 				</ul>
 
-
 				<div className="mt-5">
 					<button
 						className="btn text-white d-flex justify-content-start align-items-center w-100 mb-2"
@@ -96,7 +95,6 @@ export default function CustomSidebar({ setSession }) {
 					</button>
 				</div>
 
-
 			</div>
 
 			<div className='border-top p-2'>
@@ -110,7 +108,6 @@ export default function CustomSidebar({ setSession }) {
 
 			</div>
 
-
 			<>
 				<CreateIndependentSong
 					show={showModalSong}
@@ -122,7 +119,6 @@ export default function CustomSidebar({ setSession }) {
 					onClose={() => setShowModalEvent(false)}
 				/>
 			</>
-
 
 		</div>
 	);

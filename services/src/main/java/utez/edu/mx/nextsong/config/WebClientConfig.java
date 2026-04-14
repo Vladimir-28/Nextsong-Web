@@ -18,7 +18,6 @@ public class WebClientConfig {
                 .build();
     }
 
-    // Por este (Lyrics.ovh está caído, lo dejamos pero apuntando a una URL que no rompa):
     @Bean(name = "lyricsClient")
     public WebClient lyricsClient() {
         return WebClient.builder()
@@ -58,7 +57,6 @@ public class WebClientConfig {
                 .build();
     }
 
-    // Por este (la base correcta es lrclib.net, sin /api):
     @Bean(name = "lrclibClient")
     public WebClient lrclibClient() {
         return WebClient.builder()

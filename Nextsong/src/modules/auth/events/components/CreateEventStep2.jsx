@@ -119,7 +119,7 @@ export default function CreateEventStep2({
         updateEvent({ songs: updated });
     };
 
-    // ✅ NUEVO: cuando se importa desde APIs externas, se agrega a disponibles y se refresca
+    // cuando se importa desde APIs externas, se agrega a disponibles y se refresca
     const handleExternalImport = (importedSong) => {
         if (!importedSong?.id) return;
         setAvailableSongs(prev => {
@@ -130,20 +130,20 @@ export default function CreateEventStep2({
 
     const finish = () => {
 
-    // ❌ VALIDACIÓN
-    if (selectedSongs.length === 0) {
-        setModal({
-            show: true,
-            title: "Atención",
-            message: "Debes agregar al menos una canción",
-            type: "error"
-        });
-        return;
-    }
+        // VALIDACIÓN
+        if (selectedSongs.length === 0) {
+            setModal({
+                show: true,
+                title: "Atención",
+                message: "Debes agregar al menos una canción",
+                type: "error"
+            });
+            return;
+        }
 
-    // ✔ TODO BIEN
-    createEvent();
-};
+        // TODO BIEN
+        createEvent();
+    };
 
     const filteredSongs = availableSongs.filter(
         song => !selectedSongs.find(s => s.id === song.id)
@@ -158,7 +158,7 @@ export default function CreateEventStep2({
                     {selectedSongs.length} canciones agregadas
                 </h6>
 
-                {/* ✅ Botones: buscar externa + crear manual */}
+                {/* buscar externa + crear manual */}
                 <div className="d-flex gap-2">
 
                     <Button
@@ -257,7 +257,7 @@ export default function CreateEventStep2({
                 onCreate={handleNewSong}
             />
 
-            {/* ✅ NUEVO: búsqueda en catálogos externos */}
+            {/* búsqueda en catálogos externos */}
             <ExternalSongSearchModal
                 show={showExternalModal}
                 onClose={() => {
@@ -268,12 +268,12 @@ export default function CreateEventStep2({
             />
 
             <SuccessModal
-            show={modal.show}
-            title={modal.title}
-            message={modal.message}
-            type={modal.type}
-            onClose={() => setModal({ ...modal, show: false })}
-        />
+                show={modal.show}
+                title={modal.title}
+                message={modal.message}
+                type={modal.type}
+                onClose={() => setModal({ ...modal, show: false })}
+            />
 
         </>
     );

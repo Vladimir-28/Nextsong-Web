@@ -40,12 +40,12 @@ export default function SongEventCard({ songEvent }) {
                     <div className="d-flex gap-2 mt-2">
 
                         <span className="badge bg-light text-muted d-flex align-items-center">
-                            <FaRegClock size={14} className="me-1"/>
+                            <FaRegClock size={14} className="me-1" />
                             {song.bpm} BPM
                         </span>
 
                         <span className="badge bg-light text-muted d-flex align-items-center">
-                            <FiTag size={14} className="me-1"/>
+                            <FiTag size={14} className="me-1" />
                             {song.keyTone}
                         </span>
 

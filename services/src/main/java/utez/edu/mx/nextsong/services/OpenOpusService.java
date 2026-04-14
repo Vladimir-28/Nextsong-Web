@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Servicio que consulta OpenOpus para música clásica.
- *
+ * <p>
  * OpenOpus tiene un catálogo de más de 20,000 obras clásicas de dominio público.
  * API gratuita, sin autenticación.
  * Documentación: https://openopus.org/api-documentation
@@ -31,7 +31,8 @@ public class OpenOpusService {
 
     /**
      * Busca obras clásicas por nombre de compositor.
-     * @param composerName  ej: "Bach", "Mozart", "Beethoven"
+     *
+     * @param composerName ej: "Bach", "Mozart", "Beethoven"
      */
     @Cacheable(value = "openOpusComposer", key = "#composerName")
     public List<ExternalSongDTO> searchByComposer(String composerName) {
@@ -81,7 +82,7 @@ public class OpenOpusService {
                 dto.setAuthor(composerFullName);
                 dto.setGenre(work.path("genre").asText("Clásica"));
                 dto.setNotes("Época: " + work.path("epoch").asText("") +
-                             " | Género: " + work.path("genre").asText(""));
+                        " | Género: " + work.path("genre").asText(""));
                 results.add(dto);
             }
 
@@ -94,7 +95,8 @@ public class OpenOpusService {
 
     /**
      * Búsqueda general de obras clásicas por texto libre.
-     * @param query  ej: "Für Elise", "Symphony No. 5"
+     *
+     * @param query ej: "Für Elise", "Symphony No. 5"
      */
     @Cacheable(value = "openOpusSearch", key = "#query")
     public List<ExternalSongDTO> searchWorks(String query) {

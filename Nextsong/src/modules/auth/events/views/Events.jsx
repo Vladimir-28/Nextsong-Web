@@ -16,13 +16,13 @@ export default function Events() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
 
-    // 🔥 confirm modal
+    // confirm modal
     const [confirmModal, setConfirmModal] = useState({
         show: false,
         id: null
     });
 
-    // 🔥 success modal
+    // success modal
     const [showSuccess, setShowSuccess] = useState(false);
     const [modalData, setModalData] = useState({
         title: "",
@@ -215,7 +215,7 @@ export default function Events() {
                 />
             )}
 
-            {/* 🔥 CONFIRM MODAL */}
+            {/* CONFIRM MODAL */}
             <ConfirmModal
                 show={confirmModal.show}
                 title="Eliminar evento"
@@ -224,7 +224,7 @@ export default function Events() {
                 onConfirm={confirmDelete}
             />
 
-            {/* 🔥 SUCCESS MODAL */}
+            {/* SUCCESS MODAL */}
             <SuccessModal
                 show={showSuccess}
                 onClose={() => setShowSuccess(false)}

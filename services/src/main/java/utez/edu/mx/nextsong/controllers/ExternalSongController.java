@@ -11,12 +11,9 @@ import java.util.List;
 /**
  * Controlador para búsqueda e importación de canciones desde APIs externas.
  *
- * ✅ NO modifica ni reemplaza SongController.java
- * ✅ Se agrega como ruta separada: /external-songs/*
- *
  * Flujo de uso desde la app:
  *   1. GET /external-songs/search?q=beethoven  → usuario ve resultados externos
- *   2. POST /external-songs/import             → usuario importa la que eligió a tu BD
+ *   2. POST /external-songs/import             → usuario importa la que eligió a BD
  *   3. (Ya con ID en BD) → asigna al evento normalmente con EventSongController
  */
 @RestController
@@ -72,16 +69,15 @@ public class ExternalSongController {
     }
 
     /**
-     * ⭐ Importar canción externa a tu BD.
+     * Importar canción externa a BD.
      *
      * El usuario encontró una canción en el buscador y quiere agregarla a un evento.
-     * Este endpoint la guarda en tu BD y devuelve la Song con su ID.
+     * Este endpoint la guarda en  BD y devuelve la Song con su ID.
      *
      * POST /external-songs/import
      * Body: { "title": "...", "author": "...", "source": "musicbrainz", ... }
      *
      * Después de esto, el frontend usa el ID devuelto para asignarla al evento
-     * con el endpoint de EventSongController que ya tienes.
      */
     @PostMapping("/import")
     public ResponseEntity<?> importSong(@RequestBody ExternalSongDTO dto) {
@@ -97,7 +93,7 @@ public class ExternalSongController {
     }
 
     /**
-     * Enriquecer letra de una canción que ya existe en tu BD.
+     * Enriquecer letra de una canción que ya existe en BD.
      * Útil si una canción fue creada sin letra y se quiere completar automáticamente.
      *
      * PATCH /external-songs/{id}/enrich-lyrics

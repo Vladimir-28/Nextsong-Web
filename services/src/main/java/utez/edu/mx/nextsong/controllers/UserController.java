@@ -27,16 +27,13 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(user));
     }
 
-    // ✅ Endpoint para buscar músicos por correo
+    // Endpoint para buscar músicos por correo
     @GetMapping("/search")
     public ResponseEntity<List<User>> searchUsers(@RequestParam String email) {
         return ResponseEntity.ok(userService.findByEmailContaining(email));
     }
-    // ... otros imports
 
-
-    // Dentro de la clase UserController:
-    private final UserCategoryRepository categoryRepository; // Inyectalo en el constructor
+    private final UserCategoryRepository categoryRepository;
 
     @GetMapping("/{userId}/categories")
     public ResponseEntity<List<UserCategory>> getCategories(@PathVariable Long userId) {

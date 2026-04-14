@@ -3,57 +3,55 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 
 export default function SuccessModal({ show, onClose, title, message, type = "success" }) {
 
-  const isError = type === "error";
+	const isError = type === "error";
 
-  return (
-    <Modal show={show} onHide={onClose} centered contentClassName="rounded-4">
-      
-      {/* ❌ Quitamos Header completamente */}
-      
-      <Modal.Body className="text-center p-4">
+	return (
+		<Modal show={show} onHide={onClose} centered contentClassName="rounded-4">
 
-        {/* 🔥 ICONO */}
-        <div
-          className="d-flex justify-content-center align-items-center mx-auto mb-3 rounded-circle"
-          style={{
-            width: 80,
-            height: 80,
-            backgroundColor: isError ? "#f8d7da" : "#d1e7dd"
-          }}
-        >
-          {isError ? (
-            <FaTimes size={35} color="#842029" />
-          ) : (
-            <FaCheck size={35} color="#0f5132" />
-          )}
-        </div>
+			<Modal.Body className="text-center p-4">
 
-        {/* 🔥 TÍTULO */}
-        <h4 className="fw-bold mb-2">
-          {title || (isError ? "Ocurrió un error" : "¡Bienvenido de nuevo!")}
-        </h4>
+				{/* ICONO */}
+				<div
+					className="d-flex justify-content-center align-items-center mx-auto mb-3 rounded-circle"
+					style={{
+						width: 80,
+						height: 80,
+						backgroundColor: isError ? "#f8d7da" : "#d1e7dd"
+					}}
+				>
+					{isError ? (
+						<FaTimes size={35} color="#842029" />
+					) : (
+						<FaCheck size={35} color="#0f5132" />
+					)}
+				</div>
 
-        {/* 🔥 MENSAJE */}
-        <p className="text-muted mb-4">
-          {message || "Has iniciado sesión correctamente."}
-        </p>
+				{/* TÍTULO */}
+				<h4 className="fw-bold mb-2">
+					{title || (isError ? "Ocurrió un error" : "¡Bienvenido de nuevo!")}
+				</h4>
 
-        {/* 🔥 BOTÓN */}
-        <Button
-          onClick={onClose}
-          style={{
-            backgroundColor: "#9c6b4f",
-            border: "none",
-            width: "100%",
-            padding: "10px",
-            borderRadius: "10px"
-          }}
-        >
-          Entendido
-        </Button>
+				{/* MENSAJE */}
+				<p className="text-muted mb-4">
+					{message || "Has iniciado sesión correctamente."}
+				</p>
 
-      </Modal.Body>
+				{/* BOTÓN */}
+				<Button
+					onClick={onClose}
+					style={{
+						backgroundColor: "#9c6b4f",
+						border: "none",
+						width: "100%",
+						padding: "10px",
+						borderRadius: "10px"
+					}}
+				>
+					Entendido
+				</Button>
 
-    </Modal>
-  );
+			</Modal.Body>
+
+		</Modal>
+	);
 }

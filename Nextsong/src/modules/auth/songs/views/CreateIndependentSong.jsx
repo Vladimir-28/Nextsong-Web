@@ -37,7 +37,7 @@ export default function CreateIndependentSong({ show, onClose, song, isEdit }) {
     const hasLyrics = lyrics.trim() !== "";
     const hasChords = chords.trim() !== "";
 
-    // 🔥 VALIDACIÓN
+    // VALIDACIÓN
     if (
       !title.trim() ||
       !artist.trim() ||

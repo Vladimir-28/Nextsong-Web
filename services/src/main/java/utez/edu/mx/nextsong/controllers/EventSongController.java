@@ -23,7 +23,6 @@ public class EventSongController {
         return service.getSongsByEvent(eventId);
     }
 
-    // Al usar POST, el Service ahora limpia y guarda, resolviendo la duplicidad
     @PostMapping("/event/{eventId}")
     public void saveEventSongs(@PathVariable Long eventId,
                                @RequestBody List<EventSongDTO> songs){

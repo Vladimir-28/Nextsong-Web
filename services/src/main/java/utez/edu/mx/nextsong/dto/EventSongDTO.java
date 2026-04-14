@@ -5,7 +5,8 @@ public class EventSongDTO {
     private Long songId;
     private Integer songOrder;
 
-    public EventSongDTO(){}
+    public EventSongDTO() {
+    }
 
     public Long getSongId() {
         return songId;

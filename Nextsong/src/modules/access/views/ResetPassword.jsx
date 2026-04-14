@@ -15,10 +15,10 @@ export default function ResetPassword() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-           if (!validatePassword(newPassword)) {
-        setMessage("Debe tener mayúscula, minúscula, número y carácter especial");
-        return;
-}
+        if (!validatePassword(newPassword)) {
+            setMessage("Debe tener mayúscula, minúscula, número y carácter especial");
+            return;
+        }
 
         try {
             const response = await fetch(
@@ -41,10 +41,10 @@ export default function ResetPassword() {
             setMessage("Error al conectar con el servidor");
         }
     };
-        const validatePassword = (password) => {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-])[A-Za-z\d@$!%*?&.#_-]{8,}$/;
-    return regex.test(password);
-};
+    const validatePassword = (password) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-])[A-Za-z\d@$!%*?&.#_-]{8,}$/;
+        return regex.test(password);
+    };
 
     return (
         <main className="d-flex flex-column align-items-center">
@@ -79,13 +79,13 @@ export default function ResetPassword() {
                             />
                             <small className="text-muted">
                                 Debe contener:
-                                <br />• 8 caracteres mínimo  
-                                <br />• 1 mayúscula  
-                                <br />• 1 minúscula  
-                                <br />• 1 número  
+                                <br />• 8 caracteres mínimo
+                                <br />• 1 mayúscula
+                                <br />• 1 minúscula
+                                <br />• 1 número
                                 <br />• 1 carácter especial
-                                <br/>
-                                </small>
+                                <br />
+                            </small>
 
                             <button className="btn w-100 text-white"
                                 style={{ backgroundColor: "#a56d49" }}>
